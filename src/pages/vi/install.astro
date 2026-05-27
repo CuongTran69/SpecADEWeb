@@ -1,0 +1,21 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro'
+import GetStarted from '~/components/GetStarted.astro'
+import SubpageHeader from '~/components/SubpageHeader.astro'
+import { t } from '~/i18n/strings'
+import { pathFor } from '~/i18n/utils'
+
+const lang = 'vi' as const
+const strings = t(lang)
+---
+
+<BaseLayout lang={lang}>
+  <SubpageHeader
+    lang={lang}
+    title={strings.getStarted.pageTitle}
+    subtitle={strings.getStarted.pageSubtitle}
+    homeHref={pathFor(lang, '/')}
+    backLabel={strings.faq.backToHome}
+  />
+  <GetStarted lang={lang} />
+</BaseLayout>

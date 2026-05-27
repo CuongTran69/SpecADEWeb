@@ -1,0 +1,95 @@
+---
+import type { Lang } from '~/i18n/strings'
+import { t } from '~/i18n/strings'
+
+interface Props {
+  lang: Lang
+}
+
+const { lang } = Astro.props
+const strings = t(lang)
+
+const accentVars = ['--color-persona-1', '--color-persona-2', '--color-persona-3', '--color-persona-4']
+---
+
+<section class="usecases">
+  <div class="container-wide">
+    <header class="section-head">
+      <h2 class="section-title">{strings.useCases.title}</h2>
+    </header>
+
+    <div class="grid">
+      {strings.useCases.items.map((item, i) => (
+        <article class="uc-card reveal" data-testid={`use-case-${i}`}>
+          <span class="uc-bar" aria-hidden="true" style={`background: var(${accentVars[i % accentVars.length]})`}></span>
+          <h3 class="uc-role">{item.role}</h3>
+          <p class="uc-desc">{item.desc}</p>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .usecases {
+    padding-block: clamp(48px, 6vw, 80px);
+  }
+
+  .section-head {
+    margin-bottom: 40px;
+    max-width: 42rem;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  @media (min-width: 640px) {
+    .grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (min-width: 1024px) {
+    .grid { grid-template-columns: repeat(4, 1fr); }
+  }
+
+  .uc-card {
+    position: relative;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: 22px;
+    overflow: hidden;
+    transition: border-color 200ms var(--ease-out-soft), transform 250ms var(--ease-out-soft);
+  }
+
+  .uc-card:hover {
+    border-color: var(--color-border-strong);
+    transform: translateY(-2px);
+  }
+
+  .uc-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    border-radius: 2px 2px 0 0;
+    opacity: 0.7;
+  }
+
+  .uc-role {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-text);
+    margin-block: 14px 6px;
+    letter-spacing: -0.01em;
+  }
+
+  .uc-desc {
+    font-size: 13.5px;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+  }
+</style>

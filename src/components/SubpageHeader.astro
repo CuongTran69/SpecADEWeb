@@ -1,0 +1,74 @@
+---
+import type { Lang } from '~/i18n/strings'
+import { pathFor } from '~/i18n/utils'
+
+interface Props {
+  lang: Lang
+  title: string
+  subtitle?: string
+  homeHref?: string
+  backLabel?: string
+}
+
+const { lang, title, subtitle, homeHref, backLabel = '← Back' } = Astro.props
+const resolvedHomeHref = homeHref ?? pathFor(lang, '/')
+---
+
+<div class="subpage-header">
+  <div class="container-wide">
+    <a href={resolvedHomeHref} class="back-link" data-testid="back-to-home">
+      <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M13 8H3M7 4l-4 4 4 4"/>
+      </svg>
+      {backLabel}
+    </a>
+    <h1 class="subpage-title">{title}</h1>
+    {subtitle && <p class="subpage-subtitle">{subtitle}</p>}
+  </div>
+</div>
+
+<style>
+  .subpage-header {
+    padding-block: clamp(32px, 5vw, 56px) 0;
+  }
+
+  .container-wide {
+    max-width: 1200px;
+    margin-inline: auto;
+    padding-inline: clamp(16px, 4vw, 48px);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    transition: color 150ms var(--ease-out-soft);
+  }
+
+  .back-link:hover {
+    color: var(--color-text);
+  }
+
+  .subpage-title {
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--color-text);
+    margin: 0;
+  }
+
+  .subpage-subtitle {
+    color: var(--color-text-secondary);
+    font-size: clamp(1rem, 1.4vw, 1.1rem);
+    line-height: 1.6;
+    margin: 0;
+    max-width: 42rem;
+  }
+</style>

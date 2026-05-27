@@ -1,0 +1,167 @@
+---
+import type { Lang } from '~/i18n/strings'
+import { t } from '~/i18n/strings'
+import { pathFor } from '~/i18n/utils'
+import Icon from '~/components/Icon.astro'
+
+interface Props {
+  lang: Lang
+  topOnly?: boolean
+}
+
+const { lang, topOnly = false } = Astro.props
+const strings = t(lang)
+const items = topOnly ? strings.faq.items.slice(0, 3) : strings.faq.items
+const faqPath = pathFor(lang, '/faq')
+---
+
+<section id="faq" class="faq">
+  <div class="container-wide">
+    <header class="section-head">
+      <span class="chip">FAQ</span>
+      <h2 class="section-title">{strings.faq.title}</h2>
+      <p class="section-subtitle">{strings.faq.subtitle}</p>
+    </header>
+
+    <div class="faq-list">
+      {items.map((item, i) => (
+        <details class="faq-item reveal" data-testid={`faq-item-${i}`}>
+          <summary class="faq-summary">
+            <span class="faq-q">{item.q}</span>
+            <span class="faq-chevron" aria-hidden="true">
+              <Icon name="chevron-down" size={16} />
+            </span>
+          </summary>
+          <div class="faq-answer">
+            <p>{item.a}</p>
+          </div>
+        </details>
+      ))}
+    </div>
+
+    {topOnly && (
+      <div class="see-all-wrap">
+        <a href={faqPath} class="see-all-link" data-testid="faq-see-all">
+          {strings.faq.seeAll}
+          <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3 8h10M9 4l4 4-4 4"/>
+          </svg>
+        </a>
+      </div>
+    )}
+  </div>
+</section>
+
+<style>
+  .faq {
+    padding-block: clamp(64px, 8vw, 96px);
+    background: var(--color-surface);
+    border-block: 1px solid var(--color-border);
+  }
+
+  .section-head {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 48px;
+    max-width: 42rem;
+  }
+
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    max-width: 56rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+
+  .faq-item {
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-bg);
+    transition: background 200ms var(--ease-out-soft);
+  }
+
+  .faq-item:last-child {
+    border-bottom: none;
+  }
+
+  .faq-item[open] {
+    background: var(--color-raised);
+  }
+
+  .faq-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 18px 22px;
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+    transition: background 200ms var(--ease-out-soft);
+  }
+
+  .faq-summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq-summary:hover {
+    background: var(--color-raised);
+  }
+
+  .faq-summary:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: -2px;
+  }
+
+  .faq-q {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--color-text);
+    line-height: 1.4;
+  }
+
+  .faq-chevron {
+    flex-shrink: 0;
+    color: var(--color-text-muted);
+    transition: transform 250ms var(--ease-out-soft), color 200ms var(--ease-out-soft);
+  }
+
+  .faq-item[open] .faq-chevron {
+    transform: rotate(180deg);
+    color: var(--color-accent);
+  }
+
+  .faq-answer {
+    padding: 0 22px 18px;
+  }
+
+  .faq-answer p {
+    color: var(--color-text-secondary);
+    font-size: 14px;
+    line-height: 1.7;
+    margin: 0;
+  }
+
+  .see-all-wrap {
+    margin-top: 20px;
+    max-width: 56rem;
+  }
+
+  .see-all-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--color-accent);
+    text-decoration: none;
+    transition: opacity 150ms var(--ease-out-soft);
+  }
+
+  .see-all-link:hover {
+    opacity: 0.8;
+  }
+</style>

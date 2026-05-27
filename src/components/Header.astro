@@ -1,0 +1,320 @@
+---
+import type { Lang } from '~/i18n/strings'
+import { t } from '~/i18n/strings'
+import { altLang, pathFor, swapLangPath } from '~/i18n/utils'
+import ThemeToggle from '~/components/islands/ThemeToggle.vue'
+import BrandMark from '~/components/BrandMark.astro'
+
+interface Props {
+  lang: Lang
+}
+
+const { lang } = Astro.props
+const strings = t(lang)
+const otherLang = altLang(lang)
+const currentPath = Astro.url.pathname
+const otherPath = swapLangPath(currentPath, otherLang)
+---
+
+<header class="site-header">
+  <div class="container-wide header-inner">
+    <a href={pathFor(lang, '/')} class="brand" aria-label="Spec ADE">
+      <span class="brand-mark" aria-hidden="true">
+        <BrandMark size={24} />
+      </span>
+      <span class="brand-text">Spec ADE</span>
+    </a>
+
+    <nav class="nav-links" aria-label="Primary">
+      <a href={`${pathFor(lang, '/')}#features`}>{strings.nav.features}</a>
+      <a href={`${pathFor(lang, '/')}#architecture`}>{strings.nav.architecture}</a>
+      <a href={`${pathFor(lang, '/')}#faq`}>{strings.nav.faq}</a>
+      <a href={`${pathFor(lang, '/')}#get-started`}>{strings.nav.getStarted}</a>
+    </nav>
+
+    <div class="header-actions">
+      <a href={otherPath} class="btn btn-ghost lang-link" hreflang={otherLang} data-testid="lang-switch">
+        {strings.nav.switchTo}
+      </a>
+      <ThemeToggle client:load />
+      <a
+        href={`${pathFor(lang, '/')}#get-started`}
+        class="btn btn-primary header-cta"
+        data-testid="header-cta"
+      >
+        {strings.nav.getStarted}
+      </a>
+      <button
+        type="button"
+        class="nav-toggle"
+        aria-controls="mobile-nav"
+        aria-expanded="false"
+        aria-label="Toggle menu"
+        data-testid="nav-toggle"
+        data-nav-toggle
+      >
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <line x1="3" y1="12" x2="21" y2="12"/>
+          <line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <div id="mobile-nav" class="mobile-nav" hidden data-testid="mobile-nav">
+    <nav class="mobile-nav-links" aria-label="Mobile primary">
+      <a href={`${pathFor(lang, '/')}#features`} data-testid="mobile-nav-link-features">{strings.nav.features}</a>
+      <a href={`${pathFor(lang, '/')}#architecture`} data-testid="mobile-nav-link-architecture">{strings.nav.architecture}</a>
+      <a href={`${pathFor(lang, '/')}#faq`} data-testid="mobile-nav-link-faq">{strings.nav.faq}</a>
+      <a href={`${pathFor(lang, '/')}#get-started`} data-testid="mobile-nav-link-get-started">{strings.nav.getStarted}</a>
+      <a href={otherPath} hreflang={otherLang} class="mobile-lang-link">{strings.nav.switchTo}</a>
+    </nav>
+  </div>
+</header>
+
+<script>
+  if (!document.documentElement.dataset.navToggleInit) {
+    document.documentElement.dataset.navToggleInit = '1'
+
+    const toggle = document.querySelector<HTMLButtonElement>('[data-nav-toggle]')
+    const mobileNav = document.getElementById('mobile-nav')
+
+    function openMenu() {
+      if (!toggle || !mobileNav) return
+      mobileNav.hidden = false
+      toggle.setAttribute('aria-expanded', 'true')
+      document.documentElement.classList.add('nav-open')
+    }
+
+    function closeMenu() {
+      if (!toggle || !mobileNav) return
+      mobileNav.hidden = true
+      toggle.setAttribute('aria-expanded', 'false')
+      document.documentElement.classList.remove('nav-open')
+    }
+
+    if (toggle && mobileNav) {
+      toggle.addEventListener('click', () => {
+        const isOpen = toggle.getAttribute('aria-expanded') === 'true'
+        if (isOpen) closeMenu()
+        else openMenu()
+      })
+
+      // Close on anchor click
+      mobileNav.querySelectorAll('a').forEach((a) => {
+        a.addEventListener('click', closeMenu)
+      })
+
+      // Close on click outside
+      document.addEventListener('click', (e) => {
+        const header = document.querySelector('.site-header')
+        if (header && !header.contains(e.target as Node)) {
+          closeMenu()
+        }
+      })
+
+      // ESC key closes menu and returns focus to toggle
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') {
+          closeMenu()
+          toggle.focus()
+        }
+      })
+
+      // Focus trap: cycle Tab through toggle + nav links when menu is open
+      function trapFocus(e: KeyboardEvent) {
+        if (e.key !== 'Tab') return
+        if (toggle.getAttribute('aria-expanded') !== 'true') return
+        const focusable = Array.from(
+          mobileNav!.querySelectorAll<HTMLElement>('a, button')
+        )
+        const allFocusable = [toggle, ...focusable]
+        if (allFocusable.length === 0) return
+        const first = allFocusable[0]
+        const last = allFocusable[allFocusable.length - 1]
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault()
+          last?.focus()
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault()
+          first?.focus()
+        }
+      }
+      document.addEventListener('keydown', trapFocus)
+    }
+  }
+</script>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: color-mix(in oklab, var(--color-bg) 80%, transparent);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .header-inner {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    height: 64px;
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--color-text);
+    text-decoration: none;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    font-size: 16px;
+  }
+
+  .brand-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-md);
+    background: var(--color-accent-soft);
+    color: var(--color-accent);
+    border: 1px solid color-mix(in oklab, var(--color-accent) 30%, transparent);
+  }
+
+  .nav-links {
+    display: none;
+    gap: 4px;
+    margin-left: auto;
+  }
+
+  .nav-links a {
+    padding: 8px 12px;
+    font-size: 14px;
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    border-radius: var(--radius-sm);
+    transition: color 200ms var(--ease-out-soft), background 200ms var(--ease-out-soft);
+  }
+
+  .nav-links a:hover {
+    color: var(--color-text);
+    background: var(--color-raised);
+  }
+
+  .header-actions {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .lang-link {
+    font-family: var(--font-mono);
+    font-size: 12px;
+  }
+
+  /* Hamburger toggle — mobile only */
+  .nav-toggle {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--color-text-secondary);
+    border: 1px solid var(--color-border);
+    cursor: pointer;
+    transition: color 150ms var(--ease-out-soft), background 150ms var(--ease-out-soft);
+    flex-shrink: 0;
+  }
+
+  .nav-toggle:hover {
+    color: var(--color-text);
+    background: var(--color-raised);
+  }
+
+  .nav-toggle:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  /* Mobile nav panel */
+  .mobile-nav {
+    position: absolute;
+    top: 64px;
+    left: 0;
+    right: 0;
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+    padding: var(--spacing-sm) var(--spacing-md);
+    z-index: 49;
+  }
+
+  .mobile-nav[hidden] {
+    display: none;
+  }
+
+  .mobile-nav-links {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .mobile-nav-links a {
+    display: block;
+    padding: 10px 12px;
+    font-size: 14px;
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    border-radius: var(--radius-sm);
+    transition: color 150ms var(--ease-out-soft), background 150ms var(--ease-out-soft);
+  }
+
+  .mobile-nav-links a:hover {
+    color: var(--color-text);
+    background: var(--color-raised);
+  }
+
+  .mobile-lang-link {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    margin-top: 4px;
+    border-top: 1px solid var(--color-border);
+    padding-top: 10px !important;
+  }
+
+  @media (max-width: 767px) {
+    .nav-toggle {
+      display: inline-flex;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .nav-links {
+      display: inline-flex;
+    }
+    .header-actions {
+      margin-left: 0;
+    }
+    .mobile-nav {
+      display: none;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .header-cta {
+      display: none;
+    }
+  }
+
+  :global(html.nav-open) {
+    overflow: hidden;
+  }
+</style>

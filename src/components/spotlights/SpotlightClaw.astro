@@ -1,0 +1,121 @@
+---
+import type { Lang } from '~/i18n/strings'
+import { t } from '~/i18n/strings'
+import Spotlight from '~/components/Spotlight.astro'
+
+interface Props {
+  lang: Lang
+}
+
+const { lang } = Astro.props
+const strings = t(lang)
+const rows = [
+  { name: 'pr-reviewer', state: 'running', status: 'iteration 3 · 2m ago', dotClass: 'dot-running' },
+  { name: 'security-scan', state: 'waiting', status: 'waiting for permission', dotClass: 'dot-waiting' },
+  { name: 'daily-digest', state: 'scheduled', status: 'cron · 09:00 daily', dotClass: 'dot-scheduled' },
+  { name: 'tg-codereview', state: 'triggered', status: 'via @username on Telegram', dotClass: 'dot-triggered' },
+]
+---
+
+<Spotlight id="claw" hook={strings.spotlight.claw.hook} body={strings.spotlight.claw.body} tone="default">
+  <div slot="visual" class="claw-mock" aria-hidden="true">
+    <header class="claw-header">
+      <span class="claw-title">Claw farm</span>
+      <span class="claw-meta">4 active</span>
+    </header>
+    <ul class="claw-rows">
+      {rows.map((row) => (
+        <li class={`claw-row claw-row--${row.state}`}>
+          <span class={`claw-dot ${row.dotClass}`} aria-hidden="true"></span>
+          <span class="claw-name">{row.name}</span>
+          <span class="claw-status">{row.status}</span>
+        </li>
+      ))}
+    </ul>
+  </div>
+</Spotlight>
+
+<style>
+  .claw-mock {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    font-family: var(--font-mono);
+    font-size: 13px;
+  }
+
+  .claw-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: var(--color-raised);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .claw-title {
+    font-weight: 600;
+    color: var(--color-text);
+    letter-spacing: 0.02em;
+  }
+
+  .claw-meta {
+    font-size: 11px;
+    color: var(--color-text-muted);
+  }
+
+  .claw-rows {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .claw-row {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-bottom: 1px dashed var(--color-border);
+  }
+
+  .claw-row:last-child {
+    border-bottom: none;
+  }
+
+  .claw-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .dot-running {
+    background: var(--color-success);
+    animation: claw-pulse 1.6s var(--ease-out-soft) infinite;
+  }
+
+  .dot-waiting { background: var(--color-warning); }
+  .dot-scheduled { background: var(--color-info); }
+  .dot-triggered { background: var(--color-claude); }
+
+  .claw-name {
+    color: var(--color-text);
+    font-weight: 500;
+  }
+
+  .claw-status {
+    color: var(--color-text-muted);
+    font-size: 12px;
+  }
+
+  @keyframes claw-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(1.4); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .dot-running { animation: none; }
+  }
+</style>

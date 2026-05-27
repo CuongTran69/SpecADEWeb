@@ -1,0 +1,136 @@
+---
+import type { Lang } from '~/i18n/strings'
+import { t } from '~/i18n/strings'
+import { pathFor } from '~/i18n/utils'
+import BrandMark from '~/components/BrandMark.astro'
+
+interface Props {
+  lang: Lang
+}
+
+const { lang } = Astro.props
+const strings = t(lang)
+const year = new Date().getFullYear()
+---
+
+<footer class="site-footer">
+  <div class="container-wide footer-inner">
+    <div class="footer-brand">
+      <div class="brand-row">
+        <span class="brand-mark" aria-hidden="true">
+          <BrandMark size={20} />
+        </span>
+        <strong>Spec ADE</strong>
+      </div>
+      <p class="footer-tagline">{strings.footer.tagline}</p>
+    </div>
+
+    <div class="footer-links">
+      <h4>{strings.footer.links}</h4>
+      <ul>
+        <li><a href={`${pathFor(lang, '/')}#features`}>{strings.nav.features}</a></li>
+        <li><a href={`${pathFor(lang, '/')}#architecture`}>{strings.nav.architecture}</a></li>
+        <li><a href={`${pathFor(lang, '/')}#faq`}>{strings.nav.faq}</a></li>
+        <li><a href={`${pathFor(lang, '/')}#get-started`}>{strings.nav.getStarted}</a></li>
+        <li><a href={strings.footer.supportHref} rel="noopener">{strings.footer.support}</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="container-wide footer-meta">
+    <span>© {year} viber.vn team.</span>
+    <span class="dot" aria-hidden="true">·</span>
+    <span>{strings.footer.rights}</span>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    margin-top: 96px;
+    border-top: 1px solid var(--color-border);
+    background: var(--color-surface);
+  }
+
+  .footer-inner {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+    padding-block: 48px;
+  }
+
+  @media (min-width: 768px) {
+    .footer-inner {
+      grid-template-columns: 1.4fr 1fr;
+    }
+  }
+
+  .footer-brand .brand-row {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
+  }
+
+  .brand-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: var(--radius-sm);
+    background: var(--color-accent-soft);
+    color: var(--color-accent);
+    border: 1px solid color-mix(in oklab, var(--color-accent) 30%, transparent);
+  }
+
+  .footer-tagline {
+    margin-top: 12px;
+    color: var(--color-text-secondary);
+    font-size: 14px;
+    max-width: 32rem;
+    line-height: 1.6;
+  }
+
+  .footer-links h4 {
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-text-muted);
+    margin-bottom: 16px;
+  }
+
+  .footer-links ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .footer-links a {
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 200ms var(--ease-out-soft);
+  }
+
+  .footer-links a:hover {
+    color: var(--color-text);
+  }
+
+  .footer-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-block: 24px;
+    border-top: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+    font-size: 12px;
+  }
+
+  .dot {
+    opacity: 0.5;
+  }
+</style>

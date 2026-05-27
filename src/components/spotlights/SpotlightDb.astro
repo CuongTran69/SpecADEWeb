@@ -1,0 +1,167 @@
+---
+import type { Lang } from '~/i18n/strings'
+import { t } from '~/i18n/strings'
+import Spotlight from '~/components/Spotlight.astro'
+
+interface Props {
+  lang: Lang
+}
+
+const { lang } = Astro.props
+const strings = t(lang)
+
+const rows = [
+  { id: '1', name: 'Alice Chen', email: 'alice@example.com', isNull: false },
+  { id: '2', name: 'Bob Tran', email: 'NULL', isNull: true },
+  { id: '3', name: 'Carol Pham', email: 'NULL', isNull: true },
+  { id: '4', name: 'Diego Santos', email: 'NULL', isNull: true },
+]
+---
+
+<Spotlight id="db" hook={strings.spotlight.db.hook} body={strings.spotlight.db.body} tone="accent" flip>
+  <div slot="visual" class="db-mock" aria-hidden="true">
+    <div class="db-chat">
+      <div class="db-bubble">
+        <span class="db-bubble-icon">›</span>
+        <span class="db-bubble-text">show users with no email</span>
+      </div>
+    </div>
+    <div class="db-grid-wrap">
+      <div class="db-grid-meta">
+        <span class="db-table-name">users</span>
+        <span class="db-row-count">3 rows · 12ms</span>
+      </div>
+      <table class="db-grid">
+        <thead>
+          <tr>
+            <th>id</th>
+            <th>name</th>
+            <th>email</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row) => (
+            <tr>
+              <td class="db-cell-id">{row.id}</td>
+              <td>{row.name}</td>
+              <td>
+                {row.isNull
+                  ? <span class="db-null">NULL</span>
+                  : <span class="db-email">{row.email}</span>
+                }
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</Spotlight>
+
+<style>
+  .db-mock {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .db-chat {
+    padding: 12px 14px;
+    background: var(--color-raised);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .db-bubble {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .db-bubble-icon {
+    color: var(--color-accent);
+    font-size: 14px;
+  }
+
+  .db-bubble-text {
+    color: var(--color-text);
+    font-size: 13px;
+  }
+
+  .db-grid-wrap {
+    overflow-x: auto;
+  }
+
+  .db-grid-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 14px;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .db-table-name {
+    font-weight: 600;
+    color: var(--color-text);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .db-row-count {
+    color: var(--color-text-muted);
+    font-size: 11px;
+  }
+
+  .db-grid {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .db-grid th {
+    padding: 7px 14px;
+    text-align: left;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px dashed var(--color-border);
+    background: var(--color-raised);
+  }
+
+  .db-grid td {
+    padding: 8px 14px;
+    color: var(--color-text-secondary);
+    border-bottom: 1px dashed var(--color-border);
+  }
+
+  .db-grid tr:last-child td {
+    border-bottom: none;
+  }
+
+  .db-cell-id {
+    color: var(--color-text-muted);
+    width: 2rem;
+  }
+
+  .db-null {
+    display: inline-block;
+    padding: 1px 6px;
+    border-radius: var(--radius-xs);
+    background: color-mix(in srgb, var(--color-warning) 15%, transparent);
+    color: var(--color-warning);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+
+  .db-email {
+    color: var(--color-text-secondary);
+  }
+</style>

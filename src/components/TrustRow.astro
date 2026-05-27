@@ -1,0 +1,81 @@
+---
+import type { Lang } from '~/i18n/strings'
+import { t } from '~/i18n/strings'
+
+interface Props {
+  lang: Lang
+}
+
+const { lang } = Astro.props
+const strings = t(lang)
+const stats = [
+  { id: 'ai', ...strings.trust.ai },
+  { id: 'db', ...strings.trust.db },
+  { id: 'deploy', ...strings.trust.deploy },
+  { id: 'privacy', ...strings.trust.privacy },
+]
+---
+
+<section class="trust-row" data-testid="trust-row" aria-label={lang === 'vi' ? 'Tin cậy bằng số' : 'Trust signals'}>
+  <div class="container-wide">
+    <div class="trust-grid">
+      {stats.map((stat) => (
+        <article class="trust-card reveal" data-testid={`trust-card-${stat.id}`}>
+          <span class="trust-value">{stat.value}</span>
+          <span class="trust-label">{stat.label}</span>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .trust-row {
+    padding-block: clamp(40px, 5vw, 64px);
+    background: var(--color-bg);
+  }
+
+  .trust-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  @media (min-width: 768px) {
+    .trust-grid {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+  }
+
+  .trust-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: 20px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    transition: border-color 200ms var(--ease-out-soft), background 200ms var(--ease-out-soft);
+  }
+
+  .trust-card:hover {
+    border-color: var(--color-border-strong);
+    background: var(--color-raised);
+  }
+
+  .trust-value {
+    font-family: var(--font-mono);
+    font-size: clamp(1.5rem, 3vw, 1.875rem);
+    font-weight: 600;
+    color: var(--color-accent);
+    letter-spacing: -0.01em;
+    line-height: 1.1;
+  }
+
+  .trust-label {
+    font-size: 12.5px;
+    color: var(--color-text-secondary);
+    line-height: 1.4;
+  }
+</style>

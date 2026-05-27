@@ -1,0 +1,218 @@
+---
+import type { Lang } from '~/i18n/strings'
+import { t } from '~/i18n/strings'
+
+interface Props {
+  lang: Lang
+}
+
+const { lang } = Astro.props
+const strings = t(lang)
+const s = strings.whatIsSpecAde
+---
+
+<section id="what-is-spec-ade" class="what-is" data-testid="what-is-spec-ade">
+  <div class="container-wide">
+    <header class="section-head">
+      <span class="chip">{s.chip}</span>
+      <h2 class="section-title">{s.title}</h2>
+    </header>
+
+    <div class="pillars">
+      <article class="pillar surface reveal" data-testid="what-is-pillar-1">
+        <h3 class="pillar-title">{s.pillar1Title}</h3>
+        <p class="pillar-body">{s.pillar1Body}</p>
+      </article>
+      <article class="pillar surface reveal" data-testid="what-is-pillar-2" style="animation-delay: 60ms">
+        <h3 class="pillar-title">{s.pillar2Title}</h3>
+        <p class="pillar-body">{s.pillar2Body}</p>
+      </article>
+      <article class="pillar surface reveal" data-testid="what-is-pillar-3" style="animation-delay: 120ms">
+        <h3 class="pillar-title">{s.pillar3Title}</h3>
+        <p class="pillar-body">{s.pillar3Body}</p>
+      </article>
+    </div>
+
+    <div class="comparison-wrap reveal" data-testid="what-is-comparison">
+      <h3 class="comparison-title">{s.comparisonTitle}</h3>
+      <div class="table-scroll">
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th class="row-label-head" scope="col"><span class="sr-only">Dimension</span></th>
+              {s.comparisonHeaders.map((header, i) => (
+                <th scope="col" class={i === 2 ? 'col-spec-ade' : ''}>{header}{i === 2 ? ' ★' : ''}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {s.comparisonRows.map((row) => (
+              <tr>
+                <th scope="row" class="row-label">{row.label}</th>
+                {row.cols.map((col, i) => (
+                  <td class={i === 2 ? 'col-spec-ade' : ''}>{col}</td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .what-is {
+    padding-block: clamp(64px, 8vw, 96px);
+    background: var(--color-surface);
+    border-block: 1px solid var(--color-border);
+  }
+
+  .section-head {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 48px;
+    max-width: 42rem;
+  }
+
+  /* Pillars */
+  .pillars {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-bottom: 48px;
+  }
+
+  @media (min-width: 768px) {
+    .pillars {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .pillar {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    border-radius: var(--radius-lg);
+    transition:
+      border-color 200ms var(--ease-out-soft),
+      background 200ms var(--ease-out-soft);
+  }
+
+  .pillar:hover {
+    border-color: var(--color-border-strong);
+    background: var(--color-raised);
+  }
+
+  .pillar-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-text);
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+
+  .pillar-body {
+    color: var(--color-text-secondary);
+    font-size: 13.5px;
+    line-height: 1.7;
+    margin: 0;
+  }
+
+  /* Comparison table */
+  .comparison-wrap {
+    max-width: 64rem;
+  }
+
+  .comparison-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-text);
+    margin-bottom: 16px;
+    letter-spacing: -0.01em;
+  }
+
+  .table-scroll {
+    overflow-x: auto;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+  }
+
+  .comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+    min-width: 480px;
+  }
+
+  .comparison-table thead tr {
+    background: var(--color-raised);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .comparison-table th,
+  .comparison-table td {
+    padding: 12px 16px;
+    text-align: left;
+    vertical-align: top;
+    border-right: 1px solid var(--color-border);
+  }
+
+  .comparison-table th:last-child,
+  .comparison-table td:last-child {
+    border-right: none;
+  }
+
+  .comparison-table thead th {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-text-secondary);
+  }
+
+  .row-label-head {
+    width: 130px;
+  }
+
+  .row-label {
+    font-weight: 500;
+    color: var(--color-text-muted);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+  }
+
+  .comparison-table tbody tr {
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-bg);
+    transition: background 150ms var(--ease-out-soft);
+  }
+
+  .comparison-table tbody tr:last-child {
+    border-bottom: none;
+  }
+
+  .comparison-table tbody tr:hover {
+    background: var(--color-surface);
+  }
+
+  .comparison-table td {
+    color: var(--color-text-secondary);
+    line-height: 1.5;
+  }
+
+  /* Spec ADE column highlight */
+  .col-spec-ade {
+    background: var(--color-accent-soft);
+    color: var(--color-text) !important;
+    font-weight: 500;
+  }
+
+  thead .col-spec-ade {
+    color: var(--color-accent) !important;
+  }
+</style>

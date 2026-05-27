@@ -1,0 +1,116 @@
+---
+import type { Lang } from '~/i18n/strings'
+import { t } from '~/i18n/strings'
+import Spotlight from '~/components/Spotlight.astro'
+
+interface Props {
+  lang: Lang
+}
+
+const { lang } = Astro.props
+const strings = t(lang)
+
+const lines = [
+  { prefix: '›', text: 'Goal: "Add login form with validation"', cls: 'line-prompt' },
+  { prefix: '›', text: 'Criterion: "All tests pass"', cls: 'line-prompt' },
+  { prefix: '◆', text: 'Iteration 1 — implementing...', cls: 'line-claude' },
+  { prefix: '◇', text: 'Watcher: <action>continue</action>', cls: 'line-watcher' },
+  { prefix: '◆', text: 'Iteration 2 — adding tests...', cls: 'line-claude' },
+  { prefix: '◇', text: 'Watcher: <action>continue</action>', cls: 'line-watcher' },
+  { prefix: '◆', text: 'Iteration 3 — fixing failures...', cls: 'line-claude' },
+  { prefix: '◇', text: 'Watcher: <action>complete</action>', cls: 'line-watcher' },
+  { prefix: '✓', text: 'Goal achieved · 3 iterations · 0 user prompts', cls: 'line-success' },
+]
+---
+
+<Spotlight id="goal" hook={strings.spotlight.goal.hook} body={strings.spotlight.goal.body} tone="accent" flip>
+  <div slot="visual" class="goal-terminal" aria-hidden="true">
+    <div class="goal-dots">
+      <span class="goal-dot"></span>
+      <span class="goal-dot"></span>
+      <span class="goal-dot"></span>
+    </div>
+    <ul class="goal-lines">
+      {lines.map((line, i) => (
+        <li class={`goal-line ${line.cls}`} style={`--i: ${i}`}>
+          <span class="goal-prefix">{line.prefix}</span>
+          <span class="goal-text">{line.text}</span>
+        </li>
+      ))}
+    </ul>
+  </div>
+</Spotlight>
+
+<style>
+  .goal-terminal {
+    background: var(--color-raised);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    font-family: var(--font-mono);
+    font-size: 13px;
+  }
+
+  .goal-dots {
+    display: flex;
+    gap: 6px;
+    padding: 10px 14px;
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .goal-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--color-border);
+  }
+
+  .goal-lines {
+    list-style: none;
+    margin: 0;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .goal-line {
+    display: grid;
+    grid-template-columns: 1.5ch 1fr;
+    gap: 8px;
+    align-items: baseline;
+    opacity: 0;
+    animation: line-in 280ms var(--ease-out-soft) backwards;
+    animation-delay: calc(var(--i) * 360ms);
+  }
+
+  .goal-prefix {
+    color: var(--color-text-muted);
+    font-size: 11px;
+  }
+
+  .goal-text {
+    color: var(--color-text-secondary);
+    line-height: 1.5;
+  }
+
+  .line-prompt .goal-text { color: var(--color-text-secondary); }
+  .line-claude .goal-prefix { color: var(--color-accent); }
+  .line-claude .goal-text { color: var(--color-text); }
+  .line-watcher .goal-text { color: var(--color-text-muted); font-style: italic; }
+  .line-success .goal-prefix { color: var(--color-success); }
+  .line-success .goal-text { color: var(--color-success); font-weight: 600; }
+
+  @keyframes line-in {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .goal-line {
+      animation: none;
+      opacity: 1;
+    }
+  }
+</style>

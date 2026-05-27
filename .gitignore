@@ -1,0 +1,20 @@
+# Build artifacts
+dist/
+.astro/
+node_modules/
+playwright-report/
+test-results/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editor
+.vscode/
+.idea/
+.DS_Store
+
+# Environment
+.env
+.env.local
+.env.*.local

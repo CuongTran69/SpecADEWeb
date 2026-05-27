@@ -1,0 +1,127 @@
+---
+import type { Lang } from '~/i18n/strings'
+import { t } from '~/i18n/strings'
+
+interface Props {
+  lang: Lang
+}
+
+const { lang } = Astro.props
+const strings = t(lang)
+---
+
+<section class="recap" data-testid="features-recap">
+  <div class="container-wide">
+    <header class="recap-head">
+      <h2 class="section-title">{strings.featuresRecap.title}</h2>
+      <p class="section-subtitle">{strings.featuresRecap.subtitle}</p>
+    </header>
+    <div class="recap-grid">
+      {strings.featuresRecap.columns.map((col) => (
+        <div class="recap-col">
+          <h3 class="recap-heading">{col.heading}</h3>
+          <ul class="recap-bullets">
+            {col.bullets.map((bullet) => (
+              <li class="recap-bullet">
+                <span class="recap-label">{bullet.label}</span>
+                <span class="recap-em">—</span>
+                <span class="recap-desc">{bullet.desc}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .recap {
+    padding-block: clamp(64px, 8vw, 96px);
+    background: var(--color-bg);
+  }
+
+  .recap-head {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 40px;
+    max-width: 42rem;
+  }
+
+  .recap-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  @media (min-width: 768px) {
+    .recap-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .recap-grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 40px;
+    }
+  }
+
+  .recap-col {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .recap-heading {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-text-muted);
+    margin: 0;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .recap-bullets {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .recap-bullet {
+    display: grid;
+    grid-template-columns: auto auto 1fr;
+    gap: 8px;
+    align-items: baseline;
+    font-size: 13.5px;
+    line-height: 1.6;
+  }
+
+  .recap-label {
+    font-weight: 500;
+    color: var(--color-text);
+    white-space: nowrap;
+  }
+
+  .recap-em {
+    color: var(--color-text-muted);
+  }
+
+  .recap-desc {
+    color: var(--color-text-secondary);
+  }
+
+  @media (max-width: 480px) {
+    .recap-bullet {
+      grid-template-columns: 1fr;
+      gap: 4px;
+    }
+    .recap-em { display: none; }
+  }
+</style>

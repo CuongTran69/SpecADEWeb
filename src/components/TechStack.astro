@@ -1,0 +1,79 @@
+---
+import type { Lang } from '~/i18n/strings'
+import { t } from '~/i18n/strings'
+
+interface Props {
+  lang: Lang
+}
+
+const { lang } = Astro.props
+const strings = t(lang)
+---
+
+<section class="tech">
+  <div class="container-wide">
+    <header class="section-head">
+      <h2 class="section-title">{strings.tech.title}</h2>
+    </header>
+
+    <div class="grid">
+      {strings.tech.items.map((item, i) => (
+        <article class="tech-card reveal" data-testid={`tech-${i}`}>
+          <h3 class="tech-name">{item.name}</h3>
+          <p class="tech-desc">{item.desc}</p>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .tech {
+    padding-block: clamp(48px, 6vw, 72px);
+  }
+
+  .section-head {
+    margin-bottom: 32px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  @media (min-width: 640px) {
+    .grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (min-width: 1024px) {
+    .grid { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  .tech-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 18px 20px;
+    transition: border-color 200ms var(--ease-out-soft);
+  }
+
+  .tech-card:hover {
+    border-color: var(--color-border-strong);
+  }
+
+  .tech-name {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-accent);
+    letter-spacing: 0.02em;
+    margin-bottom: 6px;
+  }
+
+  .tech-desc {
+    font-size: 13px;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+  }
+</style>

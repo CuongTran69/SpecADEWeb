@@ -1,0 +1,39 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro'
+import Hero from '~/components/Hero.astro'
+import WhatIsSpecAde from '~/components/WhatIsSpecAde.astro'
+import TrustRow from '~/components/TrustRow.astro'
+import SpotlightClaw from '~/components/spotlights/SpotlightClaw.astro'
+import SpotlightGoal from '~/components/spotlights/SpotlightGoal.astro'
+import SpotlightMultiCli from '~/components/spotlights/SpotlightMultiCli.astro'
+import SpotlightDb from '~/components/spotlights/SpotlightDb.astro'
+import SpotlightBinary from '~/components/spotlights/SpotlightBinary.astro'
+import FeaturesRecap from '~/components/FeaturesRecap.astro'
+import Architecture from '~/components/Architecture.astro'
+import TechStack from '~/components/TechStack.astro'
+import UseCases from '~/components/UseCases.astro'
+import LicenseModel from '~/components/LicenseModel.astro'
+import FAQ from '~/components/FAQ.astro'
+import GetStarted from '~/components/GetStarted.astro'
+
+const lang = 'en' as const
+---
+
+<BaseLayout lang={lang}>
+  <Hero lang={lang} />
+  <WhatIsSpecAde lang={lang} />
+  <TrustRow lang={lang} />
+  <SpotlightClaw lang={lang} />
+  <SpotlightGoal lang={lang} />
+  <SpotlightMultiCli lang={lang} />
+  <SpotlightDb lang={lang} />
+  <SpotlightBinary lang={lang} />
+  <FeaturesRecap lang={lang} />
+  {/* ScreenshotsPlaceholder hidden until real screenshots are ready */}
+  <Architecture lang={lang} />
+  <TechStack lang={lang} />
+  <UseCases lang={lang} />
+  <FAQ lang={lang} topOnly={true} />
+  <LicenseModel lang={lang} />
+  <GetStarted lang={lang} />
+</BaseLayout>

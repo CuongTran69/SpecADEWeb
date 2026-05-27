@@ -1,0 +1,84 @@
+---
+interface Props {
+  id: string
+  hook: string
+  body: string
+  flip?: boolean
+  tone?: 'default' | 'accent'
+}
+
+const { id, hook, body, flip = false, tone = 'default' } = Astro.props
+---
+
+<section class:list={['spotlight', `spotlight--${tone}`, flip && 'spotlight--flip']} data-testid={`spotlight-${id}`}>
+  <div class="container-wide spotlight-inner">
+    <div class="spotlight-visual">
+      <slot name="visual" />
+    </div>
+    <div class="spotlight-copy">
+      <h2 class="spotlight-hook">{hook}</h2>
+      <p class="spotlight-body">{body}</p>
+      <slot name="extra" />
+    </div>
+  </div>
+</section>
+
+<style>
+  .spotlight {
+    padding-block: clamp(64px, 8vw, 96px);
+    border-block-end: 1px solid var(--color-border);
+  }
+
+  .spotlight--default {
+    background: var(--color-bg);
+  }
+
+  .spotlight--accent {
+    background: var(--color-surface);
+  }
+
+  .spotlight-inner {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+    align-items: center;
+  }
+
+  @media (min-width: 1024px) {
+    .spotlight-inner {
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+    }
+
+    .spotlight--flip .spotlight-visual {
+      order: 2;
+    }
+  }
+
+  .spotlight-visual {
+    min-width: 0;
+  }
+
+  .spotlight-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 36rem;
+  }
+
+  .spotlight-hook {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 600;
+    color: var(--color-text);
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    margin: 0;
+  }
+
+  .spotlight-body {
+    color: var(--color-text-secondary);
+    font-size: clamp(1rem, 1.4vw, 1.0625rem);
+    line-height: 1.65;
+    margin: 0;
+  }
+</style>

@@ -1,0 +1,87 @@
+---
+import '~/styles/global.css'
+import Header from '~/components/Header.astro'
+import Footer from '~/components/Footer.astro'
+import type { Lang } from '~/i18n/strings'
+import { t } from '~/i18n/strings'
+import { swapLangPath } from '~/i18n/utils'
+
+interface Props {
+  lang: Lang
+}
+
+const { lang } = Astro.props
+const strings = t(lang)
+
+// Canonical and alternate URLs for SEO
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://spec-ade.dev'
+const currentPath = Astro.url.pathname
+const canonicalUrl = siteUrl + currentPath
+const altEnUrl = siteUrl + swapLangPath(currentPath, 'en')
+const altViUrl = siteUrl + swapLangPath(currentPath, 'vi')
+---
+
+<!doctype html>
+<html lang={lang} data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{strings.meta.title}</title>
+    <meta name="description" content={strings.meta.description} />
+
+    <!-- Canonical -->
+    <link rel="canonical" href={canonicalUrl} />
+
+    <!-- hreflang alternate links for SEO -->
+    <link rel="alternate" hreflang="en" href={altEnUrl} />
+    <link rel="alternate" hreflang="vi" href={altViUrl} />
+    <link rel="alternate" hreflang="x-default" href={altEnUrl} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:title" content={strings.meta.title} />
+    <meta property="og:description" content={strings.meta.description} />
+    <!-- TODO: add /og.png to public/ then uncomment:
+    <meta property="og:image" content={`${siteUrl}/og.png`} />
+    -->
+    <meta property="og:locale" content={lang === 'vi' ? 'vi_VN' : 'en_US'} />
+    <meta property="og:locale:alternate" content={lang === 'vi' ? 'en_US' : 'vi_VN'} />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={strings.meta.title} />
+    <meta name="twitter:description" content={strings.meta.description} />
+    <!-- TODO: add /og.png to public/ then uncomment:
+    <meta name="twitter:image" content={`${siteUrl}/og.png`} />
+    -->
+
+    <!-- Theme -->
+    <meta name="color-scheme" content="dark light" />
+    <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#fafafa" media="(prefers-color-scheme: light)" />
+
+    <!-- Avoid flash of wrong theme -->
+    <script is:inline>
+      ;(() => {
+        try {
+          const stored = localStorage.getItem('spec-ade-web:theme')
+          const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches
+          const theme = stored || (prefersLight ? 'light' : 'dark')
+          document.documentElement.setAttribute('data-theme', theme)
+        } catch {}
+      })()
+    </script>
+  </head>
+  <body>
+    <a href="#main" class="skip-link">Skip to content</a>
+    <Header lang={lang} />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer lang={lang} />
+  </body>
+</html>
