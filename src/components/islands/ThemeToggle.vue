@@ -6,11 +6,13 @@ const STORAGE_KEY = 'spec-ade-web:theme'
 type Theme = 'dark' | 'light'
 
 const theme = ref<Theme>('dark')
+const hydrated = ref(false)
 
 onMounted(() => {
   const root = document.documentElement
   const current = (root.getAttribute('data-theme') as Theme) || 'dark'
   theme.value = current
+  hydrated.value = true
 })
 
 function toggle() {
@@ -35,6 +37,7 @@ const label = computed(() => (theme.value === 'dark' ? 'Switch to light mode' : 
     :title="label"
     :aria-pressed="theme === 'light' ? 'true' : 'false'"
     data-testid="theme-toggle"
+    :data-hydrated="hydrated ? 'true' : undefined"
     @click="toggle"
   >
     <Sun v-if="theme === 'dark'" :size="16" :stroke-width="1.75" />

@@ -1,0 +1,26 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro'
+import FeaturesRecap from '~/components/FeaturesRecap.astro'
+import MultiAgent from '~/components/MultiAgent.astro'
+import GoalShowcase from '~/components/GoalShowcase.astro'
+import PortForwarding from '~/components/PortForwarding.astro'
+import SubpageHeader from '~/components/SubpageHeader.astro'
+import { t } from '~/i18n/strings'
+import { pathFor } from '~/i18n/utils'
+
+const lang = 'en' as const
+const strings = t(lang)
+---
+
+<BaseLayout lang={lang}>
+  <SubpageHeader
+    lang={lang}
+    title={strings.featuresPage.title}
+    homeHref={pathFor(lang, '/')}
+    backLabel={strings.featuresPage.backToHome}
+  />
+  <MultiAgent lang={lang} />
+  <GoalShowcase lang={lang} />
+  <PortForwarding lang={lang} />
+  <FeaturesRecap lang={lang} />
+</BaseLayout>

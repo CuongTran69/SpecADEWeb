@@ -10,9 +10,9 @@ const { lang } = Astro.props
 const strings = t(lang)
 
 const layers = [
-  { id: 'frontend', title: strings.architecture.frontend, desc: strings.architecture.frontendDesc, label: 'Vue 3 + Quasar v2 + Pinia', tag: 'UI' },
-  { id: 'backend', title: strings.architecture.backend, desc: strings.architecture.backendDesc, label: 'Rust 2024 · Axum · tokio', tag: 'API' },
-  { id: 'storage', title: strings.architecture.storage, desc: strings.architecture.storageDesc, label: 'settings.json · OS keychain', tag: 'DATA' },
+  { id: 'frontend', title: strings.architecture.frontend, desc: strings.architecture.frontendDesc, label: 'Vue 3 + Quasar v2 + Pinia', tag: 'UI', color: 'var(--color-persona-2)' },
+  { id: 'backend', title: strings.architecture.backend, desc: strings.architecture.backendDesc, label: 'Rust 2024 · Axum · tokio', tag: 'API', color: 'var(--color-accent)' },
+  { id: 'storage', title: strings.architecture.storage, desc: strings.architecture.storageDesc, label: 'settings.json · OS keychain', tag: 'DATA', color: 'var(--color-persona-4)' },
 ]
 
 const protocols = [
@@ -25,7 +25,8 @@ const protocols = [
 
 <section id="architecture" class="arch">
   <div class="container-wide">
-    <header class="section-head">
+    <header class="section-head reveal">
+      <span class="chip">Architecture</span>
       <h2 class="section-title">{strings.architecture.title}</h2>
       <p class="section-subtitle">{strings.architecture.subtitle}</p>
     </header>
@@ -34,17 +35,18 @@ const protocols = [
       <div class="layers">
         {layers.map((layer, i) => (
           <article class="layer reveal" data-testid={`arch-layer-${layer.id}`} style={`animation-delay:${i * 80}ms`}>
-            <div class="layer-bar" aria-hidden="true">
-              <span class="layer-tag">{layer.tag}</span>
+            <div class="layer-bar">
+              <span class="layer-tag" style={`color: ${layer.color}; border-color: color-mix(in oklab, ${layer.color} 25%, transparent); background: color-mix(in oklab, ${layer.color} 10%, transparent)`}>{layer.tag}</span>
               <code class="layer-stack">{layer.label}</code>
             </div>
             <h3 class="layer-title">{layer.title}</h3>
             <p class="layer-desc">{layer.desc}</p>
+            <div class="layer-accent" style={`background: ${layer.color}`} aria-hidden="true"></div>
           </article>
         ))}
       </div>
 
-      <aside class="protocols surface" aria-label="Protocols">
+      <aside class="protocols surface reveal" aria-label="Protocols">
         <header class="protocols-head">
           <span class="chip">{strings.architecture.chip}</span>
         </header>
@@ -63,7 +65,7 @@ const protocols = [
           </div>
           <div class="metric">
             <span class="metric-value">300</span>
-            <span class="metric-label">execution flows</span>
+            <span class="metric-label">exec flows</span>
           </div>
           <div class="metric">
             <span class="metric-value">30.6k</span>
@@ -77,15 +79,16 @@ const protocols = [
 
 <style>
   .arch {
-    padding-block: clamp(64px, 8vw, 96px);
+    padding-block: clamp(72px, 9vw, 112px);
+    background: var(--color-bg);
   }
 
   .section-head {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    margin-bottom: 48px;
-    max-width: 42rem;
+    gap: 14px;
+    margin-bottom: 56px;
+    max-width: 44rem;
   }
 
   .layout {
@@ -108,31 +111,48 @@ const protocols = [
   }
 
   .layer {
+    position: relative;
     background: var(--color-surface);
     border: 1px solid var(--color-border);
-    border-radius: var(--radius-lg);
-    padding: 20px 22px;
+    border-radius: var(--radius-xl);
+    padding: 22px 24px;
     display: flex;
     flex-direction: column;
     gap: 10px;
+    overflow: hidden;
+    transition: border-color 250ms var(--ease-out-soft), transform 250ms var(--ease-out-soft);
+  }
+
+  .layer:hover {
+    border-color: var(--color-border-strong);
+    transform: translateX(4px);
+  }
+
+  .layer-accent {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    border-radius: 2px 0 0 2px;
+    opacity: 0.7;
   }
 
   .layer-bar {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
     flex-wrap: wrap;
   }
 
   .layer-tag {
     font-family: var(--font-mono);
     font-size: 10px;
-    letter-spacing: 0.18em;
-    background: var(--color-raised);
-    border: 1px solid var(--color-border);
-    padding: 3px 8px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    padding: 3px 9px;
     border-radius: 999px;
-    color: var(--color-text-muted);
+    border: 1px solid;
   }
 
   .layer-stack {
@@ -146,29 +166,32 @@ const protocols = [
   }
 
   .layer-title {
-    font-size: 1.05rem;
-    font-weight: 600;
+    font-size: 1.0625rem;
+    font-weight: 700;
     color: var(--color-text);
-    letter-spacing: -0.01em;
+    letter-spacing: -0.015em;
+    margin: 0;
   }
 
   .layer-desc {
     color: var(--color-text-secondary);
-    font-size: 14px;
+    font-size: 13.5px;
     line-height: 1.65;
+    margin: 0;
   }
 
+  /* Protocols panel */
   .protocols {
     padding: 24px;
     display: flex;
     flex-direction: column;
     gap: 20px;
+    border-radius: var(--radius-xl);
   }
 
   .protocols-head {
     display: flex;
     align-items: center;
-    justify-content: space-between;
   }
 
   .protocol-list {
@@ -177,32 +200,31 @@ const protocols = [
     padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 0;
   }
 
   .protocol-item {
     display: flex;
     align-items: baseline;
-    gap: 12px;
-    padding: 10px 0;
-    border-bottom: 1px dashed var(--color-border);
+    gap: 14px;
+    padding: 11px 0;
+    border-bottom: 1px solid var(--color-border);
   }
 
-  .protocol-item:last-child {
-    border-bottom: none;
-  }
+  .protocol-item:last-child { border-bottom: none; }
 
   .proto-name {
     font-family: var(--font-mono);
     font-size: 12px;
+    font-weight: 700;
     color: var(--color-accent);
     letter-spacing: 0.04em;
     flex-shrink: 0;
-    min-width: 88px;
+    min-width: 90px;
   }
 
   .proto-desc {
-    font-size: 13px;
+    font-size: 12.5px;
     color: var(--color-text-secondary);
     line-height: 1.5;
   }
@@ -218,14 +240,15 @@ const protocols = [
   .metric {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 3px;
   }
 
   .metric-value {
     font-family: var(--font-mono);
     font-size: 1.25rem;
-    font-weight: 600;
+    font-weight: 700;
     color: var(--color-text);
+    letter-spacing: -0.02em;
   }
 
   .metric-label {

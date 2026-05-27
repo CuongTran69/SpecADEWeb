@@ -17,18 +17,28 @@ const rows = [
 ]
 ---
 
-<Spotlight id="claw" hook={strings.spotlight.claw.hook} body={strings.spotlight.claw.body} tone="default">
+<Spotlight id="claw" hook={strings.spotlight.claw.hook} body={strings.spotlight.claw.body} tone="default" tag="Claw Farm">
   <div slot="visual" class="claw-mock" aria-hidden="true">
     <header class="claw-header">
-      <span class="claw-title">Claw farm</span>
-      <span class="claw-meta">4 active</span>
+      <div class="claw-title-group">
+        <span class="claw-title">Claw Farm</span>
+        <span class="claw-indicator-pulse" aria-hidden="true"></span>
+      </div>
+      <span class="claw-meta">4 active agents</span>
     </header>
     <ul class="claw-rows">
       {rows.map((row) => (
         <li class={`claw-row claw-row--${row.state}`}>
-          <span class={`claw-dot ${row.dotClass}`} aria-hidden="true"></span>
-          <span class="claw-name">{row.name}</span>
-          <span class="claw-status">{row.status}</span>
+          <div class="claw-left">
+            <span class={`claw-dot ${row.dotClass}`} aria-hidden="true">
+              {row.state === 'running' && <span class="claw-ripple"></span>}
+            </span>
+            <span class="claw-name">{row.name}</span>
+          </div>
+          <div class="claw-right">
+            <span class="claw-status">{row.status}</span>
+            <span class="claw-badge">{row.state}</span>
+          </div>
         </li>
       ))}
     </ul>
@@ -38,50 +48,86 @@ const rows = [
 <style>
   .claw-mock {
     background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius-xl);
     overflow: hidden;
     font-family: var(--font-mono);
     font-size: 13px;
+    transition: border-color 300ms var(--ease-out-soft), box-shadow 300ms var(--ease-out-soft);
+  }
+
+  .claw-mock:hover {
+    border-color: color-mix(in oklab, var(--color-accent) 50%, transparent);
+    box-shadow: 0 0 0 1px color-mix(in oklab, var(--color-accent) 15%, transparent),
+                0 12px 40px color-mix(in oklab, var(--color-accent) 8%, transparent);
   }
 
   .claw-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 12px 16px;
+    padding: 14px 20px;
     background: var(--color-raised);
-    border-bottom: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border-strong);
+  }
+
+  .claw-title-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
   }
 
   .claw-title {
-    font-weight: 600;
+    font-weight: 700;
     color: var(--color-text);
-    letter-spacing: 0.02em;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-size: 11px;
+  }
+
+  .claw-indicator-pulse {
+    width: 7px;
+    height: 7px;
+    background: var(--color-success);
+    border-radius: 50%;
+    animation: header-pulse 1.8s infinite alternate;
   }
 
   .claw-meta {
     font-size: 11px;
-    color: var(--color-text-muted);
+    color: var(--color-text-secondary);
   }
 
   .claw-rows {
     list-style: none;
     margin: 0;
     padding: 0;
+    background: color-mix(in srgb, var(--color-bg) 15%, var(--color-surface));
   }
 
   .claw-row {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
+    display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 12px 16px;
-    border-bottom: 1px dashed var(--color-border);
+    justify-content: space-between;
+    gap: 16px;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--color-border);
+    transition: background 150ms var(--ease-out-soft);
   }
 
-  .claw-row:last-child {
-    border-bottom: none;
+  .claw-row:last-child { border-bottom: none; }
+  .claw-row:hover { background: var(--color-raised); }
+
+  .claw-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .claw-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
   }
 
   .claw-dot {
@@ -89,13 +135,20 @@ const rows = [
     height: 8px;
     border-radius: 50%;
     flex-shrink: 0;
+    position: relative;
+    display: inline-block;
   }
 
-  .dot-running {
-    background: var(--color-success);
-    animation: claw-pulse 1.6s var(--ease-out-soft) infinite;
+  .claw-ripple {
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    border: 2px solid var(--color-success);
+    opacity: 0;
+    animation: ring-pulse 1.6s ease-out infinite;
   }
 
+  .dot-running { background: var(--color-success); }
   .dot-waiting { background: var(--color-warning); }
   .dot-scheduled { background: var(--color-info); }
   .dot-triggered { background: var(--color-claude); }
@@ -103,19 +156,60 @@ const rows = [
   .claw-name {
     color: var(--color-text);
     font-weight: 500;
+    font-size: 12.5px;
   }
 
   .claw-status {
     color: var(--color-text-muted);
-    font-size: 12px;
+    font-size: 11px;
   }
 
-  @keyframes claw-pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.6; transform: scale(1.4); }
+  .claw-badge {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 3px 8px;
+    border-radius: var(--radius-xs);
+    font-weight: 700;
+    border: 1px solid transparent;
+  }
+
+  .claw-row--running .claw-badge {
+    background: color-mix(in srgb, var(--color-success) 12%, transparent);
+    color: var(--color-success);
+    border-color: color-mix(in srgb, var(--color-success) 20%, transparent);
+  }
+
+  .claw-row--waiting .claw-badge {
+    background: color-mix(in srgb, var(--color-warning) 12%, transparent);
+    color: var(--color-warning);
+    border-color: color-mix(in srgb, var(--color-warning) 20%, transparent);
+  }
+
+  .claw-row--scheduled .claw-badge {
+    background: color-mix(in srgb, var(--color-info) 12%, transparent);
+    color: var(--color-info);
+    border-color: color-mix(in srgb, var(--color-info) 20%, transparent);
+  }
+
+  .claw-row--triggered .claw-badge {
+    background: color-mix(in srgb, var(--color-claude) 12%, transparent);
+    color: var(--color-claude);
+    border-color: color-mix(in srgb, var(--color-claude) 20%, transparent);
+  }
+
+  @keyframes header-pulse {
+    0% { opacity: 0.4; }
+    100% { opacity: 1; }
+  }
+
+  @keyframes ring-pulse {
+    0% { transform: scale(0.6); opacity: 0.8; }
+    100% { transform: scale(2); opacity: 0; }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .dot-running { animation: none; }
+    .claw-indicator-pulse,
+    .claw-ripple { animation: none; }
   }
 </style>

@@ -1,0 +1,892 @@
+---
+import type { Lang } from '~/i18n/strings'
+import { t } from '~/i18n/strings'
+
+interface Props {
+  lang: Lang
+}
+
+const { lang } = Astro.props
+const strings = t(lang)
+const s = strings.portForwarding
+---
+
+<section class="port-forwarding" id="port-forwarding">
+  <div class="container-wide">
+    <header class="section-head reveal">
+      <span class="chip">{s.chip}</span>
+      <h2 class="section-title">{s.title}</h2>
+      <p class="section-subtitle">{s.subtitle}</p>
+    </header>
+
+    <!-- Interactive 3-Column Panel -->
+    <div class="pf-showcase reveal" id="pf-showcase-panel">
+      <div class="pane-header">
+        <h3 class="pf-column-title">{s.visualTitle}</h3>
+        <p class="pf-column-desc">{s.visualSub}</p>
+      </div>
+
+      <div class="pf-grid">
+        <!-- LEFT COLUMN: Port Settings -->
+        <div class="pf-column settings-pane">
+          <!-- Port Info Card -->
+          <div class="port-info-card">
+            <div class="port-info-header">
+              <div class="port-info-icon">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>
+                </svg>
+              </div>
+              <div class="port-info-meta">
+                <span class="port-info-name">Spec ADE Workspace</span>
+                <span class="port-info-port">Port 4124</span>
+              </div>
+              <span class="port-info-status status-offline" id="pf-status-badge">Offline</span>
+            </div>
+
+            <div class="port-detail-rows">
+              <div class="detail-row">
+                <span class="detail-label">{s.localPort}</span>
+                <code class="detail-value">localhost:4124</code>
+              </div>
+              <div class="detail-row" id="pf-proxy-row" style="display: none;">
+                <span class="detail-label">{s.proxyUrl}</span>
+                <code class="detail-value text-cyan">http://0.0.0.0:4124</code>
+              </div>
+              <div class="detail-row" id="pf-public-row" style="display: none;">
+                <span class="detail-label">{s.publicUrl}</span>
+                <code class="detail-value text-green">https://ade.spec-ade.dev</code>
+              </div>
+              <div class="detail-row" id="pf-key-row" style="display: none;">
+                <span class="detail-label">{s.accessKey}</span>
+                <div class="key-value-group">
+                  <code class="detail-value text-amber" id="pf-key-value">ade_key_6868_cf</code>
+                  <button type="button" class="copy-key-btn" id="pf-copy-btn" data-copy-label={s.copyBtn} data-copied-label={s.copiedLabel}>
+                    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    <span>{s.copyBtn}</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Toggle Controls -->
+          <div class="toggle-controls">
+            <label class="toggle-control" for="pf-toggle-forward">
+              <div class="toggle-info">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="15 3 21 3 21 9"/><path d="M21 3l-7 7"/>
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                </svg>
+                <span>{s.forwardToggle}</span>
+              </div>
+              <div class="switch-wrapper">
+                <input type="checkbox" id="pf-toggle-forward" class="switch-input" />
+                <span class="switch-track"></span>
+              </div>
+            </label>
+
+            <label class="toggle-control" for="pf-toggle-tunnel">
+              <div class="toggle-info">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                </svg>
+                <span>{s.tunnelToggle}</span>
+              </div>
+              <div class="switch-wrapper">
+                <input type="checkbox" id="pf-toggle-tunnel" class="switch-input" disabled />
+                <span class="switch-track"></span>
+              </div>
+            </label>
+
+            <label class="toggle-control" for="pf-toggle-key">
+              <div class="toggle-info">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                </svg>
+                <span>{s.securityToggle}</span>
+              </div>
+              <div class="switch-wrapper">
+                <input type="checkbox" id="pf-toggle-key" class="switch-input" disabled />
+                <span class="switch-track"></span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- MIDDLE COLUMN: Visual Gateway (desktop only) -->
+        <div class="pf-column gateway-pane" aria-hidden="true">
+          <div class="gateway-visual">
+            <svg class="gateway-svg" viewBox="0 0 100 240" fill="none" preserveAspectRatio="xMidYMid meet">
+              <path id="pf-path-1" class="gw-path" d="M 50,40 C 50,70 50,70 50,100" />
+              <path id="pf-path-2" class="gw-path" d="M 50,140 C 50,170 50,170 50,200" />
+              <g id="pf-lock-icon" class="gw-lock" transform="translate(35, 154)" style="display: none;">
+                <rect x="2" y="6" width="12" height="10" rx="1.5" fill="var(--color-warning)" opacity="0.9"/>
+                <path d="M5 6V4a3 3 0 0 1 6 0v2" fill="none" stroke="var(--color-warning)" stroke-width="1.5" stroke-linecap="round"/>
+              </g>
+            </svg>
+
+            <div class="gw-node node-local" id="pf-node-local">
+              <div class="gw-node-icon">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>
+                </svg>
+              </div>
+              <span class="gw-node-label">Spec ADE</span>
+              <span class="gw-node-sub">localhost:4124</span>
+            </div>
+
+            <div class="gw-node node-cf" id="pf-node-cf">
+              <div class="gw-node-icon icon-cf">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                </svg>
+              </div>
+              <span class="gw-node-label">Cloudflare Edge</span>
+              <span class="gw-node-sub">Encrypted Tunnel</span>
+            </div>
+
+            <div class="gw-node node-client" id="pf-node-client">
+              <div class="gw-node-icon icon-client">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/>
+                </svg>
+              </div>
+              <span class="gw-node-label">Remote User</span>
+              <span class="gw-node-sub">Any Browser</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT COLUMN: Remote Browser Mockup -->
+        <div class="pf-column browser-pane">
+          <div class="mock-browser" id="pf-browser">
+            <div class="browser-bar">
+              <div class="browser-dots"><span></span><span></span><span></span></div>
+              <div class="browser-address-bar">
+                <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lock-icon-bar" id="pf-bar-lock" style="display: none;">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                </svg>
+                <span class="address-text" id="pf-address-text">ade.spec-ade.dev</span>
+              </div>
+            </div>
+
+            <!-- State: Offline (default) -->
+            <div class="browser-state state-offline" id="pf-state-offline">
+              <div class="offline-icon">
+                <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>
+                </svg>
+              </div>
+              <h4 class="state-title">502</h4>
+              <p class="state-label">{s.statusOffline}</p>
+              <p class="state-desc">{s.statusOfflineDesc}</p>
+            </div>
+
+            <!-- State: Locked -->
+            <div class="browser-state state-locked" id="pf-state-locked" style="display: none;">
+              <div class="locked-icon">
+                <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                </svg>
+              </div>
+              <h4 class="state-title">{s.statusLocked}</h4>
+              <p class="state-desc">{s.statusLockedDesc}</p>
+              <div class="key-input-group">
+                <input type="text" class="key-input" id="pf-key-input" placeholder="ade_key_••••••" autocomplete="off" />
+                <button type="button" class="autofill-btn" id="pf-autofill-btn">{s.autofillBtn}</button>
+              </div>
+              <button type="button" class="unlock-btn" id="pf-unlock-btn">{s.unlockBtn}</button>
+              <p class="error-msg" id="pf-error-msg" style="display: none;">{s.wrongKey}</p>
+            </div>
+
+            <!-- State: Connected — ADE Workspace -->
+            <div class="browser-state state-connected" id="pf-state-connected" style="display: none;">
+              <div class="dash-header">
+                <div class="dash-logo">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>
+                  </svg>
+                  <span>{s.activeDashboard}</span>
+                </div>
+                <span class="dash-live-badge">● Live</span>
+              </div>
+              <!-- Mini ADE UI mockup: sidebar + terminal -->
+              <div class="ade-workspace-mock">
+                <div class="ade-sidebar">
+                  <div class="ade-tree-item">📂 src/</div>
+                  <div class="ade-tree-item sub">📄 main.rs</div>
+                  <div class="ade-tree-item sub">📄 config.toml</div>
+                  <div class="ade-tree-item">📂 agents/</div>
+                  <div class="ade-tree-item sub active">🤖 claude.yaml</div>
+                  <div class="ade-tree-item sub">🤖 codex.yaml</div>
+                </div>
+                <div class="ade-main-area">
+                  <div class="ade-terminal-mini">
+                    <div class="ade-term-line"><span class="term-prompt">$</span> ade agent run claude --goal "refactor auth"</div>
+                    <div class="ade-term-line dim">⚡ Claude Code connected via ACP...</div>
+                    <div class="ade-term-line dim">📝 Analyzing src/auth/handler.rs...</div>
+                    <div class="ade-term-line success">✓ 3 files modified. All tests pass.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Panel: Start Simulation / Success -->
+      <div class="showcase-actions">
+        <button type="button" class="action-btn-start" id="pf-btn-start">
+          <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right:6px;"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          {s.startSimulation}
+        </button>
+
+        <div class="success-banner-card" id="pf-success-banner" hidden>
+          <span class="success-banner-text">{s.simSuccess}</span>
+          <button type="button" class="action-btn-reset" id="pf-btn-reset">
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+            {s.resetSimulation}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Benefits Grid -->
+    <div class="benefits-grid reveal">
+      <div class="benefit-card shine-hover">
+        <div class="benefit-icon-badge">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/>
+          </svg>
+        </div>
+        <h3 class="benefit-title">{s.benefitTitle1}</h3>
+        <p class="benefit-desc">{s.benefitDesc1}</p>
+      </div>
+
+      <div class="benefit-card shine-hover">
+        <div class="benefit-icon-badge" style="--badge-accent-color: #f97316">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+          </svg>
+        </div>
+        <h3 class="benefit-title">{s.benefitTitle2}</h3>
+        <p class="benefit-desc">{s.benefitDesc2}</p>
+      </div>
+
+      <div class="benefit-card shine-hover">
+        <div class="benefit-icon-badge" style="--badge-accent-color: #eab308">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+        </div>
+        <h3 class="benefit-title">{s.benefitTitle3}</h3>
+        <p class="benefit-desc">{s.benefitDesc3}</p>
+      </div>
+
+      <div class="benefit-card shine-hover">
+        <div class="benefit-icon-badge" style="--badge-accent-color: #10b981">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+          </svg>
+        </div>
+        <h3 class="benefit-title">{s.benefitTitle4}</h3>
+        <p class="benefit-desc">{s.benefitDesc4}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  function initPortForwarding() {
+    const section = document.getElementById('port-forwarding');
+    if (!section) return;
+
+    const toggleForward = section.querySelector('#pf-toggle-forward') as HTMLInputElement | null;
+    const toggleTunnel = section.querySelector('#pf-toggle-tunnel') as HTMLInputElement | null;
+    const toggleKey = section.querySelector('#pf-toggle-key') as HTMLInputElement | null;
+
+    const statusBadge = section.querySelector('#pf-status-badge') as HTMLElement | null;
+    const proxyRow = section.querySelector('#pf-proxy-row') as HTMLElement | null;
+    const publicRow = section.querySelector('#pf-public-row') as HTMLElement | null;
+    const keyRow = section.querySelector('#pf-key-row') as HTMLElement | null;
+
+    const path1 = section.querySelector('#pf-path-1') as SVGElement | null;
+    const path2 = section.querySelector('#pf-path-2') as SVGElement | null;
+    const lockIcon = section.querySelector('#pf-lock-icon') as SVGElement | null;
+    const nodeLocal = section.querySelector('#pf-node-local') as HTMLElement | null;
+    const nodeCf = section.querySelector('#pf-node-cf') as HTMLElement | null;
+    const nodeClient = section.querySelector('#pf-node-client') as HTMLElement | null;
+
+    const barLock = section.querySelector('#pf-bar-lock') as SVGElement | null;
+    const stateOffline = section.querySelector('#pf-state-offline') as HTMLElement | null;
+    const stateLocked = section.querySelector('#pf-state-locked') as HTMLElement | null;
+    const stateConnected = section.querySelector('#pf-state-connected') as HTMLElement | null;
+
+    const keyInput = section.querySelector('#pf-key-input') as HTMLInputElement | null;
+    const autofillBtn = section.querySelector('#pf-autofill-btn') as HTMLButtonElement | null;
+    const unlockBtn = section.querySelector('#pf-unlock-btn') as HTMLButtonElement | null;
+    const errorMsg = section.querySelector('#pf-error-msg') as HTMLElement | null;
+    const copyBtn = section.querySelector('#pf-copy-btn') as HTMLButtonElement | null;
+
+    const startBtn = section.querySelector('#pf-btn-start') as HTMLButtonElement | null;
+    const resetBtn = section.querySelector('#pf-btn-reset') as HTMLButtonElement | null;
+    const successBanner = section.querySelector('#pf-success-banner') as HTMLElement | null;
+
+    const ACCESS_KEY = 'ade_key_6868_cf';
+    let simTimeouts: number[] = [];
+    let simRunning = false;
+
+    type BrowserState = 'offline' | 'locked' | 'connected';
+
+    function setBrowserState(state: BrowserState) {
+      if (stateOffline) stateOffline.style.display = state === 'offline' ? '' : 'none';
+      if (stateLocked) stateLocked.style.display = state === 'locked' ? '' : 'none';
+      if (stateConnected) stateConnected.style.display = state === 'connected' ? '' : 'none';
+      if (errorMsg) errorMsg.style.display = 'none';
+      if (keyInput) keyInput.value = '';
+    }
+
+    function updateState() {
+      if (!toggleForward || !toggleTunnel || !toggleKey) return;
+
+      const isForwarded = toggleForward.checked;
+      const isTunneled = toggleTunnel.checked;
+
+      toggleTunnel.disabled = !isForwarded;
+      toggleKey.disabled = !isTunneled;
+
+      if (!isForwarded) {
+        toggleTunnel.checked = false;
+        toggleKey.checked = false;
+      }
+      if (!isTunneled) {
+        toggleKey.checked = false;
+      }
+
+      const fwd = toggleForward.checked;
+      const tun = toggleTunnel.checked;
+      const sec = toggleKey.checked;
+
+      if (proxyRow) proxyRow.style.display = fwd ? '' : 'none';
+      if (publicRow) publicRow.style.display = tun ? '' : 'none';
+      if (keyRow) keyRow.style.display = sec ? '' : 'none';
+
+      if (statusBadge) {
+        if (!fwd) {
+          statusBadge.textContent = 'Offline';
+          statusBadge.className = 'port-info-status status-offline';
+        } else if (!tun) {
+          statusBadge.textContent = 'Local Only';
+          statusBadge.className = 'port-info-status status-local';
+        } else if (sec) {
+          statusBadge.textContent = '🔒 Secured';
+          statusBadge.className = 'port-info-status status-secured';
+        } else {
+          statusBadge.textContent = '● Public';
+          statusBadge.className = 'port-info-status status-public';
+        }
+      }
+
+      if (path1) path1.classList.toggle('active', fwd);
+      if (path2) path2.classList.toggle('active', tun);
+      if (lockIcon) lockIcon.style.display = sec ? '' : 'none';
+      if (nodeLocal) nodeLocal.classList.toggle('active', fwd);
+      if (nodeCf) nodeCf.classList.toggle('active', tun);
+      if (nodeClient) nodeClient.classList.toggle('active', tun);
+
+      if (barLock) barLock.style.display = tun ? '' : 'none';
+
+      if (!tun) {
+        setBrowserState('offline');
+      } else if (sec) {
+        setBrowserState('locked');
+      } else {
+        setBrowserState('connected');
+      }
+    }
+
+    // Wire toggles for manual use
+    toggleForward?.addEventListener('change', updateState);
+    toggleTunnel?.addEventListener('change', updateState);
+    toggleKey?.addEventListener('change', updateState);
+
+    // Autofill
+    autofillBtn?.addEventListener('click', () => {
+      if (keyInput) {
+        keyInput.value = ACCESS_KEY;
+        keyInput.classList.add('filled');
+        setTimeout(() => keyInput.classList.remove('filled'), 300);
+      }
+    });
+
+    // Unlock
+    unlockBtn?.addEventListener('click', () => {
+      if (!keyInput) return;
+      if (keyInput.value === ACCESS_KEY) {
+        setBrowserState('connected');
+      } else {
+        if (errorMsg) errorMsg.style.display = '';
+        keyInput.classList.add('shake');
+        setTimeout(() => keyInput.classList.remove('shake'), 500);
+      }
+    });
+
+    keyInput?.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') unlockBtn?.click();
+    });
+
+    // Copy
+    copyBtn?.addEventListener('click', () => {
+      const keyValue = section.querySelector('#pf-key-value')?.textContent || ACCESS_KEY;
+      navigator.clipboard.writeText(keyValue).catch(() => {});
+      const labelSpan = copyBtn.querySelector('span');
+      const copiedLabel = copyBtn.getAttribute('data-copied-label') || 'Copied!';
+      const copyLabel = copyBtn.getAttribute('data-copy-label') || 'Copy';
+      if (labelSpan) {
+        labelSpan.textContent = copiedLabel;
+        copyBtn.classList.add('copied');
+        setTimeout(() => {
+          labelSpan.textContent = copyLabel;
+          copyBtn.classList.remove('copied');
+        }, 1500);
+      }
+    });
+
+    // ===== Simulation =====
+    function resetAll() {
+      simTimeouts.forEach(id => clearTimeout(id));
+      simTimeouts = [];
+      simRunning = false;
+
+      if (toggleForward) { toggleForward.checked = false; }
+      if (toggleTunnel) { toggleTunnel.checked = false; toggleTunnel.disabled = true; }
+      if (toggleKey) { toggleKey.checked = false; toggleKey.disabled = true; }
+      updateState();
+
+      if (startBtn) startBtn.hidden = false;
+      if (successBanner) successBanner.hidden = true;
+    }
+
+    function schedule(fn: () => void, delay: number) {
+      const id = window.setTimeout(fn, delay);
+      simTimeouts.push(id);
+    }
+
+    function runSimulation() {
+      if (simRunning) return;
+      simRunning = true;
+
+      if (startBtn) startBtn.hidden = true;
+
+      // Step 1: Enable Forward Port (800ms)
+      schedule(() => {
+        if (toggleForward) { toggleForward.checked = true; }
+        updateState();
+      }, 800);
+
+      // Step 2: Enable Cloudflare Tunnel (2200ms)
+      schedule(() => {
+        if (toggleTunnel) { toggleTunnel.checked = true; }
+        updateState();
+      }, 2200);
+
+      // Step 3: Enable Access Key (3600ms)
+      schedule(() => {
+        if (toggleKey) { toggleKey.checked = true; }
+        updateState();
+      }, 3600);
+
+      // Step 4: Autofill key (5000ms)
+      schedule(() => {
+        if (keyInput) {
+          keyInput.value = ACCESS_KEY;
+          keyInput.classList.add('filled');
+          setTimeout(() => keyInput.classList.remove('filled'), 300);
+        }
+      }, 5000);
+
+      // Step 5: Unlock (6200ms)
+      schedule(() => {
+        setBrowserState('connected');
+      }, 6200);
+
+      // Step 6: Show success banner (7500ms)
+      schedule(() => {
+        simRunning = false;
+        if (successBanner) successBanner.hidden = false;
+      }, 7500);
+    }
+
+    startBtn?.addEventListener('click', runSimulation);
+    resetBtn?.addEventListener('click', resetAll);
+  }
+
+  initPortForwarding();
+  document.addEventListener('astro:after-swap', initPortForwarding);
+</script>
+
+<style>
+  .port-forwarding {
+    padding-block: clamp(64px, 8vw, 100px);
+    background: var(--color-bg);
+    border-block: 1px solid var(--color-border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .section-head {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 48px;
+    max-width: 44rem;
+  }
+
+  .pf-showcase {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    padding: clamp(20px, 4vw, 36px);
+    margin-bottom: 56px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  }
+
+  .pane-header { margin-bottom: 24px; }
+
+  .pf-column-title {
+    font-size: 15px; font-weight: 700; color: var(--color-text);
+    margin: 0 0 4px 0; letter-spacing: -0.01em;
+  }
+
+  .pf-column-desc {
+    font-size: 12.5px; color: var(--color-text-secondary);
+    margin: 0; line-height: 1.4;
+  }
+
+  .pf-grid { display: grid; grid-template-columns: 1fr; gap: 24px; }
+
+  @media (min-width: 768px) {
+    .pf-grid { grid-template-columns: 260px 120px 1fr; align-items: start; gap: 16px; }
+  }
+  @media (min-width: 1024px) {
+    .pf-grid { grid-template-columns: 300px 140px 1fr; gap: 24px; }
+  }
+
+  .pf-column { display: flex; flex-direction: column; min-width: 0; }
+
+  /* ===== LEFT: Port Settings ===== */
+  .port-info-card {
+    background: var(--color-bg); border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg); padding: 16px; margin-bottom: 12px;
+  }
+
+  .port-info-header {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 14px; padding-bottom: 12px;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .port-info-icon {
+    width: 32px; height: 32px; border-radius: var(--radius-sm);
+    background: color-mix(in oklab, var(--color-accent) 10%, transparent);
+    color: var(--color-accent);
+    border: 1px solid color-mix(in oklab, var(--color-accent) 20%, transparent);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+
+  .port-info-meta { display: flex; flex-direction: column; flex: 1; min-width: 0; }
+  .port-info-name { font-size: 13px; font-weight: 600; color: var(--color-text); }
+  .port-info-port { font-family: var(--font-mono); font-size: 11px; color: var(--color-text-muted); }
+
+  .port-info-status {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.05em; padding: 3px 8px; border-radius: var(--radius-xs);
+    flex-shrink: 0; transition: all 300ms var(--ease-out-soft);
+  }
+
+  .status-offline { background: color-mix(in oklab, var(--color-text-muted) 12%, transparent); color: var(--color-text-muted); border: 1px solid color-mix(in oklab, var(--color-text-muted) 20%, transparent); }
+  .status-local { background: color-mix(in oklab, var(--color-accent) 12%, transparent); color: var(--color-accent); border: 1px solid color-mix(in oklab, var(--color-accent) 20%, transparent); }
+  .status-public { background: color-mix(in oklab, var(--color-success) 12%, transparent); color: var(--color-success); border: 1px solid color-mix(in oklab, var(--color-success) 20%, transparent); }
+  .status-secured { background: color-mix(in oklab, var(--color-warning) 12%, transparent); color: var(--color-warning); border: 1px solid color-mix(in oklab, var(--color-warning) 20%, transparent); }
+
+  .port-detail-rows { display: flex; flex-direction: column; gap: 8px; }
+
+  .detail-row {
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    animation: rowSlideIn 300ms var(--ease-out-soft) forwards;
+  }
+  @keyframes rowSlideIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+
+  .detail-label { font-size: 11px; color: var(--color-text-muted); font-weight: 500; white-space: nowrap; }
+  .detail-value {
+    font-family: var(--font-mono); font-size: 11px; color: var(--color-text-secondary);
+    background: color-mix(in oklab, var(--color-border) 25%, transparent);
+    padding: 2px 6px; border-radius: var(--radius-xs);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+
+  .text-cyan { color: var(--color-accent) !important; }
+  .text-green { color: var(--color-success) !important; }
+  .text-amber { color: var(--color-warning) !important; }
+
+  .key-value-group { display: flex; align-items: center; gap: 6px; }
+
+  .copy-key-btn {
+    background: transparent; border: 1px solid var(--color-border-strong);
+    color: var(--color-text-secondary); font-size: 10px; padding: 2px 6px;
+    border-radius: var(--radius-xs); cursor: pointer;
+    display: flex; align-items: center; gap: 3px;
+    transition: all 200ms var(--ease-out-soft); white-space: nowrap;
+  }
+  .copy-key-btn:hover { border-color: var(--color-accent); color: var(--color-accent); }
+  .copy-key-btn.copied { border-color: var(--color-success); color: var(--color-success); }
+
+  /* Toggle Controls */
+  .toggle-controls { display: flex; flex-direction: column; gap: 8px; }
+
+  .toggle-control {
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--color-bg); border: 1px solid var(--color-border);
+    border-radius: var(--radius-md); padding: 10px 14px;
+    cursor: pointer; transition: border-color 200ms var(--ease-out-soft);
+  }
+  .toggle-control:hover { border-color: var(--color-border-strong); }
+  .toggle-control:has(.switch-input:disabled) { opacity: 0.45; cursor: not-allowed; }
+
+  .toggle-info { display: flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 500; color: var(--color-text); }
+  .toggle-info svg { color: var(--color-text-secondary); flex-shrink: 0; }
+
+  .switch-wrapper { position: relative; width: 36px; height: 20px; flex-shrink: 0; }
+  .switch-input { position: absolute; opacity: 0; width: 100%; height: 100%; cursor: pointer; margin: 0; z-index: 2; }
+  .switch-input:disabled { cursor: not-allowed; }
+
+  .switch-track {
+    position: absolute; inset: 0; background: var(--color-raised);
+    border: 1px solid var(--color-border-strong); border-radius: 10px;
+    transition: all 200ms var(--ease-out-soft);
+  }
+  .switch-track::after {
+    content: ''; position: absolute; top: 2px; left: 2px;
+    width: 14px; height: 14px; background: var(--color-text-muted);
+    border-radius: 50%; transition: all 200ms var(--ease-out-soft);
+  }
+  .switch-input:checked + .switch-track { background: var(--color-accent); border-color: var(--color-accent); }
+  .switch-input:checked + .switch-track::after { background: #080810; transform: translateX(16px); }
+
+  /* ===== MIDDLE: Gateway Visual ===== */
+  .gateway-pane { display: none; }
+  @media (min-width: 768px) {
+    .gateway-pane { display: flex; justify-content: center; align-items: center; height: 340px; }
+  }
+
+  .gateway-visual {
+    width: 100%; height: 100%; position: relative;
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: space-between; padding: 8px 0;
+  }
+
+  .gateway-svg {
+    position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+    width: 60px; height: 100%; z-index: 0; pointer-events: none;
+  }
+
+  .gw-path { stroke: var(--color-border); stroke-width: 2; fill: none; transition: stroke 300ms var(--ease-out-soft); }
+  .gw-path.active { stroke: var(--color-accent); stroke-dasharray: 6 5; animation: gwFlowDash 1.2s linear infinite; }
+  #pf-path-2.active { stroke: #f97316; }
+  @keyframes gwFlowDash { to { stroke-dashoffset: -22; } }
+
+  .gw-node {
+    position: relative; z-index: 1; display: flex; flex-direction: column;
+    align-items: center; gap: 4px; transition: all 300ms var(--ease-out-soft);
+  }
+
+  .gw-node-icon {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--color-surface); border: 2px solid var(--color-border-strong);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--color-text-secondary); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transition: all 300ms var(--ease-out-soft);
+  }
+  .gw-node.active .gw-node-icon { border-color: var(--color-accent); color: var(--color-accent); box-shadow: 0 0 14px color-mix(in oklab, var(--color-accent) 20%, transparent); }
+  .node-cf.active .gw-node-icon { border-color: #f97316; color: #f97316; box-shadow: 0 0 14px color-mix(in oklab, #f97316 20%, transparent); }
+  .node-client.active .gw-node-icon { border-color: var(--color-success); color: var(--color-success); box-shadow: 0 0 14px color-mix(in oklab, var(--color-success) 20%, transparent); }
+
+  .gw-node-label { font-size: 10.5px; font-weight: 700; color: var(--color-text); text-align: center; }
+  .gw-node-sub { font-size: 9.5px; color: var(--color-text-muted); text-align: center; }
+
+  /* ===== RIGHT: Browser Mockup ===== */
+  .mock-browser {
+    background: #0c0c14; border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg); overflow: hidden; height: 340px;
+    display: flex; flex-direction: column; box-shadow: 0 10px 24px rgba(0, 0, 0, 0.3);
+  }
+
+  .browser-bar {
+    background: #12121e; border-bottom: 1px solid #1a1a2e;
+    padding: 10px 14px; display: flex; align-items: center; gap: 10px;
+  }
+  .browser-dots { display: flex; gap: 5px; flex-shrink: 0; }
+  .browser-dots span { width: 8px; height: 8px; border-radius: 50%; background: #2b2b3a; }
+
+  .browser-address-bar {
+    flex: 1; background: #0c0c14; border: 1px solid #1e1e30;
+    border-radius: 6px; padding: 5px 10px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .lock-icon-bar { color: var(--color-success); flex-shrink: 0; }
+  .address-text { font-family: var(--font-mono); font-size: 11px; color: var(--color-text-secondary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  .browser-state {
+    flex: 1; display: flex; flex-direction: column; align-items: center;
+    justify-content: center; padding: 20px;
+    animation: stateReveal 400ms var(--ease-out-soft) forwards;
+  }
+  @keyframes stateReveal { from { opacity: 0; transform: scale(0.97); } to { opacity: 1; transform: scale(1); } }
+
+  .offline-icon { color: var(--color-text-muted); opacity: 0.5; margin-bottom: 12px; }
+  .state-title { font-size: 24px; font-weight: 800; color: var(--color-text); margin: 0 0 4px 0; }
+  .state-label { font-size: 13px; color: var(--color-text-secondary); margin: 0 0 8px 0; font-weight: 600; }
+  .state-desc { font-size: 11.5px; color: var(--color-text-muted); margin: 0; text-align: center; max-width: 260px; line-height: 1.5; }
+
+  .locked-icon { color: var(--color-warning); margin-bottom: 12px; animation: lockBounce 1.5s ease-in-out infinite; }
+  @keyframes lockBounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+
+  .key-input-group { display: flex; align-items: center; gap: 8px; margin-top: 14px; width: 100%; max-width: 260px; }
+
+  .key-input {
+    flex: 1; background: #12121e; border: 1px solid #2a2a40;
+    border-radius: 6px; padding: 8px 10px; font-family: var(--font-mono);
+    font-size: 11.5px; color: var(--color-text); outline: none;
+    transition: border-color 200ms var(--ease-out-soft);
+  }
+  .key-input::placeholder { color: var(--color-text-muted); opacity: 0.5; }
+  .key-input:focus { border-color: var(--color-accent); }
+  .key-input.filled { border-color: var(--color-success); }
+  .key-input.shake { animation: shakeInput 400ms var(--ease-out-soft); }
+  @keyframes shakeInput { 0%, 100% { transform: translateX(0); } 20% { transform: translateX(-6px); } 40% { transform: translateX(6px); } 60% { transform: translateX(-4px); } 80% { transform: translateX(4px); } }
+
+  .autofill-btn {
+    background: color-mix(in oklab, var(--color-accent) 10%, transparent);
+    border: 1px solid color-mix(in oklab, var(--color-accent) 25%, transparent);
+    color: var(--color-accent); font-size: 10.5px; font-weight: 600;
+    padding: 8px 10px; border-radius: 6px; cursor: pointer; white-space: nowrap;
+    transition: all 200ms var(--ease-out-soft);
+  }
+  .autofill-btn:hover { background: color-mix(in oklab, var(--color-accent) 18%, transparent); }
+
+  .unlock-btn {
+    margin-top: 10px; background: var(--color-accent); color: #080810;
+    border: none; padding: 9px 24px; border-radius: 8px;
+    font-size: 12px; font-weight: 700; cursor: pointer;
+    transition: all 200ms var(--ease-out-soft); letter-spacing: 0.02em;
+  }
+  .unlock-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+
+  .error-msg { color: #ef4444; font-size: 11px; margin: 8px 0 0; animation: stateReveal 200ms var(--ease-out-soft) forwards; }
+
+  /* Connected: ADE Workspace Mockup */
+  .state-connected { align-items: stretch; justify-content: flex-start; gap: 10px; padding: 14px; overflow-y: auto; }
+
+  .dash-header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 8px; border-bottom: 1px solid #1a1a2e; }
+  .dash-logo { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: var(--color-text); }
+  .dash-logo svg { color: var(--color-accent); }
+  .dash-live-badge { font-size: 10px; font-weight: 700; color: var(--color-success); background: color-mix(in oklab, var(--color-success) 10%, transparent); padding: 2px 8px; border-radius: var(--radius-xs); animation: livePulse 2s ease-in-out infinite; }
+  @keyframes livePulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+
+  .ade-workspace-mock { display: grid; grid-template-columns: 100px 1fr; gap: 6px; flex: 1; min-height: 0; }
+
+  .ade-sidebar {
+    background: #12121e; border: 1px solid #1e1e30; border-radius: 6px;
+    padding: 8px 6px; display: flex; flex-direction: column; gap: 2px;
+    overflow-y: auto; font-size: 10px;
+  }
+  .ade-tree-item { color: var(--color-text-secondary); padding: 3px 4px; border-radius: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ade-tree-item.sub { padding-left: 14px; font-size: 9.5px; }
+  .ade-tree-item.active { background: color-mix(in oklab, var(--color-accent) 12%, transparent); color: var(--color-accent); }
+
+  .ade-main-area { display: flex; flex-direction: column; min-width: 0; }
+
+  .ade-terminal-mini {
+    background: #0a0a12; border: 1px solid #1e1e30; border-radius: 6px;
+    padding: 10px; display: flex; flex-direction: column; gap: 5px;
+    font-family: var(--font-mono); font-size: 10px; flex: 1; overflow-y: auto;
+  }
+  .ade-term-line { color: #a5b4fc; line-height: 1.5; animation: printLine 200ms var(--ease-out-soft) forwards; opacity: 0; }
+  .ade-term-line:nth-child(1) { animation-delay: 0ms; }
+  .ade-term-line:nth-child(2) { animation-delay: 300ms; }
+  .ade-term-line:nth-child(3) { animation-delay: 600ms; }
+  .ade-term-line:nth-child(4) { animation-delay: 900ms; }
+  @keyframes printLine { to { opacity: 1; } }
+
+  .term-prompt { color: var(--color-accent); font-weight: 700; margin-right: 4px; }
+  .ade-term-line.dim { color: var(--color-text-muted); }
+  .ade-term-line.success { color: var(--color-success); font-weight: 600; }
+
+  /* ===== Action Panel ===== */
+  .showcase-actions {
+    margin-top: 20px; display: flex; align-items: center; justify-content: center;
+    min-height: 44px; gap: 12px;
+  }
+
+  .action-btn-start {
+    display: inline-flex; align-items: center; justify-content: center;
+    background: var(--color-accent); color: #080810; border: none;
+    padding: 10px 28px; border-radius: var(--radius-md);
+    font-size: 13px; font-weight: 700; cursor: pointer;
+    transition: opacity 200ms var(--ease-out-soft), transform 200ms var(--ease-out-soft);
+    letter-spacing: 0.02em;
+  }
+  .action-btn-start:hover { opacity: 0.9; transform: translateY(-1px); }
+
+  .success-banner-card {
+    display: flex; align-items: center; justify-content: center; gap: 16px;
+    background: color-mix(in oklab, var(--color-success) 8%, var(--color-surface));
+    border: 1px solid color-mix(in oklab, var(--color-success) 20%, transparent);
+    border-radius: var(--radius-md); padding: 10px 20px;
+    animation: stateReveal 400ms var(--ease-out-soft) forwards;
+  }
+
+  .success-banner-text { font-size: 13px; font-weight: 600; color: var(--color-success); }
+
+  .action-btn-reset {
+    display: inline-flex; align-items: center;
+    background: var(--color-raised); border: 1px solid var(--color-border-strong);
+    color: var(--color-text-secondary); padding: 6px 14px;
+    border-radius: var(--radius-sm); font-size: 12px; font-weight: 500;
+    cursor: pointer; transition: all 200ms var(--ease-out-soft);
+  }
+  .action-btn-reset:hover { border-color: var(--color-accent); color: var(--color-accent); }
+
+  /* ===== Benefits Grid ===== */
+  .benefits-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
+  @media (min-width: 640px) { .benefits-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1024px) { .benefits-grid { grid-template-columns: repeat(4, 1fr); gap: 24px; } }
+
+  .benefit-card {
+    background: var(--color-surface); border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl); padding: 24px;
+    display: flex; flex-direction: column; gap: 16px;
+    transition: border-color 250ms var(--ease-out-soft), transform 250ms var(--ease-out-soft);
+  }
+  .benefit-card:hover { border-color: var(--color-border-strong); transform: translateY(-2px); }
+
+  .benefit-icon-badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 38px; height: 38px; border-radius: var(--radius-md);
+    background: color-mix(in oklab, var(--badge-accent-color, var(--color-accent)) 10%, transparent);
+    color: var(--badge-accent-color, var(--color-accent));
+    border: 1px solid color-mix(in oklab, var(--badge-accent-color, var(--color-accent)) 25%, transparent);
+    flex-shrink: 0;
+  }
+
+  .benefit-title { font-size: 14.5px; font-weight: 700; color: var(--color-text); margin: 0; letter-spacing: -0.01em; }
+  .benefit-desc { font-size: 12.5px; color: var(--color-text-secondary); line-height: 1.6; margin: 0; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .gw-path.active { animation: none; }
+    .locked-icon { animation: none; }
+    .dash-live-badge { animation: none; }
+    .ade-term-line { animation: none; opacity: 1; }
+  }
+</style>

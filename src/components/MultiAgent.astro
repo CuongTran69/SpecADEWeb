@@ -1,0 +1,843 @@
+---
+import type { Lang } from '~/i18n/strings'
+import { t } from '~/i18n/strings'
+
+interface Props {
+  lang: Lang
+}
+
+const { lang } = Astro.props
+const strings = t(lang)
+const s = strings.multiAgent
+
+const featuredAgents = [
+  { id: 'claude', name: 'Claude Code', type: 'Anthropic CLI', color: 'var(--color-claude)', iconColor: '#c084fc', initial: 'C' },
+  { id: 'auggie', name: 'Auggie CLI', type: 'Augment Code', color: 'var(--color-auggie)', iconColor: '#fbbf24', initial: 'A' },
+  { id: 'cline', name: 'Cline', type: 'Autonomous CLI', color: '#ec4899', iconColor: '#ec4899', initial: 'CL' },
+  { id: 'codex', name: 'Codex CLI', type: 'OpenAI Agent', color: '#10b981', iconColor: '#10b981', initial: 'CX' }
+]
+---
+
+<section class="multi-agent" id="multi-agent">
+  <div class="container-wide">
+    <header class="section-head reveal">
+      <span class="chip">{s.chip}</span>
+      <h2 class="section-title">{s.title}</h2>
+      <p class="section-subtitle">{s.subtitle}</p>
+    </header>
+
+    <!-- Hub Showcase Panel -->
+    <div class="hub-showcase reveal">
+      <!-- Showcase Header (Outside the grid to allow perfect column top-alignment) -->
+      <div class="pane-header">
+        <h3 class="hub-column-title">{s.visualTitle}</h3>
+        <p class="hub-column-desc">{s.visualSub}</p>
+      </div>
+
+      <div class="hub-grid">
+        
+        <!-- Left Column: Agent Selection Cards -->
+        <div class="hub-column agents-pane">
+          <div class="agent-cards-list">
+            <!-- Featured preset agents -->
+            {featuredAgents.map((agent) => (
+              <div class="agent-card" data-agent-id={agent.id} style={`--agent-theme-color: ${agent.color}`}>
+                <div class="agent-card-info">
+                  <span class="agent-badge" style={`background: color-mix(in oklab, ${agent.iconColor} 12%, transparent); color: ${agent.iconColor}; border: 1px solid color-mix(in oklab, ${agent.iconColor} 25%, transparent)`}>
+                    {agent.initial}
+                  </span>
+                  <div class="agent-meta">
+                    <h4 class="agent-card-name">{agent.name}</h4>
+                    <span class="agent-card-type">{agent.type}</span>
+                  </div>
+                </div>
+                
+                <button type="button" class="connect-toggle-btn" aria-pressed="false" data-agent-id={agent.id} aria-label={`Toggle connection for ${agent.name}`}>
+                  <span class="toggle-track"></span>
+                  <span class="toggle-label" data-connect={s.connectBtn} data-disconnect={s.disconnectBtn}>{s.connectBtn}</span>
+                </button>
+              </div>
+            ))}
+          </div>
+
+          <!-- Connect Custom Card (Outside the 302px fixed-height list container to prevent overflow) -->
+          <div class="more-agents-card">
+            <span class="explore-registry-btn">
+              <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px;" aria-hidden="true">
+                <line x1="8" y1="3" x2="8" y2="13"/><line x1="3" y1="8" x2="13" y2="8"/>
+              </svg>
+              {s.connectMoreBtn}
+            </span>
+          </div>
+        </div>
+
+        <!-- Middle Column: Visual Core Connection Hub (Desktop only) -->
+        <div class="hub-column core-pane" aria-hidden="true">
+          <div class="connection-hub-visual">
+            <!-- Connection Lines (SVG) -->
+            <svg class="connection-lines-svg" viewBox="0 0 120 302" fill="none" preserveAspectRatio="none">
+              <!-- Preset Paths aligning mathematically to card centers and core center (y=151) -->
+              <path id="line-claude" class="conn-path" d="M 0,34 Q 60,34 120,151" />
+              <path id="line-auggie" class="conn-path" d="M 0,112 Q 65,112 120,151" />
+              <path id="line-cline" class="conn-path" d="M 0,190 Q 65,190 120,151" />
+              <path id="line-codex" class="conn-path" d="M 0,268 Q 60,268 120,151" />
+            </svg>
+
+            <!-- Central Node (Spec ADE Core) -->
+            <div class="central-core">
+              <div class="core-logo">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+                  <polyline points="2 17 12 22 22 17"/>
+                  <polyline points="2 12 12 17 22 12"/>
+                </svg>
+              </div>
+              <span class="core-pulse-ring"></span>
+              <span class="core-pulse-ring-outer"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Live Terminal Workspace Stream -->
+        <div class="hub-column terminal-pane">
+          <div class="mock-terminal">
+            <div class="terminal-bar">
+              <div class="terminal-dots"><span></span><span></span><span></span></div>
+              <div class="terminal-title">agent-orchestration &middot; active-stream</div>
+            </div>
+            <div class="terminal-screen" id="showcase-terminal-screen">
+              <div class="terminal-empty-state" id="terminal-empty">
+                <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="pulse-icon" aria-hidden="true">
+                  <polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/>
+                </svg>
+                <p>{s.terminalPlaceholder}</p>
+              </div>
+              <div class="terminal-logs" id="terminal-logs-container" hidden></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Benefits Grid -->
+    <div class="benefits-grid reveal">
+      <div class="benefit-card shine-hover">
+        <div class="benefit-icon-badge">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/>
+          </svg>
+        </div>
+        <h3 class="benefit-title">{s.benefitAcpTitle}</h3>
+        <p class="benefit-desc">{s.benefitAcpDesc}</p>
+      </div>
+
+      <div class="benefit-card shine-hover">
+        <div class="benefit-icon-badge" style="--badge-accent-color: var(--color-purple)">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+          </svg>
+        </div>
+        <h3 class="benefit-title">{s.benefitParallelTitle}</h3>
+        <p class="benefit-desc">{s.benefitParallelDesc}</p>
+      </div>
+
+      <div class="benefit-card shine-hover">
+        <div class="benefit-icon-badge" style="--badge-accent-color: #ec4899">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
+          </svg>
+        </div>
+        <h3 class="benefit-title">{s.benefitAdaptersTitle}</h3>
+        <p class="benefit-desc">{s.benefitAdaptersDesc}</p>
+      </div>
+
+      <div class="benefit-card shine-hover">
+        <div class="benefit-icon-badge" style="--badge-accent-color: #10b981">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+        </div>
+        <h3 class="benefit-title">{s.benefitHitlTitle}</h3>
+        <p class="benefit-desc">{s.benefitHitlDesc}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Script to orchestrate showcase interactivity -->
+<script>
+  interface LogItem {
+    html: string;
+    delay: number;
+  }
+
+  function initAgentShowcase() {
+    const section = document.getElementById('multi-agent');
+    if (!section) return;
+
+    const toggleBtns = section.querySelectorAll('.connect-toggle-btn') as NodeListOf<HTMLButtonElement>;
+    const emptyState = section.querySelector('#terminal-empty') as HTMLElement | null;
+    const logsContainer = section.querySelector('#terminal-logs-container') as HTMLElement | null;
+    
+    // Log items mapped by agent
+    const agentLogs: Record<string, LogItem[]> = {
+      claude: [
+        { html: '<span class="log-tag tag-claude">[Claude Code]</span> Booting ACP agent process...', delay: 100 },
+        { html: '<span class="log-tag tag-claude">[Claude Code]</span> Reading project structure (detected Astro)...', delay: 500 },
+        { html: '<span class="log-tag tag-claude">[Claude Code]</span> Planning modifications on index.astro...', delay: 1000 },
+        { html: '<span class="log-tag tag-claude">[Claude Code]</span> Running build check: <span class="log-cmd">npm run build</span>', delay: 1500 },
+        { html: '<span class="log-tag tag-claude tag-success">[Claude Code]</span> ✓ Static routes generated in 1.8s.', delay: 2000 },
+      ],
+      auggie: [
+        { html: '<span class="log-tag tag-auggie">[Auggie CLI]</span> Fetching workspace layout graph...', delay: 100 },
+        { html: '<span class="log-tag tag-auggie">[Auggie CLI]</span> Core symbols indexed. 142 source models active.', delay: 600 },
+        { html: '<span class="log-tag tag-auggie">[Auggie CLI]</span> Analyzing components dependencies...', delay: 1100 },
+        { html: '<span class="log-tag tag-auggie tag-success">[Auggie CLI]</span> ✓ Visual assets optimized. Workspace synchronized.', delay: 1700 },
+      ],
+      cline: [
+        { html: '<span class="log-tag tag-cline">[Cline]</span> Initialized local developer agent thread...', delay: 100 },
+        { html: '<span class="log-tag tag-cline">[Cline]</span> Checking files in /src/styles/...', delay: 500 },
+        { html: '<span class="log-tag tag-cline tag-warning">[Cline]</span> ! Requesting folder write permission...', delay: 900 },
+        { html: '<span class="log-tag tag-cline tag-success">[Cline]</span> ✓ Permission granted. CSS values synced.', delay: 1400 },
+        { html: '<span class="log-tag tag-cline">[Cline]</span> Executing format runner: <span class="log-cmd">npx prettier --write</span>', delay: 1900 },
+      ],
+      codex: [
+        { html: '<span class="log-tag tag-codex">[Codex CLI]</span> Linking system database driver (SQLite)...', delay: 100 },
+        { html: '<span class="log-tag tag-codex">[Codex CLI]</span> Querying table structure: 12 active tables.', delay: 600 },
+        { html: '<span class="log-tag tag-codex">[Codex CLI]</span> Visualizing EXPLAIN query logic...', delay: 1100 },
+        { html: '<span class="log-tag tag-codex tag-success">[Codex CLI]</span> ✓ Execution complete. 24 rows matching schema.', delay: 1600 },
+      ]
+    };
+
+    // Active timeouts & states tracker
+    const activeTimeouts: Record<string, number[]> = {
+      claude: [], auggie: [], cline: [], codex: []
+    };
+
+    const activeStates: Record<string, boolean> = {
+      claude: false, auggie: false, cline: false, codex: false
+    };
+
+    function updateView() {
+      const anyActive = Object.values(activeStates).some(state => state);
+      
+      if (anyActive) {
+        if (emptyState) emptyState.hidden = true;
+        if (logsContainer) logsContainer.hidden = false;
+      } else {
+        if (emptyState) emptyState.hidden = false;
+        if (logsContainer) {
+          logsContainer.hidden = true;
+          logsContainer.innerHTML = '';
+        }
+      }
+    }
+
+    function appendLog(agentId: string, html: string) {
+      if (!logsContainer || !activeStates[agentId]) return;
+      
+      const logLine = document.createElement('div');
+      logLine.className = `log-line line-${agentId}`;
+      logLine.innerHTML = html;
+      logsContainer.appendChild(logLine);
+      
+      // Auto scroll
+      const terminalScreen = section?.querySelector('#showcase-terminal-screen');
+      if (terminalScreen) {
+        terminalScreen.scrollTo({ top: terminalScreen.scrollHeight, behavior: 'smooth' });
+      }
+    }
+
+    function startAgentSimulation(agentId: string) {
+      // Clear logs of this agent if they exist
+      const existingLines = logsContainer?.querySelectorAll(`.line-${agentId}`);
+      existingLines?.forEach(line => line.remove());
+
+      const logs = agentLogs[agentId];
+      if (!logs) return;
+
+      logs.forEach(log => {
+        const timeoutId = window.setTimeout(() => {
+          appendLog(agentId, log.html);
+        }, log.delay);
+        
+        if (!activeTimeouts[agentId]) {
+          activeTimeouts[agentId] = [];
+        }
+        activeTimeouts[agentId].push(timeoutId);
+      });
+    }
+
+    function stopAgentSimulation(agentId: string) {
+      if (activeTimeouts[agentId]) {
+        activeTimeouts[agentId].forEach(id => clearTimeout(id));
+        activeTimeouts[agentId] = [];
+      }
+
+      // Remove log lines for this agent
+      const lines = logsContainer?.querySelectorAll(`.line-${agentId}`);
+      lines?.forEach(line => {
+        line.classList.add('fade-out');
+        setTimeout(() => line.remove(), 250);
+      });
+    }
+
+    toggleBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const agentId = btn.getAttribute('data-agent-id');
+        if (!agentId) return;
+
+        const isPressed = btn.getAttribute('aria-pressed') === 'true';
+        const newPressed = !isPressed;
+        
+        btn.setAttribute('aria-pressed', newPressed ? 'true' : 'false');
+        
+        const card = btn.closest('.agent-card');
+        if (card) {
+          card.classList.toggle('active', newPressed);
+        }
+
+        // Toggle connection lines inside SVG
+        const line = section.querySelector(`#line-${agentId}`);
+        if (line) {
+          line.classList.toggle('active', newPressed);
+        }
+
+        activeStates[agentId] = newPressed;
+        updateView();
+
+        const labelSpan = btn.querySelector('.toggle-label') as HTMLElement | null;
+        if (labelSpan) {
+          const connectText = labelSpan.getAttribute('data-connect') || 'Connect';
+          const disconnectText = labelSpan.getAttribute('data-disconnect') || 'Disconnect';
+          labelSpan.innerText = newPressed ? disconnectText : connectText;
+        }
+
+        if (newPressed) {
+          startAgentSimulation(agentId);
+        } else {
+          stopAgentSimulation(agentId);
+        }
+      });
+    });
+  }
+
+  // Hook startup
+  initAgentShowcase();
+  document.addEventListener('astro:after-swap', initAgentShowcase);
+</script>
+
+<style>
+  .multi-agent {
+    padding-block: clamp(64px, 8vw, 100px);
+    background: var(--color-surface);
+    border-block: 1px solid var(--color-border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .section-head {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 48px;
+    max-width: 44rem;
+  }
+
+  /* Interactive Connection Hub Container */
+  .hub-showcase {
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    padding: clamp(20px, 4vw, 36px);
+    margin-bottom: 56px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  }
+
+  .pane-header {
+    margin-bottom: 24px;
+  }
+
+  .hub-column-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--color-text);
+    margin: 0 0 4px 0;
+    letter-spacing: -0.01em;
+  }
+
+  .hub-column-desc {
+    font-size: 12.5px;
+    color: var(--color-text-secondary);
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  .hub-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  @media (min-width: 768px) {
+    .hub-grid {
+      grid-template-columns: 280px 100px 1fr;
+      align-items: start; /* Align tops of columns to prevent line offset */
+      gap: 16px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .hub-grid {
+      grid-template-columns: 310px 120px 1fr;
+      gap: 24px;
+    }
+  }
+
+  .hub-column {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  /* Left Panel: Connectors */
+  .agent-cards-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    height: 302px; /* Height matching the first 4 cards + gaps perfectly */
+  }
+
+  .agent-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    height: 68px; /* Fixed height for exact SVG path landing alignment */
+    padding: 12px 14px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    transition: border-color 250ms var(--ease-out-soft), box-shadow 250ms var(--ease-out-soft), transform 250ms var(--ease-out-soft);
+  }
+
+  .agent-card:hover {
+    border-color: var(--color-border-strong);
+    transform: translateY(-1px);
+  }
+
+  .agent-card.active {
+    border-color: var(--agent-theme-color);
+    box-shadow: 0 0 12px color-mix(in oklab, var(--agent-theme-color) 15%, transparent);
+  }
+
+  .agent-card-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+  }
+
+  .agent-badge {
+    width: 34px;
+    height: 34px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 11px;
+    flex-shrink: 0;
+  }
+
+  .agent-meta {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .agent-card-name {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--color-text);
+    margin: 0;
+  }
+
+  .agent-card-type {
+    font-size: 11px;
+    color: var(--color-text-muted);
+    margin-top: 1px;
+  }
+
+  /* Connect Switch Toggle Button */
+  .connect-toggle-btn {
+    background: var(--color-raised);
+    border: 1px solid var(--color-border-strong);
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--color-text);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 200ms var(--ease-out-soft);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 84px;
+  }
+
+  .connect-toggle-btn:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+
+  .connect-toggle-btn[aria-pressed="true"] {
+    background: var(--agent-theme-color);
+    color: #080810;
+    border-color: var(--agent-theme-color);
+    font-weight: 600;
+  }
+
+  .connect-toggle-btn[aria-pressed="true"]:hover {
+    opacity: 0.9;
+  }
+
+  /* Connect Custom Static Card */
+  .more-agents-card {
+    margin-top: 10px;
+  }
+
+  .explore-registry-btn {
+    width: 100%;
+    height: 52px;
+    background: transparent;
+    border: 1.5px dashed var(--color-border-strong);
+    color: var(--color-text-secondary);
+    border-radius: var(--radius-lg);
+    font-size: 13px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    cursor: default;
+    transition: border-color 200ms var(--ease-out-soft), color 200ms var(--ease-out-soft);
+    user-select: none;
+  }
+
+  .explore-registry-btn:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+
+  /* Middle Panel: Visual Core connection */
+  .core-pane {
+    display: none;
+  }
+
+  @media (min-width: 768px) {
+    .core-pane {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      height: 302px; /* Height matching the agent cards list */
+    }
+  }
+
+  .connection-hub-visual {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .connection-lines-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .conn-path {
+    stroke: var(--color-border);
+    stroke-width: 2;
+    transition: stroke 300ms var(--ease-out-soft), stroke-width 300ms var(--ease-out-soft);
+  }
+
+  .conn-path.active {
+    stroke-width: 3;
+    stroke-dasharray: 6 5;
+    animation: flowDashes 1.2s linear infinite;
+  }
+
+  #line-claude.active { stroke: var(--color-claude); }
+  #line-auggie.active { stroke: var(--color-auggie); }
+  #line-cline.active  { stroke: #ec4899; }
+  #line-codex.active  { stroke: #10b981; }
+
+  @keyframes flowDashes {
+    to {
+      stroke-dashoffset: -22;
+    }
+  }
+
+  /* Central Spec ADE Core Node - perfectly static to align with SVG endpoints */
+  .central-core {
+    position: absolute;
+    right: -18px; /* Center it precisely on x = 120 (the right edge of viewBox) */
+    top: calc(50% - 18px); /* Center vertically at y = 151 */
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--color-surface);
+    border: 2px solid var(--color-border-strong);
+    color: var(--color-accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+
+  .core-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3;
+  }
+
+  .core-pulse-ring {
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    border-radius: 50%;
+    border: 2px solid var(--color-accent);
+    animation: corePulse 2s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .core-pulse-ring-outer {
+    position: absolute;
+    top: -6px;
+    left: -6px;
+    right: -6px;
+    bottom: -6px;
+    border-radius: 50%;
+    border: 1px solid var(--color-accent);
+    animation: corePulseOuter 3s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  @keyframes corePulse {
+    0% { transform: scale(1); opacity: 0.6; }
+    100% { transform: scale(1.4); opacity: 0; }
+  }
+
+  @keyframes corePulseOuter {
+    0% { transform: scale(1); opacity: 0.3; }
+    50% { opacity: 0.2; }
+    100% { transform: scale(1.8); opacity: 0; }
+  }
+
+  /* Right Panel: Mock Terminal Workspace */
+  .mock-terminal {
+    background: #0c0c14;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    height: 302px; /* Height matching the visual hub and active cards perfectly */
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.3);
+  }
+
+  .terminal-bar {
+    background: #12121e;
+    border-bottom: 1px solid #1a1a2e;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+
+  .terminal-dots {
+    display: flex;
+    gap: 5px;
+    position: absolute;
+    left: 14px;
+  }
+
+  .terminal-dots span {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #2b2b3a;
+  }
+
+  .terminal-title {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--color-text-secondary);
+    margin: 0 auto;
+    font-weight: 500;
+  }
+
+  .terminal-screen {
+    flex-grow: 1;
+    padding: 16px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .terminal-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    text-align: center;
+    color: var(--color-text-muted);
+    gap: 12px;
+  }
+
+  .pulse-icon {
+    animation: iconPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes iconPulse {
+    0%, 100% { opacity: 0.4; transform: scale(0.96); }
+    50% { opacity: 0.9; transform: scale(1.04); }
+  }
+
+  .terminal-empty-state p {
+    font-size: 12px;
+    margin: 0;
+    max-width: 240px;
+    line-height: 1.5;
+  }
+
+  .terminal-logs {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    line-height: 1.5;
+    color: #a5b4fc;
+    word-break: break-all;
+  }
+
+  .log-line {
+    animation: printLine 200ms var(--ease-out-soft) forwards;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 250ms var(--ease-out-soft), transform 250ms var(--ease-out-soft);
+  }
+
+  .log-line.fade-out {
+    opacity: 0;
+    transform: translateX(-4px);
+  }
+
+  @keyframes printLine {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .log-tag {
+    font-weight: 700;
+    margin-right: 4px;
+  }
+
+  .tag-claude { color: var(--color-claude); }
+  .tag-auggie { color: var(--color-auggie); }
+  .tag-cline { color: #ec4899; }
+  .tag-codex { color: #10b981; }
+  
+  .tag-success { color: var(--color-success); }
+  .tag-warning { color: var(--color-warning); }
+  
+  .log-cmd {
+    color: var(--color-accent);
+    background: rgba(34, 211, 238, 0.08);
+    padding: 1px 4px;
+    border-radius: 2px;
+  }
+
+  /* Benefits Grid styling */
+  .benefits-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  @media (min-width: 640px) {
+    .benefits-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .benefits-grid {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+  }
+
+  .benefit-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    transition: border-color 250ms var(--ease-out-soft), transform 250ms var(--ease-out-soft);
+  }
+
+  .benefit-card:hover {
+    border-color: var(--color-border-strong);
+    transform: translateY(-2px);
+  }
+
+  .benefit-icon-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: var(--radius-md);
+    background: color-mix(in oklab, var(--badge-accent-color, var(--color-accent)) 10%, transparent);
+    color: var(--badge-accent-color, var(--color-accent));
+    border: 1px solid color-mix(in oklab, var(--badge-accent-color, var(--color-accent)) 25%, transparent);
+    flex-shrink: 0;
+  }
+
+  .benefit-title {
+    font-size: 14.5px;
+    font-weight: 700;
+    color: var(--color-text);
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+
+  .benefit-desc {
+    font-size: 12.5px;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+    margin: 0;
+  }
+</style>

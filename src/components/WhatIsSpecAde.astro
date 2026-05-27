@@ -9,28 +9,36 @@ interface Props {
 const { lang } = Astro.props
 const strings = t(lang)
 const s = strings.whatIsSpecAde
+
+const pillarIcons = [
+  `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>`,
+  `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`,
+  `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>`,
+]
 ---
 
 <section id="what-is-spec-ade" class="what-is" data-testid="what-is-spec-ade">
   <div class="container-wide">
-    <header class="section-head">
+    <header class="section-head reveal">
       <span class="chip">{s.chip}</span>
       <h2 class="section-title">{s.title}</h2>
     </header>
 
     <div class="pillars">
-      <article class="pillar surface reveal" data-testid="what-is-pillar-1">
-        <h3 class="pillar-title">{s.pillar1Title}</h3>
-        <p class="pillar-body">{s.pillar1Body}</p>
-      </article>
-      <article class="pillar surface reveal" data-testid="what-is-pillar-2" style="animation-delay: 60ms">
-        <h3 class="pillar-title">{s.pillar2Title}</h3>
-        <p class="pillar-body">{s.pillar2Body}</p>
-      </article>
-      <article class="pillar surface reveal" data-testid="what-is-pillar-3" style="animation-delay: 120ms">
-        <h3 class="pillar-title">{s.pillar3Title}</h3>
-        <p class="pillar-body">{s.pillar3Body}</p>
-      </article>
+      {[
+        { title: s.pillar1Title, body: s.pillar1Body, icon: pillarIcons[0], num: '01' },
+        { title: s.pillar2Title, body: s.pillar2Body, icon: pillarIcons[1], num: '02' },
+        { title: s.pillar3Title, body: s.pillar3Body, icon: pillarIcons[2], num: '03' },
+      ].map((p, i) => (
+        <article class="pillar glow-card reveal shine-hover" data-testid={`what-is-pillar-${i+1}`} style={`animation-delay:${i * 80}ms`}>
+          <div class="pillar-top">
+            <div class="pillar-icon icon-badge" set:html={p.icon}></div>
+            <span class="pillar-num">{p.num}</span>
+          </div>
+          <h3 class="pillar-title">{p.title}</h3>
+          <p class="pillar-body">{p.body}</p>
+        </article>
+      ))}
     </div>
 
     <div class="comparison-wrap reveal" data-testid="what-is-comparison">
@@ -41,7 +49,14 @@ const s = strings.whatIsSpecAde
             <tr>
               <th class="row-label-head" scope="col"><span class="sr-only">Dimension</span></th>
               {s.comparisonHeaders.map((header, i) => (
-                <th scope="col" class={i === 2 ? 'col-spec-ade' : ''}>{header}{i === 2 ? ' ★' : ''}</th>
+                <th scope="col" class={i === 2 ? 'col-spec-ade' : ''}>
+                  {i === 2 ? (
+                    <span class="col-spec-ade-inner">
+                      <span>{header}</span>
+                      <span class="col-star" aria-label="recommended">★</span>
+                    </span>
+                  ) : header}
+                </th>
               ))}
             </tr>
           </thead>
@@ -63,17 +78,20 @@ const s = strings.whatIsSpecAde
 
 <style>
   .what-is {
-    padding-block: clamp(64px, 8vw, 96px);
+    padding-block: clamp(72px, 9vw, 112px);
     background: var(--color-surface);
     border-block: 1px solid var(--color-border);
+    position: relative;
+    overflow: hidden;
   }
+
 
   .section-head {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    margin-bottom: 48px;
-    max-width: 42rem;
+    gap: 14px;
+    margin-bottom: 56px;
+    max-width: 44rem;
   }
 
   /* Pillars */
@@ -81,63 +99,69 @@ const s = strings.whatIsSpecAde
     display: grid;
     grid-template-columns: 1fr;
     gap: 16px;
-    margin-bottom: 48px;
+    margin-bottom: 56px;
   }
 
   @media (min-width: 768px) {
-    .pillars {
-      grid-template-columns: repeat(3, 1fr);
-    }
+    .pillars { grid-template-columns: repeat(3, 1fr); }
   }
 
   .pillar {
-    padding: 24px;
+    padding: 28px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    border-radius: var(--radius-lg);
-    transition:
-      border-color 200ms var(--ease-out-soft),
-      background 200ms var(--ease-out-soft);
+    gap: 14px;
   }
 
-  .pillar:hover {
-    border-color: var(--color-border-strong);
-    background: var(--color-raised);
+  .pillar-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .pillar-num {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--color-border-strong);
+    letter-spacing: 0.1em;
   }
 
   .pillar-title {
-    font-size: 1rem;
-    font-weight: 600;
+    font-size: 1.0625rem;
+    font-weight: 700;
     color: var(--color-text);
-    letter-spacing: -0.01em;
+    letter-spacing: -0.015em;
     line-height: 1.3;
+    margin: 0;
   }
 
   .pillar-body {
     color: var(--color-text-secondary);
     font-size: 13.5px;
-    line-height: 1.7;
+    line-height: 1.75;
     margin: 0;
+    flex: 1;
   }
 
   /* Comparison table */
   .comparison-wrap {
-    max-width: 64rem;
+    max-width: 68rem;
   }
 
   .comparison-title {
-    font-size: 1rem;
-    font-weight: 600;
+    font-size: 1.0625rem;
+    font-weight: 700;
     color: var(--color-text);
-    margin-bottom: 16px;
-    letter-spacing: -0.01em;
+    margin-bottom: 18px;
+    letter-spacing: -0.015em;
   }
 
   .table-scroll {
     overflow-x: auto;
     border: 1px solid var(--color-border);
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-xl);
+    background: var(--color-bg);
   }
 
   .comparison-table {
@@ -154,35 +178,31 @@ const s = strings.whatIsSpecAde
 
   .comparison-table th,
   .comparison-table td {
-    padding: 12px 16px;
+    padding: 14px 18px;
     text-align: left;
     vertical-align: top;
     border-right: 1px solid var(--color-border);
   }
 
   .comparison-table th:last-child,
-  .comparison-table td:last-child {
-    border-right: none;
-  }
+  .comparison-table td:last-child { border-right: none; }
 
   .comparison-table thead th {
-    font-size: 12px;
-    font-weight: 600;
+    font-size: 11.5px;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.07em;
     color: var(--color-text-secondary);
   }
 
-  .row-label-head {
-    width: 130px;
-  }
+  .row-label-head { width: 130px; }
 
   .row-label {
-    font-weight: 500;
+    font-weight: 600;
     color: var(--color-text-muted);
-    font-size: 12px;
+    font-size: 11px;
     text-transform: uppercase;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.07em;
     white-space: nowrap;
   }
 
@@ -192,24 +212,31 @@ const s = strings.whatIsSpecAde
     transition: background 150ms var(--ease-out-soft);
   }
 
-  .comparison-table tbody tr:last-child {
-    border-bottom: none;
-  }
-
-  .comparison-table tbody tr:hover {
-    background: var(--color-surface);
-  }
+  .comparison-table tbody tr:last-child { border-bottom: none; }
+  .comparison-table tbody tr:hover { background: var(--color-surface); }
 
   .comparison-table td {
     color: var(--color-text-secondary);
-    line-height: 1.5;
+    line-height: 1.55;
   }
 
   /* Spec ADE column highlight */
   .col-spec-ade {
-    background: var(--color-accent-soft);
+    background: color-mix(in oklab, var(--color-accent) 6%, transparent) !important;
     color: var(--color-text) !important;
     font-weight: 500;
+    border-left: 2px solid color-mix(in oklab, var(--color-accent) 30%, transparent) !important;
+  }
+
+  .col-spec-ade-inner {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .col-star {
+    color: var(--color-accent);
+    font-size: 12px;
   }
 
   thead .col-spec-ade {

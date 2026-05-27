@@ -1,0 +1,1137 @@
+---
+import type { Lang } from '~/i18n/strings'
+import { t } from '~/i18n/strings'
+
+interface Props {
+  lang: Lang
+}
+
+const { lang } = Astro.props
+const strings = t(lang)
+const s = strings.goalShowcase
+const goalStrings = strings.spotlight.goal
+---
+
+<section class="goal-showcase" id="goal-showcase">
+  <div class="container-wide">
+    <header class="section-head reveal">
+      <span class="chip">{s.chip}</span>
+      <h2 class="section-title">{s.title}</h2>
+      <p class="section-subtitle">{s.subtitle}</p>
+    </header>
+
+    <!-- Hub Showcase Panel -->
+    <div class="hub-showcase reveal" id="goal-showcase-panel">
+      <!-- Showcase Header -->
+      <div class="pane-header">
+        <h3 class="hub-column-title">{s.visualTitle}</h3>
+        <p class="hub-column-desc">{s.visualSub}</p>
+      </div>
+
+      <div class="hub-grid">
+        <!-- Column 1: Goal input & milestones checklist -->
+        <div class="hub-column spec-pane">
+          <!-- Goal Scenario Selector -->
+          <div class="goal-selector" role="tablist" aria-label="Select Goal Scenario">
+            <button type="button" class="goal-select-btn active" role="tab" aria-selected="true" data-goal-id="auth"
+              data-input={s.goalInputAuth}
+              data-c1={s.authC1}
+              data-c2={s.authC2}
+              data-c3={s.authC3}>
+              Auth
+            </button>
+            <button type="button" class="goal-select-btn" role="tab" aria-selected="false" data-goal-id="cache"
+              data-input={s.goalInputCache}
+              data-c1={s.cacheC1}
+              data-c2={s.cacheC2}
+              data-c3={s.cacheC3}>
+              Cache
+            </button>
+            <button type="button" class="goal-select-btn" role="tab" aria-selected="false" data-goal-id="testing"
+              data-input={s.goalInputTesting}
+              data-c1={s.testingC1}
+              data-c2={s.testingC2}
+              data-c3={s.testingC3}>
+              Testing
+            </button>
+          </div>
+
+          <!-- Active Goal Header Card -->
+          <div class="goal-info-card">
+            <span class="active-goal-badge">{s.activeGoal}</span>
+            <p class="goal-input-text">“{s.goalInputAuth}”</p>
+          </div>
+
+          <!-- Milestones checklist -->
+          <div class="milestones-checklist">
+            <div class="milestone-item" id="loop-step-c1" data-status="pending">
+              <div class="milestone-badge">
+                <span class="badge-icon icon-pending"></span>
+                <span class="badge-icon icon-spinner"></span>
+                <span class="badge-icon icon-success">✓</span>
+              </div>
+              <span class="milestone-text">{s.authC1}</span>
+            </div>
+
+            <div class="milestone-item" id="loop-step-c2" data-status="pending">
+              <div class="milestone-badge">
+                <span class="badge-icon icon-pending"></span>
+                <span class="badge-icon icon-spinner"></span>
+                <span class="badge-icon icon-success">✓</span>
+              </div>
+              <span class="milestone-text">{s.authC2}</span>
+            </div>
+
+            <div class="milestone-item" id="loop-step-c3" data-status="pending">
+              <div class="milestone-badge">
+                <span class="badge-icon icon-pending"></span>
+                <span class="badge-icon icon-spinner"></span>
+                <span class="badge-icon icon-success">✓</span>
+              </div>
+              <span class="milestone-text">{s.authC3}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Column 2: Coder-Watcher circular iteration loop (Desktop only) -->
+        <div class="hub-column loop-pane" aria-hidden="true">
+          <div class="loop-visual-container">
+            <!-- Coder Node -->
+            <div class="loop-node node-coder" id="node-coder">
+              <span class="node-icon">◆</span>
+              <span class="node-label">{s.coderNode}</span>
+            </div>
+
+            <!-- Loop flow lines SVG -->
+            <svg class="loop-svg" viewBox="0 0 100 200" fill="none" preserveAspectRatio="none">
+              <!-- Path 1: Coder -> Watcher (Right curve going down) -->
+              <path id="flow-coder-to-watcher" class="loop-path" d="M 50,42 Q 95,100 50,158" />
+              <!-- Path 2: Watcher -> Coder (Left curve going up) -->
+              <path id="flow-watcher-to-coder" class="loop-path" d="M 50,158 Q 5,100 50,42" />
+            </svg>
+
+            <!-- Watcher Node -->
+            <div class="loop-node node-watcher" id="node-watcher">
+              <span class="node-icon">◇</span>
+              <span class="node-label">{s.watcherNode}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Column 3: Mock Terminal Screen -->
+        <div class="hub-column terminal-pane">
+          <div class="mock-terminal">
+            <div class="terminal-bar">
+              <div class="terminal-dots"><span></span><span></span><span></span></div>
+              <div class="terminal-title">goalrunner &middot; stream</div>
+            </div>
+            <div class="terminal-screen" id="loop-terminal-screen">
+              <!-- Empty state before start -->
+              <div class="terminal-empty" id="loop-terminal-empty">
+                <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="pulse-icon" aria-hidden="true">
+                  <polygon points="5 3 19 12 5 21 5 3"/>
+                </svg>
+                <p>{strings.multiAgent.terminalPlaceholder}</p>
+              </div>
+              <div class="sim-logs" id="loop-sim-logs" hidden></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Panel / Success Panel -->
+      <div class="showcase-actions">
+        <!-- Start simulation button -->
+        <button type="button" class="action-btn-start" id="loop-btn-start">
+          <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right:6px;"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          {s.startSimulation}
+        </button>
+
+        <!-- Success Banner (hidden by default) -->
+        <div class="success-banner-card" id="loop-success-banner" hidden>
+          <span class="success-banner-text">{goalStrings.simSuccess}</span>
+          <button type="button" class="action-btn-reset" id="loop-btn-reset">
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+            {s.resetSimulation}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Benefits Grid -->
+    <div class="benefits-grid reveal">
+      <div class="benefit-card shine-hover">
+        <div class="benefit-icon-badge">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+          </svg>
+        </div>
+        <h3 class="benefit-title">{s.benefitTitle1}</h3>
+        <p class="benefit-desc">{s.benefitDesc1}</p>
+      </div>
+
+      <div class="benefit-card shine-hover">
+        <div class="benefit-icon-badge" style="--badge-accent-color: var(--color-purple)">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+        </div>
+        <h3 class="benefit-title">{s.benefitTitle2}</h3>
+        <p class="benefit-desc">{s.benefitDesc2}</p>
+      </div>
+
+      <div class="benefit-card shine-hover">
+        <div class="benefit-icon-badge" style="--badge-accent-color: #ec4899">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+        </div>
+        <h3 class="benefit-title">{s.benefitTitle3}</h3>
+        <p class="benefit-desc">{s.benefitDesc3}</p>
+      </div>
+
+      <div class="benefit-card shine-hover">
+        <div class="benefit-icon-badge" style="--badge-accent-color: #10b981">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="m9 12 2 2 4-4"/>
+          </svg>
+        </div>
+        <h3 class="benefit-title">{s.benefitTitle4}</h3>
+        <p class="benefit-desc">{s.benefitDesc4}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Orchestration script -->
+<script>
+  interface SimLog {
+    html: string;
+    delay: number;
+    nodeAction?: 'coder' | 'watcher' | 'coder-to-watcher' | 'watcher-to-coder' | 'idle';
+    markStep?: { id: string; status: 'active' | 'success' };
+  }
+
+  function initGoalLoopShowcase() {
+    const section = document.getElementById('goal-showcase');
+    if (!section) return;
+
+    const startBtn = section.querySelector('#loop-btn-start') as HTMLButtonElement | null;
+    const resetBtn = section.querySelector('#loop-btn-reset') as HTMLButtonElement | null;
+    const emptyState = section.querySelector('#loop-terminal-empty') as HTMLElement | null;
+    const logsContainer = section.querySelector('#loop-sim-logs') as HTMLElement | null;
+    const terminalScreen = section.querySelector('#loop-terminal-screen') as HTMLElement | null;
+    const successBanner = section.querySelector('#loop-success-banner') as HTMLElement | null;
+
+    // Selector buttons
+    const selectorBtns = section.querySelectorAll('.goal-select-btn') as NodeListOf<HTMLButtonElement>;
+
+    // Checklist elements
+    const goalInputText = section.querySelector('.goal-input-text') as HTMLElement | null;
+    const stepC1Text = section.querySelector('#loop-step-c1 .milestone-text') as HTMLElement | null;
+    const stepC2Text = section.querySelector('#loop-step-c2 .milestone-text') as HTMLElement | null;
+    const stepC3Text = section.querySelector('#loop-step-c3 .milestone-text') as HTMLElement | null;
+
+    // Nodes
+    const coderNode = section.querySelector('#node-coder') as HTMLElement | null;
+    const watcherNode = section.querySelector('#node-watcher') as HTMLElement | null;
+    const pathCoderToWatcher = section.querySelector('#flow-coder-to-watcher') as SVGPathElement | null;
+    const pathWatcherToCoder = section.querySelector('#flow-watcher-to-coder') as SVGPathElement | null;
+
+    let activeGoalId = 'auth';
+    let activeTimeouts: number[] = [];
+
+    const getLogs = (goalId: string): SimLog[] => {
+      const isVi = document.documentElement.lang === 'vi';
+      
+      const logsMap: Record<string, SimLog[]> = {
+        auth: [
+          // STEP 1
+          { html: '<span class="log-tag tag-claude">[Claude Code]</span> Booting Goal Runner...', delay: 100, nodeAction: 'coder', markStep: { id: 'loop-step-c1', status: 'active' } },
+          { html: isVi ? '<span class="log-tag tag-claude">[Claude Code]</span> Đang phân tích mục tiêu và thiết lập tiêu chí...' : '<span class="log-tag tag-claude">[Claude Code]</span> Analyzing goal and setting criteria...', delay: 700, nodeAction: 'coder' },
+          { html: isVi ? '<span class="log-tag tag-claude">[Claude Code]</span> Tạo file migration: <span class="log-cmd">migrations/20260527_users.sql</span>' : '<span class="log-tag tag-claude">[Claude Code]</span> Creating migration file: <span class="log-cmd">migrations/20260527_users.sql</span>', delay: 1400, nodeAction: 'coder-to-watcher' },
+          { html: isVi ? '<span class="log-tag tag-claude tag-success">[Claude Code]</span> ✓ Migration SQL được áp dụng thành công.' : '<span class="log-tag tag-claude tag-success">[Claude Code]</span> ✓ Migration SQL applied successfully.', delay: 2000, nodeAction: 'watcher' },
+          { html: `<div class="watcher-bubble"><span class="watcher-title">◇ Watcher</span> <span class="watcher-action">continue</span></div>`, delay: 2600, nodeAction: 'watcher-to-coder', markStep: { id: 'loop-step-c1', status: 'success' } },
+          
+          // STEP 2
+          { html: isVi ? '<span class="log-tag tag-claude">[Claude Code]</span> Milestone 2: Triển khai API đăng ký/đăng nhập JWT...' : '<span class="log-tag tag-claude">[Claude Code]</span> Milestone 2: Implement login & signup API routes...', delay: 3200, nodeAction: 'coder', markStep: { id: 'loop-step-c2', status: 'active' } },
+          { html: isVi ? '<span class="log-tag tag-claude">[Claude Code]</span> Thêm logic mã hóa mật khẩu bcrypt và sinh token...' : '<span class="log-tag tag-claude">[Claude Code]</span> Adding bcrypt hashing and JWT generation...', delay: 3900, nodeAction: 'coder' },
+          { html: isVi ? '<span class="log-tag tag-claude">[Claude Code]</span> Tạo các file controllers/auth.rs và routes/auth.rs' : '<span class="log-tag tag-claude">[Claude Code]</span> Generating controllers/auth.rs and routes/auth.rs', delay: 4600, nodeAction: 'coder-to-watcher' },
+          { html: isVi ? '<span class="log-tag tag-claude tag-success">[Claude Code]</span> ✓ Code biên dịch thành công.' : '<span class="log-tag tag-claude tag-success">[Claude Code]</span> ✓ Code compiled successfully.', delay: 5200, nodeAction: 'watcher' },
+          { html: `<div class="watcher-bubble"><span class="watcher-title">◇ Watcher</span> <span class="watcher-action">continue</span></div>`, delay: 5800, nodeAction: 'watcher-to-coder', markStep: { id: 'loop-step-c2', status: 'success' } },
+
+          // STEP 3
+          { html: isVi ? '<span class="log-tag tag-claude">[Claude Code]</span> Milestone 3: Chạy bộ test & xác nhận thành công 100%...' : '<span class="log-tag tag-claude">[Claude Code]</span> Milestone 3: Run integration tests and verify success...', delay: 6400, nodeAction: 'coder', markStep: { id: 'loop-step-c3', status: 'active' } },
+          { html: '<span class="log-tag tag-claude">[Claude Code]</span> Invoking test suite: <span class="log-cmd">cargo test auth</span>', delay: 7100, nodeAction: 'coder' },
+          { html: isVi ? '<span class="log-tag tag-claude">[Claude Code]</span> Đang chạy 14 integration tests...' : '<span class="log-tag tag-claude">[Claude Code]</span> Running 14 integration tests...', delay: 7800, nodeAction: 'coder-to-watcher' },
+          { html: '<span class="log-tag tag-claude tag-success">[Claude Code]</span> ✓ cargo test: 14 passed; 0 failed; 0 ignored.', delay: 8400, nodeAction: 'watcher' },
+          { html: `<div class="watcher-bubble"><span class="watcher-title">◇ Watcher</span> <span class="watcher-action-complete">complete</span></div>`, delay: 9000, nodeAction: 'idle', markStep: { id: 'loop-step-c3', status: 'success' } }
+        ],
+        cache: [
+          // STEP 1
+          { html: '<span class="log-tag tag-claude">[Claude Code]</span> Booting Goal Runner...', delay: 100, nodeAction: 'coder', markStep: { id: 'loop-step-c1', status: 'active' } },
+          { html: isVi ? '<span class="log-tag tag-claude">[Claude Code]</span> Đang chạy kịch bản phân tích hiệu năng truy vấn...' : '<span class="log-tag tag-claude">[Claude Code]</span> Running query profiling script...', delay: 700, nodeAction: 'coder' },
+          { html: isVi ? '<span class="log-tag tag-claude">[Claude Code]</span> Phát hiện truy vấn chậm: <span class="log-cmd">SELECT * FROM products (1.24s)</span>' : '<span class="log-tag tag-claude">[Claude Code]</span> Slow query detected: <span class="log-cmd">SELECT * FROM products (1.24s)</span>', delay: 1400, nodeAction: 'coder-to-watcher' },
+          { html: isVi ? '<span class="log-tag tag-claude tag-success">[Claude Code]</span> ✓ Điểm nghẽn đã được xác định.' : '<span class="log-tag tag-claude tag-success">[Claude Code]</span> ✓ Bottleneck query identified.', delay: 2000, nodeAction: 'watcher' },
+          { html: `<div class="watcher-bubble"><span class="watcher-title">◇ Watcher</span> <span class="watcher-action">continue</span></div>`, delay: 2600, nodeAction: 'watcher-to-coder', markStep: { id: 'loop-step-c1', status: 'success' } },
+          
+          // STEP 2
+          { html: isVi ? '<span class="log-tag tag-claude">[Claude Code]</span> Milestone 2: Tích hợp Redis & xử lý lưu/đọc cache...' : '<span class="log-tag tag-claude">[Claude Code]</span> Milestone 2: Integrate Redis pool & set/get cache...', delay: 3200, nodeAction: 'coder', markStep: { id: 'loop-step-c2', status: 'active' } },
+          { html: isVi ? '<span class="log-tag tag-claude">[Claude Code]</span> Đang kết nối Redis connection pool vào config.rs...' : '<span class="log-tag tag-claude">[Claude Code]</span> Setting up Redis connection pool in config.rs...', delay: 3900, nodeAction: 'coder' },
+          { html: isVi ? '<span class="log-tag tag-claude">[Claude Code]</span> Thêm logic đọc ghi cache cho dữ liệu sản phẩm...' : '<span class="log-tag tag-claude">[Claude Code]</span> Wrapping product query with Redis cache lookup...', delay: 4600, nodeAction: 'coder-to-watcher' },
+          { html: isVi ? '<span class="log-tag tag-claude tag-success">[Claude Code]</span> ✓ Code biên dịch thành công.' : '<span class="log-tag tag-claude tag-success">[Claude Code]</span> ✓ Code compiled successfully.', delay: 5200, nodeAction: 'watcher' },
+          { html: `<div class="watcher-bubble"><span class="watcher-title">◇ Watcher</span> <span class="watcher-action">continue</span></div>`, delay: 5800, nodeAction: 'watcher-to-coder', markStep: { id: 'loop-step-c2', status: 'success' } },
+
+          // STEP 3
+          { html: isVi ? '<span class="log-tag tag-claude">[Claude Code]</span> Milestone 3: Đo hiệu năng & kiểm tra phản hồi <50ms...' : '<span class="log-tag tag-claude">[Claude Code]</span> Milestone 3: Benchmark and verify response <50ms...', delay: 6400, nodeAction: 'coder', markStep: { id: 'loop-step-c3', status: 'active' } },
+          { html: isVi ? '<span class="log-tag tag-claude">[Claude Code]</span> Đang chạy load test: 1000 requests/sec...' : '<span class="log-tag tag-claude">[Claude Code]</span> Running load test: 1000 requests/sec...', delay: 7100, nodeAction: 'coder' },
+          { html: isVi ? '<span class="log-tag tag-claude tag-success">[Claude Code]</span> ✓ Thời gian phản hồi trung bình: 38ms (Nhanh hơn 32 lần).' : '<span class="log-tag tag-claude tag-success">[Claude Code]</span> ✓ Average query response: 38ms (32x speedup).', delay: 8000, nodeAction: 'coder-to-watcher' },
+          { html: isVi ? '<span class="log-tag tag-claude tag-success">[Claude Code]</span> ✓ Kiểm thử hiệu năng đạt chỉ tiêu.' : '<span class="log-tag tag-claude tag-success">[Claude Code]</span> ✓ Benchmark criteria achieved.', delay: 8600, nodeAction: 'watcher' },
+          { html: `<div class="watcher-bubble"><span class="watcher-title">◇ Watcher</span> <span class="watcher-action-complete">complete</span></div>`, delay: 9200, nodeAction: 'idle', markStep: { id: 'loop-step-c3', status: 'success' } }
+        ],
+        testing: [
+          // STEP 1
+          { html: '<span class="log-tag tag-claude">[Claude Code]</span> Booting Goal Runner...', delay: 100, nodeAction: 'coder', markStep: { id: 'loop-step-c1', status: 'active' } },
+          { html: isVi ? '<span class="log-tag tag-claude">[Claude Code]</span> Đang khởi tạo mock server cho Stripe...' : '<span class="log-tag tag-claude">[Claude Code]</span> Creating Stripe mock server...', delay: 700, nodeAction: 'coder' },
+          { html: '<span class="log-tag tag-claude">[Claude Code]</span> Writing tests/mocks/stripe.rs', delay: 1400, nodeAction: 'coder-to-watcher' },
+          { html: isVi ? '<span class="log-tag tag-claude tag-success">[Claude Code]</span> ✓ Mock server thanh toán đã sẵn sàng.' : '<span class="log-tag tag-claude tag-success">[Claude Code]</span> ✓ Payment gateway mock ready.', delay: 2000, nodeAction: 'watcher' },
+          { html: `<div class="watcher-bubble"><span class="watcher-title">◇ Watcher</span> <span class="watcher-action">continue</span></div>`, delay: 2600, nodeAction: 'watcher-to-coder', markStep: { id: 'loop-step-c1', status: 'success' } },
+          
+          // STEP 2
+          { html: isVi ? '<span class="log-tag tag-claude">[Claude Code]</span> Milestone 2: Triển khai các test case cho webhook...' : '<span class="log-tag tag-claude">[Claude Code]</span> Milestone 2: Implement test cases for webhooks...', delay: 3200, nodeAction: 'coder', markStep: { id: 'loop-step-c2', status: 'active' } },
+          { html: isVi ? '<span class="log-tag tag-claude">[Claude Code]</span> Thêm test case cho event payment_intent.succeeded...' : '<span class="log-tag tag-claude">[Claude Code]</span> Adding tests for event payment_intent.succeeded...', delay: 3900, nodeAction: 'coder' },
+          { html: isVi ? '<span class="log-tag tag-claude">[Claude Code]</span> Viết mã kiểm tra chữ ký webhook bảo mật...' : '<span class="log-tag tag-claude">[Claude Code]</span> Writing signature verification test suite...', delay: 4600, nodeAction: 'coder-to-watcher' },
+          { html: isVi ? '<span class="log-tag tag-claude tag-success">[Claude Code]</span> ✓ Bộ test xây dựng thành công.' : '<span class="log-tag tag-claude tag-success">[Claude Code]</span> ✓ Webhook test suite builds successfully.', delay: 5200, nodeAction: 'watcher' },
+          { html: `<div class="watcher-bubble"><span class="watcher-title">◇ Watcher</span> <span class="watcher-action">continue</span></div>`, delay: 5800, nodeAction: 'watcher-to-coder', markStep: { id: 'loop-step-c2', status: 'success' } },
+
+          // STEP 3
+          { html: isVi ? '<span class="log-tag tag-claude">[Claude Code]</span> Milestone 3: Chạy đo & đạt trên 90% độ bao phủ code...' : '<span class="log-tag tag-claude">[Claude Code]</span> Milestone 3: Run test coverage & verify >90%...', delay: 6400, nodeAction: 'coder', markStep: { id: 'loop-step-c3', status: 'active' } },
+          { html: '<span class="log-tag tag-claude">[Claude Code]</span> Running coverage: <span class="log-cmd">cargo tarpaulin</span>', delay: 7100, nodeAction: 'coder' },
+          { html: isVi ? '<span class="log-tag tag-claude tag-success">[Claude Code]</span> ✓ Độ bao phủ code luồng thanh toán: 94.2% lines.' : '<span class="log-tag tag-claude tag-success">[Claude Code]</span> ✓ Payment flow line coverage: 94.2%.', delay: 8000, nodeAction: 'coder-to-watcher' },
+          { html: isVi ? '<span class="log-tag tag-claude tag-success">[Claude Code]</span> ✓ Tiêu chí chất lượng code hoàn tất.' : '<span class="log-tag tag-claude tag-success">[Claude Code]</span> ✓ Coverage criteria passed.', delay: 8600, nodeAction: 'watcher' },
+          { html: `<div class="watcher-bubble"><span class="watcher-title">◇ Watcher</span> <span class="watcher-action-complete">complete</span></div>`, delay: 9200, nodeAction: 'idle', markStep: { id: 'loop-step-c3', status: 'success' } }
+        ]
+      };
+      
+      return logsMap[goalId] || logsMap.auth;
+    };
+
+    function updateVisualState(action: 'coder' | 'watcher' | 'coder-to-watcher' | 'watcher-to-coder' | 'idle') {
+      coderNode?.classList.remove('active');
+      watcherNode?.classList.remove('active');
+      pathCoderToWatcher?.classList.remove('active');
+      pathWatcherToCoder?.classList.remove('active');
+
+      if (action === 'coder') {
+        coderNode?.classList.add('active');
+      } else if (action === 'watcher') {
+        watcherNode?.classList.add('active');
+      } else if (action === 'coder-to-watcher') {
+        coderNode?.classList.add('active');
+        pathCoderToWatcher?.classList.add('active');
+      } else if (action === 'watcher-to-coder') {
+        watcherNode?.classList.add('active');
+        pathWatcherToCoder?.classList.add('active');
+      }
+    }
+
+    function clearSimulation() {
+      activeTimeouts.forEach(id => clearTimeout(id));
+      activeTimeouts = [];
+      
+      if (logsContainer) {
+        logsContainer.innerHTML = '';
+        logsContainer.hidden = true;
+      }
+      if (emptyState) emptyState.hidden = false;
+      if (successBanner) successBanner.hidden = true;
+      if (startBtn) startBtn.style.display = 'inline-flex';
+
+      section?.querySelectorAll('.milestone-item').forEach(step => {
+        step.setAttribute('data-status', 'pending');
+      });
+
+      updateVisualState('idle');
+    }
+
+    function runSimulation() {
+      clearSimulation();
+      if (emptyState) emptyState.hidden = true;
+      if (logsContainer) logsContainer.hidden = false;
+      if (startBtn) startBtn.style.display = 'none';
+
+      const simLogs = getLogs(activeGoalId);
+      simLogs.forEach(log => {
+        const timeoutId = window.setTimeout(() => {
+          if (logsContainer) {
+            const line = document.createElement('div');
+            line.className = 'sim-log-line';
+            line.innerHTML = log.html;
+            logsContainer.appendChild(line);
+            
+            if (terminalScreen) {
+              terminalScreen.scrollTo({ top: terminalScreen.scrollHeight, behavior: 'smooth' });
+            }
+          }
+
+          if (log.markStep) {
+            const stepEl = section?.querySelector(`#${log.markStep.id}`);
+            if (stepEl) {
+              stepEl.setAttribute('data-status', log.markStep.status);
+            }
+          }
+
+          if (log.nodeAction) {
+            updateVisualState(log.nodeAction);
+          }
+
+          if (log === simLogs[simLogs.length - 1]) {
+            setTimeout(() => {
+              if (successBanner) {
+                successBanner.hidden = false;
+                successBanner.classList.add('fade-in');
+              }
+            }, 500);
+          }
+        }, log.delay);
+
+        activeTimeouts.push(timeoutId);
+      });
+    }
+
+    // Set up tab click listeners for Scenario switching
+    selectorBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const goalId = btn.getAttribute('data-goal-id');
+        if (!goalId) return;
+
+        // Update active class on buttons
+        selectorBtns.forEach(b => {
+          b.classList.remove('active');
+          b.setAttribute('aria-selected', 'false');
+        });
+        btn.classList.add('active');
+        btn.setAttribute('aria-selected', 'true');
+
+        activeGoalId = goalId;
+
+        // Update content elements with localized preset values
+        if (goalInputText) {
+          goalInputText.innerText = `“${btn.getAttribute('data-input') || ''}”`;
+        }
+        if (stepC1Text) {
+          stepC1Text.innerText = btn.getAttribute('data-c1') || '';
+        }
+        if (stepC2Text) {
+          stepC2Text.innerText = btn.getAttribute('data-c2') || '';
+        }
+        if (stepC3Text) {
+          stepC3Text.innerText = btn.getAttribute('data-c3') || '';
+        }
+
+        // Cancel any active simulation
+        clearSimulation();
+      });
+    });
+
+    startBtn?.addEventListener('click', runSimulation);
+    resetBtn?.addEventListener('click', clearSimulation);
+  }
+
+  // Hook startup
+  initGoalLoopShowcase();
+  document.addEventListener('astro:after-swap', initGoalLoopShowcase);
+</script>
+
+<style>
+  .goal-showcase {
+    padding-block: clamp(64px, 8vw, 100px);
+    background: var(--color-bg);
+    border-block-end: 1px solid var(--color-border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .section-head {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 48px;
+    max-width: 44rem;
+  }
+
+  /* Interactive Connection Hub Container */
+  .hub-showcase {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    padding: clamp(20px, 4vw, 36px);
+    margin-bottom: 56px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  }
+
+  .pane-header {
+    margin-bottom: 24px;
+  }
+
+  .hub-column-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--color-text);
+    margin: 0 0 4px 0;
+    letter-spacing: -0.01em;
+  }
+
+  .hub-column-desc {
+    font-size: 12.5px;
+    color: var(--color-text-secondary);
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  .hub-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  @media (min-width: 768px) {
+    .hub-grid {
+      grid-template-columns: 310px 120px 1fr;
+      align-items: start; /* Align tops of columns */
+      gap: 16px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .hub-grid {
+      grid-template-columns: 320px 140px 1fr;
+      gap: 24px;
+    }
+  }
+
+  .hub-column {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  /* Goal Scenario Selector */
+  .goal-selector {
+    display: flex;
+    gap: 4px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    padding: 4px;
+    border-radius: var(--radius-lg);
+    box-sizing: border-box;
+  }
+
+  .goal-select-btn {
+    flex: 1;
+    background: transparent;
+    border: 1px solid transparent;
+    padding: 6px 8px;
+    font-size: 10.5px;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: all 200ms var(--ease-out-soft);
+    box-sizing: border-box;
+    text-align: center;
+  }
+
+  .goal-select-btn:hover {
+    color: var(--color-text-secondary);
+    background: color-mix(in oklab, var(--color-border) 40%, transparent);
+  }
+
+  .goal-select-btn.active {
+    background: var(--color-raised);
+    color: var(--color-accent);
+    border-color: var(--color-border-strong);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Column 1: Spec Pane */
+  .spec-pane {
+    gap: 12px;
+    height: 302px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .goal-info-card {
+    background: var(--color-raised);
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius-lg);
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    box-sizing: border-box;
+  }
+
+  .active-goal-badge {
+    align-self: flex-start;
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    background: color-mix(in oklab, var(--color-accent) 15%, transparent);
+    color: var(--color-accent);
+    padding: 2px 6px;
+    border-radius: var(--radius-xs);
+    border: 1px solid color-mix(in oklab, var(--color-accent) 25%, transparent);
+  }
+
+  .goal-input-text {
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--color-text);
+    margin: 0;
+    line-height: 1.45;
+    font-style: italic;
+  }
+
+  .milestones-checklist {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex-grow: 1;
+  }
+
+  .milestone-item {
+    background: var(--color-raised);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 10px 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-sizing: border-box;
+    transition: all 250ms var(--ease-out-soft);
+  }
+
+  .milestone-badge {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-surface);
+    border: 1.5px solid var(--color-border-strong);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-sizing: border-box;
+  }
+
+  .milestone-text {
+    font-size: 11.5px;
+    color: var(--color-text-secondary);
+    line-height: 1.35;
+    transition: color 250ms var(--ease-out-soft);
+  }
+
+  .badge-icon {
+    display: none;
+    font-size: 10px;
+    font-weight: bold;
+    line-height: 1;
+  }
+
+  .icon-pending {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--color-text-muted);
+    display: block;
+  }
+
+  .icon-spinner {
+    width: 8px;
+    height: 8px;
+    border: 1.5px solid var(--color-accent);
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: badgeSpinGoalShowcase 0.8s linear infinite;
+  }
+
+  .icon-success {
+    color: var(--color-success);
+  }
+
+  @keyframes badgeSpinGoalShowcase {
+    to { transform: rotate(360deg); }
+  }
+
+  /* Status overrides */
+  .milestone-item[data-status="pending"] .icon-pending { display: block; }
+  .milestone-item[data-status="pending"] { opacity: 0.5; }
+
+  .milestone-item[data-status="active"] {
+    opacity: 1;
+    border-color: var(--color-accent);
+  }
+  .milestone-item[data-status="active"] .icon-spinner { display: block; }
+  .milestone-item[data-status="active"] .icon-pending { display: none; }
+  .milestone-item[data-status="active"] .milestone-text {
+    color: var(--color-text);
+    font-weight: 500;
+  }
+
+  .milestone-item[data-status="success"] {
+    opacity: 1;
+    border-color: var(--color-success);
+  }
+  .milestone-item[data-status="success"] .milestone-badge {
+    border-color: var(--color-success);
+    background: color-mix(in srgb, var(--color-success) 12%, transparent);
+  }
+  .milestone-item[data-status="success"] .icon-success { display: block; }
+  .milestone-item[data-status="success"] .icon-pending { display: none; }
+  .milestone-item[data-status="success"] .milestone-text {
+    color: var(--color-success);
+  }
+
+  /* Column 2: Loop Visual Pane */
+  .loop-pane {
+    display: none;
+  }
+
+  @media (min-width: 768px) {
+    .loop-pane {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      height: 302px;
+    }
+  }
+
+  .loop-visual-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding-block: 10px;
+    box-sizing: border-box;
+  }
+
+  .loop-node {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: var(--color-surface);
+    border: 2px solid var(--color-border-strong);
+    color: var(--color-text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 3;
+    transition: all 250ms var(--ease-out-soft);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+
+  .node-icon {
+    font-size: 14px;
+    font-weight: bold;
+  }
+
+  .node-label {
+    position: absolute;
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-text-muted);
+    white-space: nowrap;
+    transition: color 250ms var(--ease-out-soft);
+  }
+
+  .node-coder .node-label {
+    bottom: -18px;
+  }
+
+  .node-watcher .node-label {
+    top: -18px;
+  }
+
+  /* Active node states */
+  .node-coder.active {
+    border-color: var(--color-claude);
+    color: var(--color-claude);
+    box-shadow: 0 0 16px color-mix(in oklab, var(--color-claude) 25%, transparent);
+  }
+  .node-coder.active .node-label {
+    color: var(--color-claude);
+  }
+
+  .node-watcher.active {
+    border-color: var(--color-warning);
+    color: var(--color-warning);
+    box-shadow: 0 0 16px color-mix(in oklab, var(--color-warning) 25%, transparent);
+  }
+  .node-watcher.active .node-label {
+    color: var(--color-warning);
+  }
+
+  /* Loop SVG paths */
+  .loop-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .loop-path {
+    stroke: var(--color-border);
+    stroke-width: 2;
+    transition: stroke 300ms var(--ease-out-soft), stroke-width 300ms var(--ease-out-soft);
+  }
+
+  .loop-path.active {
+    stroke-width: 3;
+    stroke-dasharray: 6 5;
+    animation: flowDashesLoop 1s linear infinite;
+  }
+
+  #flow-coder-to-watcher.active {
+    stroke: var(--color-accent);
+  }
+
+  #flow-watcher-to-coder.active {
+    stroke: var(--color-warning);
+  }
+
+  @keyframes flowDashesLoop {
+    to {
+      stroke-dashoffset: -22;
+    }
+  }
+
+  /* Column 3: Terminal Screen */
+  .mock-terminal {
+    background: #07070c;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    height: 302px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.3);
+  }
+
+  .terminal-bar {
+    background: #11111b;
+    border-bottom: 1px solid #1a1a2b;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+
+  .terminal-dots {
+    display: flex;
+    gap: 5px;
+    position: absolute;
+    left: 14px;
+  }
+
+  .terminal-dots span {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #2b2b3a;
+  }
+
+  .terminal-title {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--color-text-secondary);
+    margin: 0 auto;
+    font-weight: 500;
+  }
+
+  .terminal-screen {
+    flex-grow: 1;
+    padding: 16px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    scrollbar-width: none;
+  }
+
+  .terminal-screen::-webkit-scrollbar {
+    display: none;
+  }
+
+  .terminal-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    text-align: center;
+    color: var(--color-text-muted);
+    gap: 12px;
+  }
+
+  .pulse-icon {
+    animation: iconPulseGoalShowcase 2s ease-in-out infinite;
+  }
+
+  @keyframes iconPulseGoalShowcase {
+    0%, 100% { opacity: 0.4; transform: scale(0.96); }
+    50% { opacity: 0.9; transform: scale(1.04); }
+  }
+
+  .terminal-empty p {
+    font-size: 12px;
+    margin: 0;
+    max-width: 240px;
+    line-height: 1.5;
+  }
+
+  .sim-logs {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: #a5b4fc;
+    word-break: break-all;
+  }
+
+  .sim-log-line {
+    animation: printSimLogLine 200ms var(--ease-out-soft) forwards;
+    opacity: 0;
+    transform: translateY(3px);
+    line-height: 1.45;
+  }
+
+  @keyframes printSimLogLine {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .tag-claude {
+    color: var(--color-claude);
+    font-weight: 600;
+  }
+
+  .tag-success {
+    color: var(--color-success);
+  }
+
+  .log-cmd {
+    color: var(--color-accent);
+    background: rgba(34, 211, 238, 0.08);
+    padding: 0px 4px;
+    border-radius: 2px;
+  }
+
+  .watcher-bubble {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: 5px 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-block: 2px;
+  }
+
+  .watcher-title {
+    color: var(--color-warning);
+    font-weight: 600;
+  }
+
+  .watcher-action {
+    background: color-mix(in srgb, var(--color-warning) 20%, transparent);
+    color: var(--color-warning);
+    font-size: 10px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 1px 4px;
+    border-radius: var(--radius-xs);
+  }
+
+  .watcher-action-complete {
+    background: color-mix(in srgb, var(--color-success) 20%, transparent);
+    color: var(--color-success);
+    font-size: 10px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 1px 4px;
+    border-radius: var(--radius-xs);
+  }
+
+  /* Showcase Actions footer container */
+  .showcase-actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 24px;
+    border-top: 1px solid var(--color-border);
+    padding-top: 20px;
+    min-height: 48px;
+  }
+
+  .action-btn-start {
+    background: var(--color-accent);
+    border: 1px solid var(--color-accent);
+    color: #080810;
+    font-size: 12.5px;
+    font-weight: 600;
+    padding: 10px 20px;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 150ms var(--ease-out-soft);
+    animation: startGoalPulse 2s infinite alternate;
+  }
+
+  .action-btn-start:hover {
+    background: var(--color-accent-hover);
+    border-color: var(--color-accent-hover);
+    transform: translateY(-1px);
+  }
+
+  @keyframes startGoalPulse {
+    0% { box-shadow: 0 0 0 0 rgba(34, 211, 238, 0.2); }
+    100% { box-shadow: 0 0 12px 2px rgba(34, 211, 238, 0.4); }
+  }
+
+  .success-banner-card {
+    background: color-mix(in oklab, var(--color-success) 8%, var(--color-surface));
+    border: 1.5px solid color-mix(in oklab, var(--color-success) 25%, transparent);
+    border-radius: var(--radius-md);
+    padding: 8px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    animation: bannerPopUp 300ms var(--ease-spring);
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 480px;
+  }
+
+  @keyframes bannerPopUp {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .success-banner-text {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-success);
+  }
+
+  .action-btn-reset {
+    background: var(--color-success);
+    border: 1px solid var(--color-success);
+    color: #080810;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: all 150ms var(--ease-out-soft);
+  }
+
+  .action-btn-reset:hover {
+    opacity: 0.9;
+    transform: translateY(-0.5px);
+  }
+
+  /* Benefits Grid styling */
+  .benefits-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    margin-top: 48px;
+  }
+
+  @media (min-width: 640px) {
+    .benefits-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .benefits-grid {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+  }
+
+  .benefit-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    transition: border-color 250ms var(--ease-out-soft), transform 250ms var(--ease-out-soft);
+  }
+
+  .benefit-card:hover {
+    border-color: var(--color-border-strong);
+    transform: translateY(-2px);
+  }
+
+  .benefit-icon-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: var(--radius-md);
+    background: color-mix(in oklab, var(--badge-accent-color, var(--color-accent)) 10%, transparent);
+    color: var(--badge-accent-color, var(--color-accent));
+    border: 1px solid color-mix(in oklab, var(--badge-accent-color, var(--color-accent)) 25%, transparent);
+    flex-shrink: 0;
+  }
+
+  .benefit-title {
+    font-size: 14.5px;
+    font-weight: 700;
+    color: var(--color-text);
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+
+  .benefit-desc {
+    font-size: 12.5px;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sim-log-line { animation: none; opacity: 1; }
+    .icon-spinner { animation: none; }
+    .action-btn-start { animation: none; }
+    .success-banner-card { animation: none; }
+    .benefit-card:hover { transform: none; }
+    .loop-path.active { animation: none; }
+  }
+</style>

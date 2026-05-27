@@ -4,9 +4,10 @@ import AxeBuilder from '@axe-core/playwright'
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
 async function setTheme(page: Page, theme: 'dark' | 'light') {
-  await page.evaluate((t) => {
-    document.documentElement.setAttribute('data-theme', t)
-    localStorage.setItem('spec-ade-web:theme', t)
+  await page.addInitScript((t) => {
+    try {
+      window.localStorage.setItem('spec-ade-web:theme', t)
+    } catch {}
   }, theme)
 }
 
@@ -42,14 +43,14 @@ test('/vi/ returns 200, hero heading visible (Vietnamese)', async ({ page }) => 
 // ─── Test 3: Theme toggle switches data-theme attribute ─────────────────────
 
 test('theme toggle switches data-theme attribute on click', async ({ page }) => {
-  await page.goto('/')
-
-  // Ensure we start in dark mode
+  // Ensure we start in dark mode by setting theme before navigating
   await setTheme(page, 'dark')
+  await page.goto('/')
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
 
-  // Click the theme toggle button
-  const toggle = page.getByTestId('theme-toggle')
+  // Click the theme toggle button (wait for Vue hydration)
+  const toggle = page.locator('[data-testid="theme-toggle"][data-hydrated="true"]')
+  await expect(toggle).toBeVisible()
   await toggle.click()
 
   // Should now be light
@@ -146,8 +147,8 @@ for (const viewport of viewports) {
 
       test(`visual regression: ${routeSlug} ${theme} ${viewport.name}`, async ({ page }) => {
         await page.setViewportSize({ width: viewport.width, height: viewport.height })
-        await page.goto(route)
         await setTheme(page, theme)
+        await page.goto(route)
 
         // Wait for animations to settle
         await page.waitForTimeout(300)
@@ -174,10 +175,26 @@ test('5 spotlights render in correct order on /', async ({ page }) => {
   }
 })
 
-test('features recap visible on /', async ({ page }) => {
+test('view all features CTA is visible on / and links to /features', async ({ page }) => {
   await page.goto('/')
-  const recap = page.getByTestId('features-recap')
-  await expect(recap).toBeVisible()
+  const btn = page.getByTestId('view-all-features-btn')
+  await expect(btn).toBeVisible()
+  await expect(btn).toHaveAttribute('href', '/features')
+})
+
+test('view all features CTA is visible on /vi/ and links to /vi/features', async ({ page }) => {
+  await page.goto('/vi/')
+  const btn = page.getByTestId('view-all-features-btn')
+  await expect(btn).toBeVisible()
+  await expect(btn).toHaveAttribute('href', '/vi/features')
+})
+
+test('features recap visible on /features and /vi/features', async ({ page }) => {
+  await page.goto('/features')
+  await expect(page.getByTestId('features-recap')).toBeVisible()
+
+  await page.goto('/vi/features')
+  await expect(page.getByTestId('features-recap')).toBeVisible()
 })
 
 test('5 spotlights render in correct order on /vi/', async ({ page }) => {
@@ -219,4 +236,74 @@ test('/install returns 200 and shows the install command', async ({ page }) => {
   const installCommand = page.locator('pre code').first()
   await expect(installCommand).toBeVisible()
   await expect(installCommand).toContainText('npx -y @spec-ade/cli@latest')
+})
+
+// ─── Test 13: Goal Showcase Interactive Tab Switcher ──────────────────────────
+
+test('Goal Showcase: scenario selector updates goal text & milestones', async ({ page }) => {
+  await page.goto('/features')
+
+  const section = page.locator('#goal-showcase')
+  await expect(section).toBeVisible()
+
+  // Default preset (Auth) goal and milestone
+  await expect(section.locator('.goal-input-text')).toContainText('Add JWT authentication with database storage.')
+  await expect(section.locator('#loop-step-c1 .milestone-text')).toContainText('1. Database migration for users table')
+
+  // Click Cache preset tab
+  await section.locator('.goal-select-btn[data-goal-id="cache"]').click()
+  await expect(section.locator('.goal-input-text')).toContainText('Optimize database query times with Redis caching.')
+  await expect(section.locator('#loop-step-c1 .milestone-text')).toContainText('1. Profile DB queries & find bottleneck')
+
+  // Click Testing preset tab
+  await section.locator('.goal-select-btn[data-goal-id="testing"]').click()
+  await expect(section.locator('.goal-input-text')).toContainText('Write unit and integration tests for payment flow.')
+  await expect(section.locator('#loop-step-c1 .milestone-text')).toContainText('1. Mock Stripe gateway requests')
+})
+
+test('Goal Showcase: simulation runs to completion', async ({ page }) => {
+  // Increase test timeout for simulation timing
+  test.setTimeout(15000)
+  await page.goto('/features')
+
+  const section = page.locator('#goal-showcase')
+  const startBtn = section.locator('#loop-btn-start')
+  await expect(startBtn).toBeVisible()
+
+  // Click Start Loop Simulation
+  await startBtn.click()
+
+  // Wait for the success banner to appear at the end of the simulation
+  const successBanner = section.locator('#loop-success-banner')
+  await expect(successBanner).toBeVisible({ timeout: 12000 })
+})
+
+// ─── Test 15: Spotlight detail links to Features page ────────────────────────
+
+test('spotlights on / have correct detail links to /features', async ({ page }) => {
+  await page.goto('/')
+
+  // Goal spotlight detail button
+  const goalLink = page.locator('[data-testid="spotlight-goal"] .spotlight-copy a')
+  await expect(goalLink).toBeVisible()
+  await expect(goalLink).toHaveAttribute('href', '/features#goal-showcase')
+
+  // Multi-CLI spotlight detail button
+  const mcLink = page.locator('[data-testid="spotlight-multi-cli"] .spotlight-copy a')
+  await expect(mcLink).toBeVisible()
+  await expect(mcLink).toHaveAttribute('href', '/features#multi-agent')
+})
+
+test('spotlights on /vi/ have correct detail links to /vi/features', async ({ page }) => {
+  await page.goto('/vi/')
+
+  // Goal spotlight detail button
+  const goalLink = page.locator('[data-testid="spotlight-goal"] .spotlight-copy a')
+  await expect(goalLink).toBeVisible()
+  await expect(goalLink).toHaveAttribute('href', '/vi/features#goal-showcase')
+
+  // Multi-CLI spotlight detail button
+  const mcLink = page.locator('[data-testid="spotlight-multi-cli"] .spotlight-copy a')
+  await expect(mcLink).toBeVisible()
+  await expect(mcLink).toHaveAttribute('href', '/vi/features#multi-agent')
 })

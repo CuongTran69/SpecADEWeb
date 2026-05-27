@@ -1,6 +1,7 @@
 ---
 import type { Lang } from '~/i18n/strings'
 import { t } from '~/i18n/strings'
+import { pathFor } from '~/i18n/utils'
 import Spotlight from '~/components/Spotlight.astro'
 
 interface Props {
@@ -19,27 +20,145 @@ const tabs = [
 ---
 
 <Spotlight id="multi-cli" hook={strings.spotlight.multiCli.hook} body={strings.spotlight.multiCli.body} tone="default">
-  <div slot="visual" class="multicli-mock" aria-hidden="true">
-    <div class="multicli-tabs" role="tablist">
+  <div slot="visual" class="multicli-mock">
+    <div class="multicli-tabs" role="tablist" data-multicli-tabs>
       {tabs.map((tab) => (
-        <div class={`multicli-tab ${tab.cls}${tab.active ? ' multicli-tab--active' : ''}`} role="tab" aria-selected={tab.active ? 'true' : 'false'}>
+        <button
+          type="button"
+          class={`multicli-tab ${tab.cls}${tab.active ? ' multicli-tab--active' : ''}`}
+          role="tab"
+          aria-selected={tab.active ? 'true' : 'false'}
+          tabindex={tab.active ? 0 : -1}
+          data-cli={tab.id}
+          data-testid={`multicli-tab-${tab.id}`}
+        >
           <span class="tab-icon">{tab.icon}</span>
           <span class="tab-label">{tab.label}</span>
-          {tab.active && <span class="tab-active-dot" aria-hidden="true"></span>}
-        </div>
+          <span class="tab-active-dot" aria-hidden="true" style={tab.active ? 'display: inline-block;' : 'display: none;'}></span>
+        </button>
       ))}
     </div>
     <div class="multicli-body">
-      <div class="multicli-bubble">
-        <span class="bubble-icon">◆</span>
-        <span class="bubble-text">Reading context from 3 agents in parallel...</span>
+      <!-- Claude Panel -->
+      <div class="multicli-panel" data-cli-panel="claude" hidden>
+        <div class="multicli-bubble">
+          <span class="bubble-icon cl-claude">◆</span>
+          <span class="bubble-text">
+            <strong>Claude Code v0.5.1</strong><br/>
+            Reading your codebase...<br/>
+            I'll add a login page with JWT auth. Starting now.<br/>
+            <span class="cl-git-m">M  src/pages/Login.vue</span><br/>
+            <span class="cl-git-a">A  src/stores/auth.ts</span><br/>
+            <span class="cl-git-a">A  src/api/auth.rs</span><br/>
+            <span class="cl-success">✓ Done · 3 files · 0 conflicts · tests passing</span>
+          </span>
+        </div>
       </div>
+      <!-- Auggie Panel -->
+      <div class="multicli-panel" data-cli-panel="auggie" hidden>
+        <div class="multicli-bubble">
+          <span class="bubble-icon cl-auggie">●</span>
+          <span class="bubble-text">
+            <strong>Auggie Agent v1.2</strong><br/>
+            Scanning workspace for security vulnerabilities...<br/>
+            No critical vulnerabilities found.<br/>
+            Analyzing code quality of 14 components.<br/>
+            <span class="cl-success">✓ Analysis complete: 100% test coverage target met.</span>
+          </span>
+        </div>
+      </div>
+      <!-- Codex Panel (Active by default) -->
+      <div class="multicli-panel" data-cli-panel="codex">
+        <div class="multicli-bubble">
+          <span class="bubble-icon cl-codex">▲</span>
+          <span class="bubble-text">
+            <strong>Codex Code Gen</strong><br/>
+            Autocompleting function signature...<br/>
+            Adding type definitions for WebSocket events.<br/>
+            <span class="cl-success">✓ Successfully generated 4 helper classes.</span>
+          </span>
+        </div>
+      </div>
+      <!-- Custom ACP Panel -->
+      <div class="multicli-panel" data-cli-panel="custom" hidden>
+        <div class="multicli-bubble">
+          <span class="bubble-icon cl-custom">★</span>
+          <span class="bubble-text">
+            <strong>Custom ACP Protocol Agent</strong><br/>
+            Connecting to local language server (LSP)...<br/>
+            Index build complete.<br/>
+            <span class="cl-success">Ready to receive ACP commands.</span>
+          </span>
+        </div>
+      </div>
+
       <div class="multicli-cursor" aria-hidden="true">
         <span class="cursor-bar"></span>
       </div>
     </div>
   </div>
+  <a slot="extra" href={pathFor(lang, '/features#multi-agent')} class="btn btn-secondary" style="margin-top: 8px;">
+    {strings.spotlight.multiCli.viewDetailBtn}
+  </a>
 </Spotlight>
+
+<script>
+  if (!document.documentElement.dataset.multiCliTabsInit) {
+    document.documentElement.dataset.multiCliTabsInit = '1'
+
+    const tabsContainer = document.querySelector('[data-multicli-tabs]')
+    if (tabsContainer) {
+      const tabs = tabsContainer.querySelectorAll<HTMLButtonElement>('[role="tab"]')
+      const panels = document.querySelectorAll<HTMLElement>('[data-cli-panel]')
+
+      function activateTab(btn: HTMLButtonElement) {
+        const targetId = btn.dataset.cli
+        if (!targetId) return
+
+        tabs.forEach((tab) => {
+          const isActive = tab === btn
+          tab.setAttribute('aria-selected', isActive ? 'true' : 'false')
+          tab.setAttribute('tabindex', isActive ? '0' : '-1')
+          tab.classList.toggle('multicli-tab--active', isActive)
+
+          const dot = tab.querySelector('.tab-active-dot') as HTMLElement
+          if (dot) dot.style.display = isActive ? 'inline-block' : 'none'
+        })
+
+        panels.forEach((panel) => {
+          panel.hidden = panel.dataset.cliPanel !== targetId
+        })
+      }
+
+      tabsContainer.addEventListener('click', (e) => {
+        const btn = (e.target as Element).closest<HTMLButtonElement>('[role="tab"]')
+        if (btn) activateTab(btn)
+      })
+
+      tabsContainer.addEventListener('keydown', (e) => {
+        const ke = e as KeyboardEvent
+        if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(ke.key)) return
+        const btns = Array.from(tabs)
+        const idx = btns.indexOf(document.activeElement as HTMLButtonElement)
+        let next = idx
+
+        if (ke.key === 'ArrowRight') next = (idx + 1) % btns.length
+        else if (ke.key === 'ArrowLeft') next = (idx - 1 + btns.length) % btns.length
+        else if (ke.key === 'Home') next = 0
+        else if (ke.key === 'End') next = btns.length - 1
+
+        if (next !== idx) {
+          ke.preventDefault()
+          const target = btns[next]
+          if (target) {
+            activateTab(target)
+            target.focus()
+          }
+        }
+      })
+    }
+  }
+</script>
 
 <style>
   .multicli-mock {
@@ -65,19 +184,35 @@ const tabs = [
     display: flex;
     align-items: center;
     gap: 6px;
-    padding: 10px 14px;
-    color: var(--color-text-muted);
+    padding: 12px 16px;
+    color: var(--color-text-secondary);
     font-size: 12px;
     white-space: nowrap;
     border-right: 1px solid var(--color-border);
+    border-top: none;
+    border-left: none;
+    border-bottom: 2px solid transparent;
+    background: transparent;
     position: relative;
-    cursor: default;
+    cursor: pointer;
+    font-family: var(--font-sans);
+    transition: background 150ms var(--ease-out-soft), color 150ms var(--ease-out-soft);
+  }
+
+  .multicli-tab:hover {
+    background: var(--color-surface);
+    color: var(--color-text);
   }
 
   .multicli-tab--active {
     background: var(--color-surface);
     color: var(--color-text);
     border-bottom: 2px solid var(--color-accent);
+  }
+
+  .multicli-tab:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: -2px;
   }
 
   .tab-claude .tab-icon { color: var(--color-claude); }
@@ -91,6 +226,7 @@ const tabs = [
     border-radius: 50%;
     background: var(--color-accent);
     animation: dot-pulse 2s ease-in-out infinite;
+    display: inline-block;
   }
 
   @keyframes dot-pulse {
@@ -107,30 +243,51 @@ const tabs = [
     display: flex;
     flex-direction: column;
     gap: 12px;
-    min-height: 80px;
+    min-height: 180px;
+    background: color-mix(in srgb, var(--color-bg) 15%, var(--color-surface));
+  }
+
+  .multicli-panel {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    animation: panel-fade 250ms var(--ease-out-soft);
+  }
+
+  @keyframes panel-fade {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 
   .multicli-bubble {
     display: flex;
     align-items: flex-start;
-    gap: 8px;
+    gap: 12px;
     background: var(--color-raised);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-md);
-    padding: 10px 12px;
+    padding: 14px 16px;
   }
 
   .bubble-icon {
-    color: var(--color-accent);
-    font-size: 11px;
-    margin-top: 1px;
+    font-size: 12px;
+    margin-top: 2px;
     flex-shrink: 0;
+    font-weight: bold;
   }
+
+  .cl-claude { color: var(--color-claude); }
+  .cl-auggie { color: var(--color-auggie, #fbbf24); }
+  .cl-codex { color: var(--color-accent); }
+  .cl-custom { color: var(--color-claude); }
+  .cl-git-m { color: var(--color-git-modified); }
+  .cl-git-a { color: var(--color-git-added); }
+  .cl-success { color: var(--color-success); font-weight: 600; }
 
   .bubble-text {
     color: var(--color-text-secondary);
-    font-size: 12px;
-    line-height: 1.5;
+    font-size: 12.5px;
+    line-height: 1.65;
   }
 
   .multicli-cursor {

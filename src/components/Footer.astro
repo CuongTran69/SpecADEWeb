@@ -20,15 +20,29 @@ const year = new Date().getFullYear()
         <span class="brand-mark" aria-hidden="true">
           <BrandMark size={20} />
         </span>
-        <strong>Spec ADE</strong>
+        <strong class="brand-name">Spec <span class="brand-ade">ADE</span></strong>
       </div>
       <p class="footer-tagline">{strings.footer.tagline}</p>
+      <div class="footer-badges">
+        <span class="footer-badge">
+          <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Local-first
+        </span>
+        <span class="footer-badge">
+          <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+          Cross-platform
+        </span>
+        <span class="footer-badge">
+          <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          AI-native
+        </span>
+      </div>
     </div>
 
     <div class="footer-links">
       <h4>{strings.footer.links}</h4>
       <ul>
-        <li><a href={`${pathFor(lang, '/')}#features`}>{strings.nav.features}</a></li>
+        <li><a href={pathFor(lang, '/features')}>{strings.nav.features}</a></li>
         <li><a href={`${pathFor(lang, '/')}#architecture`}>{strings.nav.architecture}</a></li>
         <li><a href={`${pathFor(lang, '/')}#faq`}>{strings.nav.faq}</a></li>
         <li><a href={`${pathFor(lang, '/')}#get-started`}>{strings.nav.getStarted}</a></li>
@@ -46,21 +60,25 @@ const year = new Date().getFullYear()
 
 <style>
   .site-footer {
-    margin-top: 96px;
+    position: relative;
+    margin-top: 0;
     border-top: 1px solid var(--color-border);
     background: var(--color-surface);
+    overflow: hidden;
   }
 
+
   .footer-inner {
+    position: relative;
     display: grid;
     grid-template-columns: 1fr;
-    gap: 32px;
-    padding-block: 48px;
+    gap: 40px;
+    padding-block: 56px;
   }
 
   @media (min-width: 768px) {
     .footer-inner {
-      grid-template-columns: 1.4fr 1fr;
+      grid-template-columns: 1.6fr 1fr;
     }
   }
 
@@ -69,35 +87,66 @@ const year = new Date().getFullYear()
     align-items: center;
     gap: 10px;
     font-size: 16px;
+    margin-bottom: 12px;
   }
 
   .brand-mark {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 28px;
-    height: 28px;
-    border-radius: var(--radius-sm);
+    width: 30px;
+    height: 30px;
+    border-radius: var(--radius-md);
     background: var(--color-accent-soft);
     color: var(--color-accent);
-    border: 1px solid color-mix(in oklab, var(--color-accent) 30%, transparent);
+    border: 1px solid color-mix(in oklab, var(--color-accent) 25%, transparent);
+  }
+
+  .brand-name {
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--color-text);
+  }
+
+  .brand-ade {
+    color: var(--color-accent);
   }
 
   .footer-tagline {
-    margin-top: 12px;
     color: var(--color-text-secondary);
-    font-size: 14px;
+    font-size: 13.5px;
     max-width: 32rem;
-    line-height: 1.6;
+    line-height: 1.65;
+    margin: 0 0 16px;
+  }
+
+  .footer-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .footer-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    background: var(--color-raised);
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    letter-spacing: 0.03em;
   }
 
   .footer-links h4 {
-    font-size: 12px;
-    font-weight: 500;
+    font-size: 11px;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.1em;
     color: var(--color-text-muted);
-    margin-bottom: 16px;
+    margin-bottom: 18px;
   }
 
   .footer-links ul {
@@ -114,23 +163,31 @@ const year = new Date().getFullYear()
     text-decoration: none;
     font-size: 14px;
     transition: color 200ms var(--ease-out-soft);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
   }
 
   .footer-links a:hover {
     color: var(--color-text);
   }
 
+  .footer-links a:hover::before {
+    content: '→';
+    font-size: 12px;
+    color: var(--color-accent);
+  }
+
   .footer-meta {
+    position: relative;
     display: flex;
     align-items: center;
     gap: 8px;
-    padding-block: 24px;
+    padding-block: 20px;
     border-top: 1px solid var(--color-border);
     color: var(--color-text-muted);
     font-size: 12px;
   }
 
-  .dot {
-    opacity: 0.5;
-  }
+  .dot { opacity: 0.4; }
 </style>

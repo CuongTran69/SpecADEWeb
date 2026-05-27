@@ -8,6 +8,21 @@ interface Props {
 
 const { lang } = Astro.props
 const strings = t(lang)
+
+const colIcons: Record<string, string> = {
+  'Editor': `<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>`,
+  'Terminal': `<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M6 8l3 3-3 3"/><path d="M12 14h4"/></svg>`,
+  'Workspace': `<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>`,
+  'Git': `<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 0 1 2 2v7"/><path d="M6 9v12"/></svg>`,
+  'System': `<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>`,
+}
+
+function getIcon(heading: string): string {
+  for (const key of Object.keys(colIcons)) {
+    if (heading.includes(key)) return colIcons[key]
+  }
+  return `<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/></svg>`
+}
 ---
 
 <section class="recap" data-testid="features-recap">
@@ -16,19 +31,19 @@ const strings = t(lang)
       <h2 class="section-title">{strings.featuresRecap.title}</h2>
       <p class="section-subtitle">{strings.featuresRecap.subtitle}</p>
     </header>
+
     <div class="recap-grid">
       {strings.featuresRecap.columns.map((col) => (
         <div class="recap-col">
-          <h3 class="recap-heading">{col.heading}</h3>
-          <ul class="recap-bullets">
+          <h3 class="recap-heading">
+            <span class="recap-heading-icon" set:html={getIcon(col.heading)}></span>
+            {col.heading}
+          </h3>
+          <div class="recap-tags">
             {col.bullets.map((bullet) => (
-              <li class="recap-bullet">
-                <span class="recap-label">{bullet.label}</span>
-                <span class="recap-em">—</span>
-                <span class="recap-desc">{bullet.desc}</span>
-              </li>
+              <span class="recap-tag" title={bullet.desc}>{bullet.label}</span>
             ))}
-          </ul>
+          </div>
         </div>
       ))}
     </div>
@@ -37,7 +52,7 @@ const strings = t(lang)
 
 <style>
   .recap {
-    padding-block: clamp(64px, 8vw, 96px);
+    padding-block: clamp(48px, 7vw, 80px);
     background: var(--color-bg);
   }
 
@@ -46,82 +61,76 @@ const strings = t(lang)
     flex-direction: column;
     gap: 12px;
     margin-bottom: 40px;
-    max-width: 42rem;
+    max-width: 44rem;
   }
 
   .recap-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 32px;
+    gap: 28px;
   }
 
-  @media (min-width: 768px) {
-    .recap-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
+  @media (min-width: 640px) {
+    .recap-grid { grid-template-columns: repeat(2, 1fr); }
   }
 
   @media (min-width: 1024px) {
-    .recap-grid {
-      grid-template-columns: repeat(3, 1fr);
-      gap: 40px;
-    }
+    .recap-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  @media (min-width: 1280px) {
+    .recap-grid { grid-template-columns: repeat(5, 1fr); }
   }
 
   .recap-col {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 14px;
   }
 
   .recap-heading {
-    font-size: 12px;
-    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 11px;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.1em;
     color: var(--color-text-muted);
     margin: 0;
-    padding-bottom: 8px;
+    padding-bottom: 10px;
     border-bottom: 1px solid var(--color-border);
   }
 
-  .recap-bullets {
-    list-style: none;
-    margin: 0;
-    padding: 0;
+  .recap-heading-icon {
+    display: inline-flex;
+    align-items: center;
+    color: var(--color-accent);
+    flex-shrink: 0;
+  }
+
+  .recap-tags {
     display: flex;
-    flex-direction: column;
-    gap: 12px;
+    flex-wrap: wrap;
+    gap: 6px;
   }
 
-  .recap-bullet {
-    display: grid;
-    grid-template-columns: auto auto 1fr;
-    gap: 8px;
-    align-items: baseline;
-    font-size: 13.5px;
-    line-height: 1.6;
-  }
-
-  .recap-label {
+  .recap-tag {
+    display: inline-block;
+    padding: 4px 10px;
+    font-size: 12px;
     font-weight: 500;
-    color: var(--color-text);
+    color: var(--color-text-secondary);
+    background: var(--color-raised);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    cursor: default;
+    transition: color 150ms var(--ease-out-soft), border-color 150ms var(--ease-out-soft);
     white-space: nowrap;
   }
 
-  .recap-em {
-    color: var(--color-text-muted);
-  }
-
-  .recap-desc {
-    color: var(--color-text-secondary);
-  }
-
-  @media (max-width: 480px) {
-    .recap-bullet {
-      grid-template-columns: 1fr;
-      gap: 4px;
-    }
-    .recap-em { display: none; }
+  .recap-tag:hover {
+    color: var(--color-text);
+    border-color: var(--color-border-strong);
   }
 </style>

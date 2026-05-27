@@ -1,0 +1,67 @@
+---
+import type { Lang } from '~/i18n/strings'
+import { t } from '~/i18n/strings'
+import { pathFor } from '~/i18n/utils'
+import Icon from '~/components/Icon.astro'
+
+interface Props {
+  lang: Lang
+}
+
+const { lang } = Astro.props
+const strings = t(lang)
+const featuresPath = pathFor(lang, '/features')
+---
+
+<section class="view-features reveal">
+  <div class="container-narrow text-center">
+    <div class="cta-box surface-raised">
+      <h3 class="cta-title">{lang === 'vi' ? 'Khám phá tất cả tính năng' : 'Explore all capabilities'}</h3>
+      <p class="cta-desc">
+        {lang === 'vi' 
+          ? 'Từ quản lý layout đệ quy, SSH tunnel, phân tích tiến trình GPU cho đến hybrid Git. Xem danh sách chi tiết các công cụ có sẵn.' 
+          : 'From recursive layouts, SSH tunnels, GPU monitors, to hybrid Git. See the complete checklist of built-in tools.'}
+      </p>
+      <a href={featuresPath} class="btn btn-primary shine-hover" data-testid="view-all-features-btn">
+        {strings.featuresPage.viewAllCta}
+        <Icon name="arrow-right" size={14} />
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .view-features {
+    padding-block: clamp(48px, 6vw, 64px);
+    background: var(--color-bg);
+    border-block-end: 1px solid var(--color-border);
+  }
+
+  .text-center {
+    text-align: center;
+  }
+
+  .cta-box {
+    padding: 32px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    max-width: 38rem;
+    margin: 0 auto;
+  }
+
+  .cta-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-text);
+    margin: 0;
+  }
+
+  .cta-desc {
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: var(--color-text-secondary);
+    margin: 0;
+  }
+</style>

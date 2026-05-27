@@ -72,6 +72,12 @@ const altViUrl = siteUrl + swapLangPath(currentPath, 'vi')
           const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches
           const theme = stored || (prefersLight ? 'light' : 'dark')
           document.documentElement.setAttribute('data-theme', theme)
+          
+          // Feature detect native scroll timelines
+          const supportsScrollTimeline = CSS.supports('(animation-timeline: view()) and (animation-range: entry)')
+          if (!supportsScrollTimeline) {
+            document.documentElement.classList.add('no-scroll-timeline')
+          }
         } catch {}
       })()
     </script>
@@ -83,5 +89,28 @@ const altViUrl = siteUrl + swapLangPath(currentPath, 'vi')
       <slot />
     </main>
     <Footer lang={lang} />
+    <!-- Fallback scroll reveal animation observer -->
+    <script>
+      if (document.documentElement.classList.contains('no-scroll-timeline')) {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('revealed');
+                observer.unobserve(entry.target);
+              }
+            });
+          },
+          {
+            root: null,
+            rootMargin: '0px 0px -10% 0px',
+            threshold: 0.05,
+          }
+        );
+        document.querySelectorAll('.reveal').forEach((el) => {
+          observer.observe(el);
+        });
+      }
+    </script>
   </body>
 </html>
