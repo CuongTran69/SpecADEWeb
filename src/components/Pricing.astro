@@ -1,0 +1,414 @@
+---
+import type { Lang } from '~/i18n/strings'
+import { t } from '~/i18n/strings'
+import { pathFor } from '~/i18n/utils'
+
+interface Props {
+  lang: Lang
+}
+
+const { lang } = Astro.props
+const strings = t(lang)
+const isVi = lang === 'vi'
+
+const sectionChip = isVi ? 'Bảng giá' : 'Pricing'
+const sectionTitle = isVi ? 'Miễn phí trong giai đoạn Beta' : 'Free During Beta'
+const sectionSubtitle = isVi
+  ? 'Spec ADE được sử dụng miễn phí trong suốt giai đoạn phát triển. Các gói dịch vụ Gateway AI sẽ được áp dụng khi phát hành phiên bản chính thức.'
+  : 'Spec ADE is free to use while we are in active development. Premium AI Gateway plans will be introduced when we launch publicly.'
+
+const freePlan = {
+  name: 'Core Workspace',
+  price: '$0',
+  period: isVi ? '/ hiện tại' : '/ current',
+  badge: isVi ? 'Hoạt động' : 'Active',
+  desc: isVi
+    ? 'Toàn bộ tính năng workspace chạy cục bộ trên thiết bị của bạn. Kết nối qua API key cá nhân.'
+    : 'Run the full local workspace on your own machine. Connect to models with your own API keys.',
+  features: isVi
+    ? [
+        'Workspace đầy đủ: Terminal, Git, DB, Editor',
+        'Hub Multi-Agent CLI (Claude, Auggie, Codex...)',
+        'Quản lý Claw Farm & Goal Runner',
+        'Trình thiết kế Open Design & Port Forwarding',
+        'Kết nối API key cá nhân (Claude, OpenAI, Gemini...)',
+        'Miễn phí sử dụng trong suốt giai đoạn Beta',
+      ]
+    : [
+        'Full Workspace: Terminal, Git, DB, Editor',
+        'Multi-Agent CLI Hub (Claude, Auggie, Codex...)',
+        'Claw Farm & Goal Runner orchestration',
+        'Open Design Layout & Port Forwarding tools',
+        'Bring your own API keys (Claude, OpenAI...)',
+        'Completely free during Public Beta',
+      ],
+  ctaText: isVi ? 'Cài đặt miễn phí' : 'Install Free',
+  ctaHref: pathFor(lang, '/install'),
+}
+
+const premiumPlan = {
+  name: 'Gateway AI',
+  price: isVi ? 'Đăng ký / Credit' : 'Subs / Credits',
+  period: isVi ? '(Sắp có)' : '(Soon)',
+  badge: isVi ? 'Sắp ra mắt' : 'Coming Soon',
+  desc: isVi
+    ? 'Cổng AI Gateway tích hợp sẵn trong ứng dụng. Truy cập trực tiếp các mô hình lớn mà không cần API key riêng.'
+    : 'Built-in multi-model AI Gateway. Get straight to coding without configuring personal API keys.',
+  features: isVi
+    ? [
+        'Truy cập trực tiếp DeepSeek R1, Claude 3.5, GPT-4o, Qwen 2.5',
+        'Hệ thống nạp credit linh hoạt và tiết kiệm',
+        'Tính phí chính xác theo lượng token thực tế sử dụng',
+        'Cổng truyền tải dữ liệu tốc độ cao và bảo mật',
+        'Không cần cấu hình hay thiết lập khóa phức tạp',
+        'Hỗ trợ kỹ thuật ưu tiên từ đội ngũ phát triển',
+      ]
+    : [
+        'Direct access to DeepSeek R1, Claude 3.5, GPT-4o, Qwen 2.5',
+        'Flexible and cost-effective credit billing system',
+        'Billed per actual token usage with wholesale rates',
+        'High-speed, secure, and private gateway routing',
+        'No setup or complex API key configuration needed',
+        'Priority technical support from the core team',
+      ],
+  ctaText: isVi ? 'Sắp ra mắt' : 'Coming Soon',
+}
+---
+
+<section class="pricing-section" id="pricing">
+  <div class="container-wide">
+    <header class="section-head reveal">
+      <span class="chip">{sectionChip}</span>
+      <h2 class="section-title">{sectionTitle}</h2>
+      <p class="section-subtitle">{sectionSubtitle}</p>
+    </header>
+
+    <div class="pricing-grid-simple reveal">
+      <!-- Card 1: Free Core Plan -->
+      <div class="pricing-card pricing-card--free">
+        <span class="plan-badge plan-badge--active">{freePlan.badge}</span>
+        
+        <div class="plan-header">
+          <h3 class="plan-name">{freePlan.name}</h3>
+          <div class="plan-price-row">
+            <span class="plan-price plan-price-highlight">{freePlan.price}</span>
+            <span class="plan-period">{freePlan.period}</span>
+          </div>
+          <p class="plan-desc">{freePlan.desc}</p>
+        </div>
+
+        <div class="divider"></div>
+
+        <ul class="plan-features">
+          {freePlan.features.map((f) => (
+            <li class="plan-feature-item">
+              <span class="check-icon-wrapper check-icon-wrapper--free">
+                <svg viewBox="0 0 16 16" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polyline points="3.5 8.5 6.5 11.5 12.5 4.5" />
+                </svg>
+              </span>
+              <span>{f}</span>
+            </li>
+          ))}
+        </ul>
+
+        <div class="divider"></div>
+
+        <a href={freePlan.ctaHref} class="cta-link cta-link--primary">
+          {freePlan.ctaText}
+          <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="arrow-icon">
+            <polyline points="6 3 11 8 6 13" />
+          </svg>
+        </a>
+      </div>
+
+      <!-- Card 2: Gateway AI Plan (Coming Soon) -->
+      <div class="pricing-card pricing-card--soon">
+        <span class="plan-badge plan-badge--soon">{premiumPlan.badge}</span>
+        
+        <div class="plan-header">
+          <h3 class="plan-name">{premiumPlan.name}</h3>
+          <div class="plan-price-row">
+            <span class="plan-price">{premiumPlan.price}</span>
+            <span class="plan-period">{premiumPlan.period}</span>
+          </div>
+          <p class="plan-desc">{premiumPlan.desc}</p>
+        </div>
+
+        <div class="divider"></div>
+
+        <ul class="plan-features">
+          {premiumPlan.features.map((f) => (
+            <li class="plan-feature-item">
+              <span class="check-icon-wrapper check-icon-wrapper--soon">
+                <svg viewBox="0 0 16 16" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polyline points="3.5 8.5 6.5 11.5 12.5 4.5" />
+                </svg>
+              </span>
+              <span>{f}</span>
+            </li>
+          ))}
+        </ul>
+
+        <div class="divider"></div>
+
+        <button type="button" class="cta-btn-disabled" disabled>
+          {premiumPlan.ctaText}
+        </button>
+      </div>
+    </div>
+
+    <!-- Bottom Note -->
+    <p class="pricing-note reveal">
+      {isVi
+        ? '* Spec ADE là ứng dụng chạy cục bộ. Bạn luôn có thể kết nối API keys trực tiếp (Anthropic, OpenAI, Gemini...) để sử dụng toàn bộ tính năng ứng dụng miễn phí mà không cần qua Gateway AI.'
+        : '* Spec ADE is a local-first application. You can always configure third-party API keys (like Anthropic, OpenAI, or Google) directly inside the app to use it completely free, bypassing our Gateway.'}
+    </p>
+  </div>
+</section>
+
+<style>
+  .pricing-section {
+    padding-block: clamp(64px, 8vw, 100px);
+    background: var(--color-bg);
+    border-block-end: 1px solid var(--color-border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .section-head {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 48px;
+    max-width: 44rem;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Two Column Simple Centered Grid */
+  .pricing-grid-simple {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+    max-width: 860px;
+    margin-inline: auto;
+    position: relative;
+    z-index: 2;
+  }
+
+  @media (min-width: 680px) {
+    .pricing-grid-simple {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+    }
+  }
+
+  /* Cards */
+  .pricing-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    padding: 36px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    position: relative;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  }
+
+  .pricing-card--free {
+    border-color: var(--color-accent);
+  }
+
+  .pricing-card--soon {
+    opacity: 0.95;
+  }
+
+  /* Badges */
+  .plan-badge {
+    position: absolute;
+    top: 16px;
+    right: 20px;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 99px;
+  }
+
+  .plan-badge--active {
+    background: rgba(34, 197, 94, 0.1);
+    color: #4ade80;
+    border: 1px solid #22c55e;
+  }
+
+  .plan-badge--soon {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--color-text-muted);
+    border: 1px solid var(--color-border);
+  }
+
+  /* Plan header */
+  .plan-header {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .plan-name {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--color-text);
+    margin: 0;
+    letter-spacing: -0.02em;
+  }
+
+  .plan-price-row {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    min-height: 40px;
+  }
+
+  .plan-price {
+    font-size: 36px;
+    font-weight: 900;
+    color: var(--color-text);
+    letter-spacing: -0.03em;
+    line-height: 1;
+  }
+
+  .plan-price-highlight {
+    color: var(--color-text);
+  }
+
+  .plan-period {
+    font-size: 14px;
+    color: var(--color-text-muted);
+    font-weight: 500;
+  }
+
+  .plan-desc {
+    font-size: 13.5px;
+    color: var(--color-text-secondary);
+    line-height: 1.5;
+    margin: 0;
+    min-height: 60px;
+  }
+
+  .divider {
+    height: 1px;
+    background: var(--color-border);
+  }
+
+  /* Features list */
+  .plan-features {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex-grow: 1;
+  }
+
+  .plan-feature-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13.5px;
+    color: var(--color-text-secondary);
+    line-height: 1.4;
+  }
+
+  .check-icon-wrapper {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .check-icon-wrapper--free {
+    background: rgba(34, 211, 238, 0.1);
+    color: var(--color-accent);
+    border: 1px solid rgba(34, 211, 238, 0.25);
+  }
+
+  .check-icon-wrapper--soon {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--color-text-muted);
+    border: 1px solid var(--color-border);
+  }
+
+  /* CTA Actions */
+  .cta-link {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: var(--radius-lg);
+    font-size: 14px;
+    font-weight: 700;
+    text-align: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-decoration: none;
+    transition: all 150ms var(--ease-out-soft);
+    font-family: var(--font-sans);
+  }
+
+  .cta-link--primary {
+    background: var(--color-accent);
+    color: #0c0c14;
+    border: 1px solid var(--color-accent);
+  }
+
+  .cta-link--primary:hover {
+    background: var(--color-accent-hover);
+    border-color: var(--color-accent-hover);
+    box-shadow: 0 4px 16px rgba(34, 211, 238, 0.15);
+  }
+
+  .cta-link .arrow-icon {
+    transition: transform 150ms var(--ease-out-soft);
+  }
+
+  .cta-link:hover .arrow-icon {
+    transform: translateX(2px);
+  }
+
+  .cta-btn-disabled {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: var(--radius-lg);
+    font-size: 14px;
+    font-weight: 700;
+    cursor: not-allowed;
+    border: 1px solid var(--color-border);
+    background: rgba(255, 255, 255, 0.02);
+    color: var(--color-text-muted);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-sans);
+  }
+
+  /* Bottom Note */
+  .pricing-note {
+    text-align: center;
+    font-size: 12px;
+    color: var(--color-text-muted);
+    margin-top: 48px;
+    max-width: 600px;
+    margin-inline: auto;
+    line-height: 1.6;
+    position: relative;
+    z-index: 2;
+  }
+</style>

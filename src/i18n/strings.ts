@@ -9,6 +9,7 @@ export const en = {
   nav: {
     features: 'Features',
     architecture: 'Architecture',
+    pricing: 'Pricing',
     faq: 'FAQ',
     getStarted: 'Get Started',
     switchTo: 'Tiếng Việt',
@@ -420,6 +421,7 @@ export const vi: typeof en = {
   nav: {
     features: 'Tính năng',
     architecture: 'Kiến trúc',
+    pricing: 'Bảng giá',
     faq: 'FAQ',
     getStarted: 'Bắt đầu',
     switchTo: 'English',
