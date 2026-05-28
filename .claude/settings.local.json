@@ -9,7 +9,8 @@
       "Bash(git ls-remote *)",
       "Bash(npm install *)",
       "Bash(git commit -m 'chore: deploy via gh-pages branch instead of Actions *)",
-      "Bash(npm uninstall *)"
+      "Bash(npm uninstall *)",
+      "Bash(echo \"exit:$?\")"
     ]
   }
 }
