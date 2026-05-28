@@ -9,207 +9,1125 @@ interface Props {
 
 const { lang } = Astro.props
 const strings = t(lang)
-const rows = [
-  { name: 'pr-reviewer', state: 'running', status: 'iteration 3 · 2m ago', dotClass: 'dot-running' },
-  { name: 'security-scan', state: 'waiting', status: 'waiting for permission', dotClass: 'dot-waiting' },
-  { name: 'daily-digest', state: 'scheduled', status: 'cron · 09:00 daily', dotClass: 'dot-scheduled' },
-  { name: 'tg-codereview', state: 'triggered', status: 'via @username on Telegram', dotClass: 'dot-triggered' },
-]
+const isVi = lang === 'vi'
+
+// Localized strings for the interactive mockup
+const l = {
+  tabFarm: isVi ? 'Trại Agent (Farm)' : 'Agent Farm',
+  tabConfig: isVi ? 'Cấu hình Telegram' : 'Telegram Config',
+  tabChat: isVi ? 'Điều khiển (Telegram)' : 'Remote Chat',
+  
+  // Farm panel
+  farmTitle: isVi ? 'QUẢN LÝ HEADLESS AGENT FARM' : 'HEADLESS AGENT FARM',
+  activeAgents: isVi ? '4 agent đang hoạt động' : '4 active agents',
+  
+  statusRunning: 'RUNNING',
+  statusWaiting: 'WAITING',
+  statusScheduled: 'SCHEDULED',
+  statusTriggered: 'TRIGGERED',
+  
+  metaRunning: isVi ? 'lần chạy 3 · 2 phút trước' : 'iteration 3 · 2m ago',
+  metaWaiting: isVi ? 'đang chờ cấp quyền' : 'waiting for permission',
+  metaScheduled: isVi ? 'cron · 09:00 hàng ngày' : 'cron · 09:00 daily',
+  metaTriggered: isVi ? 'chạy qua Telegram bridge' : 'via Telegram bridge',
+  
+  btnConfig: isVi ? 'Cấu hình Bridge' : 'Configure Bridge',
+  btnCreate: isVi ? '+ Tạo Agent mới' : '+ Create Agent',
+  
+  // Config form
+  editClaw: isVi ? 'CẤU HÌNH TELEGRAM BRIDGE' : 'TELEGRAM CONFIGURATION',
+  stepIndicator: isVi ? 'Bước 5/6: Kênh Telegram' : 'Step 5/6: Telegram Bridge',
+  enableTg: isVi ? 'Kích hoạt Telegram Bridge' : 'Enable Telegram bridge',
+  enableTgDesc: isVi ? 'Bật chatbot Telegram chuyên biệt khi Claw này khởi động.' : 'Start the per-claw Telegram bridge when the claw starts.',
+  botToken: isVi ? 'Mã Token của Bot (Bot Token)' : 'Bot token',
+  chatIds: isVi ? 'ID chat được phép truy cập (Allowed Chat IDs)' : 'Allowed chat IDs',
+  testToken: isVi ? 'Kiểm tra kết nối' : 'Test token',
+  cancel: isVi ? 'Hủy' : 'Cancel',
+  back: isVi ? 'Quay lại' : 'Back',
+  next: isVi ? 'Tiếp tục' : 'Next',
+  
+  // Chat simulator
+  simTitle: 'Spec ADE Bot',
+  simStatus: 'online',
+  simEmpty: isVi ? 'Nhấn nút phía dưới để gửi lệnh điều khiển từ xa' : 'Click the button below to send a remote command',
+  btnSendCommand: isVi ? 'Gửi lệnh (/run review)' : 'Send command (/run review)',
+  btnReset: isVi ? 'Đặt lại' : 'Reset',
+  
+  // Benefits List
+  b1Title: isVi ? 'Chạy nền tự trị' : 'Autonomous Background Run',
+  b1Desc: isVi ? 'Tác nhân tự hoạt động độc lập dưới nền theo lịch cron mà không cần mở trình duyệt.' : 'Agents run independently in the background on cron schedules without keeping a browser open.',
+  b2Title: isVi ? 'Điều khiển qua Telegram' : 'Telegram Bot Bridge',
+  b2Desc: isVi ? 'Nhận thông báo, duyệt lệnh shell và ghi file trực tiếp từ ứng dụng nhắn tin trên điện thoại.' : 'Receive updates, approve shell commands, and edit code directly from your phone.',
+  b3Title: isVi ? 'Lập lịch tựa Cron' : 'Cron-like Scheduling',
+  b3Desc: isVi ? 'Lên lịch chạy định kỳ hoặc gọi qua Webhook REST để chạy các tác vụ tự động hàng ngày.' : 'Schedule periodic execution or trigger via REST Webhooks for daily automated tasks.',
+  b4Title: isVi ? 'Tương tự OpenClaw' : 'OpenClaw Parallel Architecture',
+  b4Desc: isVi ? 'Mô hình headless automation mạnh mẽ cho phép quản lý, theo dõi và nhân bản các agent farm.' : 'A powerful headless automation runner that lets you spawn, monitor, and manage background agent farms.',
+}
 ---
 
-<Spotlight id="claw" hook={strings.spotlight.claw.hook} body={strings.spotlight.claw.body} tone="default" tag="Claw Farm">
-  <div slot="visual" class="claw-mock" aria-hidden="true">
-    <header class="claw-header">
-      <div class="claw-title-group">
-        <span class="claw-title">Claw Farm</span>
-        <span class="claw-indicator-pulse" aria-hidden="true"></span>
-      </div>
-      <span class="claw-meta">4 active agents</span>
+<section class="spotlight-section spotlight--accent" id="claw">
+  <div class="container-wide">
+    <!-- Top Header -->
+    <header class="section-head reveal">
+      <span class="chip">{strings.spotlight.claw.chip}</span>
+      <h2 class="section-title">{strings.spotlight.claw.hook}</h2>
+      <p class="section-subtitle">{strings.spotlight.claw.body}</p>
     </header>
-    <ul class="claw-rows">
-      {rows.map((row) => (
-        <li class={`claw-row claw-row--${row.state}`}>
-          <div class="claw-left">
-            <span class={`claw-dot ${row.dotClass}`} aria-hidden="true">
-              {row.state === 'running' && <span class="claw-ripple"></span>}
-            </span>
-            <span class="claw-name">{row.name}</span>
+
+    <div class="spotlight-grid">
+      <!-- Left Column: Visual Mockup Container -->
+      <div class="spotlight-visual reveal">
+        <div class="claw-mock" id="claw-mock-container" data-vi={isVi ? "true" : "false"} aria-hidden="true">
+          <!-- Spotlight Visual Header Tabs -->
+          <div class="claw-tabs" role="tablist">
+            <button type="button" class="claw-tab claw-tab--active" role="tab" aria-selected="true" data-tab="farm">
+              <span class="tab-icon">⚙️</span>
+              <span class="tab-label">{l.tabFarm}</span>
+            </button>
+            <button type="button" class="claw-tab" role="tab" aria-selected="false" data-tab="config">
+              <span class="tab-icon">🔧</span>
+              <span class="tab-label">{l.tabConfig}</span>
+            </button>
+            <button type="button" class="claw-tab" role="tab" aria-selected="false" data-tab="chat">
+              <span class="tab-icon">📱</span>
+              <span class="tab-label">{l.tabChat}</span>
+            </button>
           </div>
-          <div class="claw-right">
-            <span class="claw-status">{row.status}</span>
-            <span class="claw-badge">{row.state}</span>
+
+          <!-- Spotlight Panels Body -->
+          <div class="claw-body">
+            <!-- 1. FARM PANEL -->
+            <div class="claw-panel" data-claw-panel="farm">
+              <div class="farm-dashboard">
+                <div class="farm-header">
+                  <span class="farm-badge">{l.farmTitle}</span>
+                  <span class="farm-stats">{l.activeAgents}</span>
+                </div>
+
+                <div class="farm-agent-list">
+                  <!-- Row 1: pr-reviewer -->
+                  <div class="agent-row">
+                    <span class="agent-dot dot-running"></span>
+                    <div class="agent-info">
+                      <span class="agent-name">pr-reviewer</span>
+                      <span class="agent-meta">{l.metaRunning}</span>
+                    </div>
+                    <span class="agent-status status-running">{l.statusRunning}</span>
+                  </div>
+
+                  <!-- Row 2: security-scan -->
+                  <div class="agent-row">
+                    <span class="agent-dot dot-waiting"></span>
+                    <div class="agent-info">
+                      <span class="agent-name">security-scan</span>
+                      <span class="agent-meta">{l.metaWaiting}</span>
+                    </div>
+                    <span class="agent-status status-waiting">{l.statusWaiting}</span>
+                  </div>
+
+                  <!-- Row 3: daily-digest -->
+                  <div class="agent-row">
+                    <span class="agent-dot dot-scheduled"></span>
+                    <div class="agent-info">
+                      <span class="agent-name">daily-digest</span>
+                      <span class="agent-meta">{l.metaScheduled}</span>
+                    </div>
+                    <span class="agent-status status-scheduled">{l.statusScheduled}</span>
+                  </div>
+
+                  <!-- Row 4: tg-codereview -->
+                  <div class="agent-row agent-row--triggered">
+                    <span class="agent-dot dot-triggered"></span>
+                    <div class="agent-info">
+                      <span class="agent-name">tg-codereview</span>
+                      <span class="agent-meta">{l.metaTriggered}</span>
+                    </div>
+                    <span class="agent-status status-triggered">{l.statusTriggered}</span>
+                  </div>
+                </div>
+
+                <div class="farm-footer-row">
+                  <button type="button" class="btn-action" id="claw-btn-config">{l.btnConfig}</button>
+                  <span class="btn-action" style="opacity: 0.5; pointer-events: none;">{l.btnCreate}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- 2. CONFIG PANEL -->
+            <div class="claw-panel" data-claw-panel="config" hidden>
+              <div class="edit-claw-form">
+                <div class="edit-claw-header">
+                  <span class="edit-claw-title">{l.editClaw}</span>
+                  <span class="edit-claw-step">{l.stepIndicator}</span>
+                </div>
+
+                <div class="form-checkbox-row">
+                  <input type="checkbox" id="tg-enable-chk" checked disabled />
+                  <div class="checkbox-labels">
+                    <label for="tg-enable-chk"><strong>{l.enableTg}</strong></label>
+                    <p>{l.enableTgDesc}</p>
+                  </div>
+                </div>
+
+                <div class="form-input-group">
+                  <label class="input-label">{l.botToken}</label>
+                  <input type="text" class="input-field field-token" value="5432109876:AAFxXx_yYyZzZ12345" disabled />
+                </div>
+
+                <div class="form-input-group">
+                  <label class="input-label">{l.chatIds}</label>
+                  <div class="input-with-btn">
+                    <input type="text" class="input-field field-chatid" value="123456789" id="claw-chatid-input" />
+                    <button type="button" class="input-action-btn" id="claw-test-token-btn">{l.testToken}</button>
+                  </div>
+                </div>
+
+                <div class="form-buttons-row">
+                  <div class="left-btns">
+                    <button type="button" class="form-btn form-btn-secondary" id="claw-config-cancel">{l.cancel}</button>
+                  </div>
+                  <div class="right-btns">
+                    <button type="button" class="form-btn form-btn-secondary" id="claw-config-back">{l.back}</button>
+                    <button type="button" class="form-btn form-btn-primary" id="claw-save-btn">{l.next}</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 3. CHAT PANEL -->
+            <div class="claw-panel" data-claw-panel="chat" hidden>
+              <div class="tg-chat-sim">
+                <div class="tg-chat-header">
+                  <span class="tg-chat-avatar">🤖</span>
+                  <div class="tg-chat-meta">
+                    <span class="tg-chat-name">{l.simTitle}</span>
+                    <span class="tg-chat-status">{l.simStatus}</span>
+                  </div>
+                </div>
+
+                <div class="tg-chat-screen" id="claw-tg-chat-screen">
+                  <!-- Empty state -->
+                  <div class="tg-chat-empty" id="claw-tg-chat-empty">
+                    <span class="tg-chat-empty-icon">💬</span>
+                    <p>{l.simEmpty}</p>
+                  </div>
+                  <!-- Messages area -->
+                  <div class="tg-chat-messages" id="claw-tg-chat-messages" hidden></div>
+                </div>
+
+                <div class="tg-chat-footer">
+                  <button type="button" class="tg-chat-send-btn" id="claw-tg-send-btn">
+                    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right:6px;"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    {l.btnSendCommand}
+                  </button>
+                  <button type="button" class="tg-chat-reset-btn" id="claw-tg-reset-btn" style="display: none;">
+                    {l.btnReset}
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
-        </li>
-      ))}
-    </ul>
+        </div>
+      </div>
+
+      <!-- Right Column: Detail Copy Lists -->
+      <div class="spotlight-copy reveal">
+        <div class="benefit-list">
+          <div class="benefit-item">
+            <h3 class="benefit-item-title">{l.b1Title}</h3>
+            <p class="benefit-item-desc">{l.b1Desc}</p>
+          </div>
+          <div class="benefit-item">
+            <h3 class="benefit-item-title">{l.b2Title}</h3>
+            <p class="benefit-item-desc">{l.b2Desc}</p>
+          </div>
+          <div class="benefit-item">
+            <h3 class="benefit-item-title">{l.b3Title}</h3>
+            <p class="benefit-item-desc">{l.b3Desc}</p>
+          </div>
+          <div class="benefit-item">
+            <h3 class="benefit-item-title">{l.b4Title}</h3>
+            <p class="benefit-item-desc">{l.b4Desc}</p>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-</Spotlight>
+</section>
+
+<script>
+  interface Message {
+    sender: 'user' | 'bot';
+    text: string;
+    delay: number;
+    actions?: Array<{ label: string; actionId: string }>;
+  }
+
+  function initClawSpotlight() {
+    const container = document.getElementById('claw-mock-container');
+    if (!container) return;
+
+    const tabs = container.querySelectorAll('.claw-tab');
+    const panels = container.querySelectorAll('.claw-panel');
+
+    function switchTab(targetTabId: string) {
+      tabs.forEach(tab => {
+        const isActive = tab.getAttribute('data-tab') === targetTabId;
+        tab.setAttribute('aria-selected', isActive ? 'true' : 'false');
+        tab.classList.toggle('claw-tab--active', isActive);
+      });
+
+      panels.forEach(panel => {
+        const isTarget = panel.getAttribute('data-claw-panel') === targetTabId;
+        if (isTarget) {
+          panel.removeAttribute('hidden');
+          panel.style.display = 'block';
+        } else {
+          panel.setAttribute('hidden', 'true');
+          panel.style.display = 'none';
+        }
+      });
+    }
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const tabId = tab.getAttribute('data-tab');
+        if (tabId) switchTab(tabId);
+      });
+    });
+
+    // Interaction within farm list
+    const rowTg = container.querySelector('.agent-row--triggered');
+    rowTg?.addEventListener('click', () => {
+      switchTab('chat');
+    });
+
+    const btnConfig = container.querySelector('#claw-btn-config');
+    btnConfig?.addEventListener('click', () => {
+      switchTab('config');
+    });
+
+    // Config form handlers
+    const testTokenBtn = container.querySelector('#claw-test-token-btn') as HTMLButtonElement | null;
+    const chatidInput = container.querySelector('#claw-chatid-input') as HTMLInputElement | null;
+    const isVi = container.getAttribute('data-vi') === 'true';
+
+    testTokenBtn?.addEventListener('click', () => {
+      const originalText = testTokenBtn.textContent;
+      testTokenBtn.textContent = isVi ? '✓ Kết nối' : '✓ Connected';
+      testTokenBtn.classList.add('btn-success-green');
+      if (chatidInput) {
+        chatidInput.classList.add('saved-pulse');
+      }
+      setTimeout(() => {
+        testTokenBtn.textContent = originalText;
+        testTokenBtn.classList.remove('btn-success-green');
+        if (chatidInput) {
+          chatidInput.classList.remove('saved-pulse');
+        }
+      }, 1500);
+    });
+
+    const nextBtn = container.querySelector('#claw-save-btn');
+    nextBtn?.addEventListener('click', () => {
+      switchTab('chat');
+    });
+
+    const cancelBtn = container.querySelector('#claw-config-cancel');
+    cancelBtn?.addEventListener('click', () => {
+      switchTab('farm');
+    });
+
+    const backBtn = container.querySelector('#claw-config-back');
+    backBtn?.addEventListener('click', () => {
+      switchTab('farm');
+    });
+
+    // Telegram chat simulation
+    const sendBtn = container.querySelector('#claw-tg-send-btn') as HTMLButtonElement | null;
+    const resetBtn = container.querySelector('#claw-tg-reset-btn') as HTMLButtonElement | null;
+    const screenEl = container.querySelector('#claw-tg-chat-screen') as HTMLElement | null;
+    const emptyEl = container.querySelector('#claw-tg-chat-empty') as HTMLElement | null;
+    const messagesEl = container.querySelector('#claw-tg-chat-messages') as HTMLElement | null;
+
+    let simTimeouts: number[] = [];
+
+    const chatDialogue: Message[] = [
+      { sender: 'user', text: '/run review', delay: 100 },
+      { sender: 'bot', text: isVi 
+        ? '🤖 <b>Spec ADE Farm</b>: Đang khởi động <b>linter-agent</b> cho dự án <i>my-project</i>...' 
+        : '🤖 <b>Spec ADE Farm</b>: Launching agent <b>linter-agent</b> on project <i>my-project</i>...', 
+        delay: 800 },
+      { sender: 'bot', text: isVi 
+        ? '<b>Báo cáo tổng hợp</b><br/><br/>Mức độ Số lượng Vấn đề chính<br/>WARNING 8 box-shadow...<br/>SUGGESTION 6 coming-soon chip placement, table scroll affordance...<br/><br/>Bạn có muốn tôi sửa các lỗi này không? Các mục WARNING rất rõ ràng — tôi có thể tự động sửa tất cả trong một lượt qua chế độ autopilot.' 
+        : '<b>Summary</b><br/><br/>Severity Count Key issues<br/>WARNING 8 box-shadow...<br/>SUGGESTION 6 coming-soon chip placement, table scroll affordance...<br/><br/>Want me to fix these? The WARNING items are straightforward — I can apply them all in one pass via autopilot.', 
+        delay: 2000,
+        actions: [
+          { label: 'osf autopilot fix all', actionId: 'yes' },
+          { label: isVi ? 'Hủy bỏ' : 'Cancel', actionId: 'no' }
+        ] 
+      }
+    ];
+
+    const yesResponse: Message[] = [
+      { sender: 'user', text: 'osf autopilot fix all', delay: 100 },
+      { sender: 'bot', text: isVi 
+        ? '<b>Autopilot</b>: phân loại dạng sửa lỗi (UI consistency + i18n correctness issues).<br/><b>Pipeline</b>: thực thi ✓<br/><br/>Đã sửa toàn bộ 8 mục WARNING, build thành công sạch sẽ.' 
+        : '<b>Autopilot</b>: classifying as fix (UI consistency + i18n correctness issues).<br/><b>Pipeline</b>: implement ✓<br/><br/>All 8 WARNING items fixed, build passes clean', 
+        delay: 1000 }
+    ];
+
+    function appendMessage(sender: 'user' | 'bot', html: string, actions?: Array<{ label: string; actionId: string }>) {
+      if (!messagesEl) return;
+
+      const bubble = document.createElement('div');
+      bubble.className = `tg-chat-bubble bubble-${sender}`;
+
+      const content = document.createElement('div');
+      content.className = 'tg-chat-bubble-content';
+      content.innerHTML = html;
+      bubble.appendChild(content);
+
+      if (actions && actions.length > 0) {
+        const actionRow = document.createElement('div');
+        actionRow.className = 'tg-chat-action-row';
+        actions.forEach(act => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'tg-chat-action-btn';
+          btn.textContent = act.label;
+          btn.addEventListener('click', () => {
+            actionRow.remove();
+            if (act.actionId === 'yes') {
+              runSubSimulation(yesResponse);
+            } else {
+              appendMessage('user', act.label, []);
+              setTimeout(() => {
+                appendMessage('bot', isVi ? '❌ Đã hủy lệnh.' : '❌ Command cancelled.', []);
+              }, 600);
+            }
+          });
+          actionRow.appendChild(btn);
+        });
+        bubble.appendChild(actionRow);
+      }
+
+      messagesEl.appendChild(bubble);
+
+      if (screenEl) {
+        screenEl.scrollTo({ top: screenEl.scrollHeight, behavior: 'smooth' });
+      }
+    }
+
+    function clearSimulation() {
+      simTimeouts.forEach(id => clearTimeout(id));
+      simTimeouts = [];
+
+      if (messagesEl) {
+        messagesEl.innerHTML = '';
+        messagesEl.hidden = true;
+      }
+      if (emptyEl) emptyEl.hidden = false;
+      if (sendBtn) sendBtn.style.display = 'inline-flex';
+      if (resetBtn) resetBtn.style.display = 'none';
+    }
+
+    function runSubSimulation(dialogue: Message[]) {
+      dialogue.forEach(msg => {
+        const id = window.setTimeout(() => {
+          appendMessage(msg.sender, msg.text, msg.actions);
+        }, msg.delay);
+        simTimeouts.push(id);
+      });
+    }
+
+    function startSimulation() {
+      clearSimulation();
+      if (emptyEl) emptyEl.hidden = true;
+      if (messagesEl) messagesEl.hidden = false;
+      if (sendBtn) sendBtn.style.display = 'none';
+      if (resetBtn) resetBtn.style.display = 'inline-flex';
+
+      runSubSimulation(chatDialogue);
+    }
+
+    sendBtn?.addEventListener('click', startSimulation);
+    resetBtn?.addEventListener('click', clearSimulation);
+  }
+
+  initClawSpotlight();
+  document.addEventListener('astro:after-swap', initClawSpotlight);
+</script>
 
 <style>
+  .spotlight-section {
+    padding-block: clamp(64px, 8vw, 100px);
+    border-block-end: 1px solid var(--color-border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .spotlight--accent {
+    background: var(--color-surface);
+  }
+
+  .section-head {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 36px;
+    max-width: 44rem;
+  }
+
+  .spotlight-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+    align-items: start;
+  }
+
+  @media (min-width: 1024px) {
+    .spotlight-grid {
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 56px;
+    }
+  }
+
+  .spotlight-visual {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .spotlight-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .benefit-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .benefit-item {
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    padding: 16px 20px;
+    border-radius: var(--radius-lg);
+    transition: all 150ms var(--ease-out-soft);
+  }
+
+  .benefit-item:hover {
+    border-color: var(--color-border-strong);
+    transform: translateX(4px);
+  }
+
+  .benefit-item-title {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--color-text);
+    margin: 0 0 6px 0;
+    letter-spacing: -0.01em;
+  }
+
+  .benefit-item-desc {
+    font-size: 12.5px;
+    color: var(--color-text-secondary);
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  /* Mock Terminal Container */
   .claw-mock {
     background: var(--color-surface);
-    border: 1px solid var(--color-border-strong);
-    border-radius: var(--radius-xl);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
     overflow: hidden;
-    font-family: var(--font-mono);
+    font-family: var(--font-sans);
     font-size: 13px;
-    transition: border-color 300ms var(--ease-out-soft), box-shadow 300ms var(--ease-out-soft);
+    display: flex;
+    flex-direction: column;
+    height: 380px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
   }
 
-  .claw-mock:hover {
-    border-color: color-mix(in oklab, var(--color-accent) 50%, transparent);
-    box-shadow: 0 0 0 1px color-mix(in oklab, var(--color-accent) 15%, transparent),
-                0 12px 40px color-mix(in oklab, var(--color-accent) 8%, transparent);
+  .claw-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-raised);
+    overflow-x: auto;
+    scrollbar-width: none;
   }
 
-  .claw-header {
+  .claw-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .claw-tab {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 14px 20px;
-    background: var(--color-raised);
-    border-bottom: 1px solid var(--color-border-strong);
+    gap: 6px;
+    padding: 12px 16px;
+    color: var(--color-text-secondary);
+    font-size: 12px;
+    white-space: nowrap;
+    border-right: 1px solid var(--color-border);
+    border-top: none;
+    border-left: none;
+    border-bottom: 2px solid transparent;
+    background: transparent;
+    cursor: pointer;
+    font-family: var(--font-sans);
+    font-weight: 500;
+    transition: background 150ms var(--ease-out-soft), color 150ms var(--ease-out-soft);
   }
 
-  .claw-title-group {
+  .claw-tab:hover {
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--color-text);
+  }
+
+  .claw-tab.claw-tab--active {
+    color: var(--color-accent);
+    background: var(--color-accent-soft);
+    border-bottom-color: var(--color-accent);
+    font-weight: 500;
+  }
+
+  .tab-icon {
+    font-size: 12px;
+  }
+
+  .claw-body {
+    flex-grow: 1;
+    padding: 16px;
+    overflow-y: auto;
+    background: var(--color-bg);
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+  }
+
+  .claw-panel {
+    height: 100%;
+    width: 100%;
+  }
+
+  /* 1. FARM STYLES */
+  .farm-dashboard {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    height: 100%;
+  }
+
+  .farm-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 8px;
+  }
+
+  .farm-badge {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--color-text-secondary);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  .farm-stats {
+    font-size: 11px;
+    color: var(--color-text-muted);
+  }
+
+  .farm-agent-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex-grow: 1;
+  }
+
+  .agent-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    transition: all 150ms var(--ease-out-soft);
+  }
+
+  .agent-row--triggered {
+    cursor: pointer;
+    border-color: color-mix(in oklab, var(--color-purple) 30%, var(--color-border));
+  }
+
+  .agent-row--triggered:hover {
+    border-color: var(--color-purple);
+    background: rgba(168, 85, 247, 0.05);
+    transform: translateY(-1px);
+  }
+
+  .agent-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .dot-running { background: var(--color-success); box-shadow: 0 0 6px var(--color-success); }
+  .dot-waiting { background: var(--color-warning); box-shadow: 0 0 6px var(--color-warning); }
+  .dot-scheduled { background: var(--color-accent); box-shadow: 0 0 6px var(--color-accent); }
+  .dot-triggered { background: var(--color-purple); box-shadow: 0 0 6px var(--color-purple); }
+
+  .agent-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex-grow: 1;
+    min-width: 0;
+  }
+
+  .agent-name {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--color-text);
+  }
+
+  .agent-meta {
+    font-size: 10.5px;
+    color: var(--color-text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .agent-status {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+
+  .status-running { background: rgba(16, 185, 129, 0.1); color: var(--color-success); }
+  .status-waiting { background: rgba(245, 158, 11, 0.1); color: var(--color-warning); }
+  .status-scheduled { background: rgba(6, 182, 212, 0.1); color: var(--color-accent); }
+  .status-triggered { background: rgba(168, 85, 247, 0.1); color: var(--color-purple); }
+
+  .farm-footer-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--color-border);
+    padding-top: 10px;
+    margin-top: auto;
+  }
+
+  .btn-action {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-secondary);
+    padding: 6px 12px;
+    border-radius: var(--radius-sm);
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 150ms var(--ease-out-soft);
+  }
+
+  .btn-action:hover {
+    border-color: var(--color-border-strong);
+    color: var(--color-text);
+  }
+
+  /* 2. CONFIG CONFIGURATION FORM STYLES */
+  .edit-claw-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    height: 100%;
+  }
+
+  .edit-claw-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 8px;
+  }
+
+  .edit-claw-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--color-text-secondary);
+  }
+
+  .edit-claw-step {
+    font-size: 10px;
+    color: var(--color-accent);
+    font-weight: 700;
+  }
+
+  .form-checkbox-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: var(--color-surface);
+    padding: 8px 12px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+  }
+
+  .form-checkbox-row input {
+    margin-top: 3px;
+  }
+
+  .checkbox-labels {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+
+  .checkbox-labels label {
+    font-size: 12px;
+    color: var(--color-text);
+  }
+
+  .checkbox-labels p {
+    font-size: 10px;
+    color: var(--color-text-muted);
+    margin: 0;
+    line-height: 1.3;
+  }
+
+  .form-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .input-label {
+    font-size: 9.5px;
+    font-weight: 700;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .input-field {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: 6px 10px;
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    color: var(--color-text);
+    outline: none;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .input-field:focus {
+    border-color: var(--color-accent);
+  }
+
+  .input-with-btn {
+    display: flex;
+    gap: 6px;
+  }
+
+  .input-action-btn {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-secondary);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 150ms var(--ease-out-soft);
+  }
+
+  .input-action-btn:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+
+  .btn-success-green {
+    background: var(--color-success) !important;
+    border-color: var(--color-success) !important;
+    color: #080810 !important;
+  }
+
+  .saved-pulse {
+    animation: savedInputPulse 1s ease-in-out;
+  }
+
+  @keyframes savedInputPulse {
+    0%, 100% { border-color: var(--color-border); }
+    50% { border-color: var(--color-success); box-shadow: 0 0 6px rgba(16, 185, 129, 0.3); }
+  }
+
+  .form-buttons-row {
+    display: flex;
+    justify-content: space-between;
+    margin-top: auto;
+    border-top: 1px solid var(--color-border);
+    padding-top: 10px;
+  }
+
+  .form-btn {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 150ms var(--ease-out-soft);
+  }
+
+  .form-btn-secondary {
+    background: transparent;
+    border: 1px solid var(--color-border);
+    color: var(--color-text-secondary);
+  }
+
+  .form-btn-secondary:hover {
+    border-color: var(--color-border-strong);
+    color: var(--color-text);
+  }
+
+  .form-btn-primary {
+    background: var(--color-accent);
+    border: none;
+    color: #080810;
+  }
+
+  .form-btn-primary:hover {
+    opacity: 0.9;
+  }
+
+  /* 3. TELEGRAM SIMULATOR STYLES */
+  .tg-chat-sim {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: #0f111a;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+
+  .tg-chat-header {
+    background: #151826;
+    border-bottom: 1px solid #1f2336;
+    padding: 8px 12px;
     display: flex;
     align-items: center;
     gap: 8px;
   }
 
-  .claw-title {
-    font-weight: 700;
+  .tg-chat-avatar {
+    font-size: 14px;
+  }
+
+  .tg-chat-meta {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .tg-chat-name {
+    font-size: 11.5px;
+    font-weight: 600;
     color: var(--color-text);
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
+    line-height: 1.2;
+  }
+
+  .tg-chat-status {
+    font-size: 9px;
+    color: var(--color-success);
+    line-height: 1.1;
+  }
+
+  .tg-chat-screen {
+    flex-grow: 1;
+    padding: 12px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    scrollbar-width: none;
+  }
+
+  .tg-chat-screen::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tg-chat-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--color-text-muted);
+    gap: 8px;
+    text-align: center;
+  }
+
+  .tg-chat-empty-icon {
+    font-size: 20px;
+    opacity: 0.5;
+  }
+
+  .tg-chat-empty p {
     font-size: 11px;
-  }
-
-  .claw-indicator-pulse {
-    width: 7px;
-    height: 7px;
-    background: var(--color-success);
-    border-radius: 50%;
-    animation: header-pulse 1.8s infinite alternate;
-  }
-
-  .claw-meta {
-    font-size: 11px;
-    color: var(--color-text-secondary);
-  }
-
-  .claw-rows {
-    list-style: none;
     margin: 0;
-    padding: 0;
-    background: color-mix(in srgb, var(--color-bg) 15%, var(--color-surface));
+    max-width: 180px;
+    line-height: 1.4;
   }
 
-  .claw-row {
+  .tg-chat-messages {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    padding: 14px 20px;
-    border-bottom: 1px solid var(--color-border);
-    transition: background 150ms var(--ease-out-soft);
-  }
-
-  .claw-row:last-child { border-bottom: none; }
-  .claw-row:hover { background: var(--color-raised); }
-
-  .claw-left {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .claw-right {
-    display: flex;
-    align-items: center;
+    flex-direction: column;
     gap: 10px;
   }
 
-  .claw-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    flex-shrink: 0;
-    position: relative;
-    display: inline-block;
+  .tg-chat-bubble {
+    display: flex;
+    flex-direction: column;
+    max-width: 85%;
+    animation: bubblePop 200ms var(--ease-spring) forwards;
+    box-sizing: border-box;
   }
 
-  .claw-ripple {
-    position: absolute;
-    inset: -4px;
-    border-radius: 50%;
-    border: 2px solid var(--color-success);
-    opacity: 0;
-    animation: ring-pulse 1.6s ease-out infinite;
+  @keyframes bubblePop {
+    from { opacity: 0; transform: scale(0.95) translateY(4px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
   }
 
-  .dot-running { background: var(--color-success); }
-  .dot-waiting { background: var(--color-warning); }
-  .dot-scheduled { background: var(--color-info); }
-  .dot-triggered { background: var(--color-claude); }
+  .bubble-user {
+    align-self: flex-end;
+  }
 
-  .claw-name {
-    color: var(--color-text);
+  .bubble-bot {
+    align-self: flex-start;
+  }
+
+  .tg-chat-bubble-content {
+    padding: 6px 10px;
+    border-radius: 10px;
+    font-size: 11px;
+    line-height: 1.45;
+    word-break: break-word;
+  }
+
+  .bubble-user .tg-chat-bubble-content {
+    background: var(--color-accent);
+    color: #080810;
     font-weight: 500;
-    font-size: 12.5px;
+    border-bottom-right-radius: 2px;
   }
 
-  .claw-status {
+  .bubble-bot .tg-chat-bubble-content {
+    background: #1b1e2e;
+    color: var(--color-text-secondary);
+    border: 1px solid #23273b;
+    border-bottom-left-radius: 2px;
+  }
+
+  .bubble-bot .tg-chat-bubble-content :global(b) {
+    color: var(--color-text);
+  }
+
+  .bubble-bot .tg-chat-bubble-content :global(i) {
+    color: var(--color-text);
+  }
+
+  .bubble-bot .tg-chat-bubble-content :global(code) {
+    font-family: var(--font-mono);
+    background: #0f111a;
+    padding: 1px 3px;
+    border-radius: 2px;
+    color: var(--color-accent);
+  }
+
+  .tg-chat-action-row {
+    display: flex;
+    gap: 6px;
+    margin-top: 6px;
+  }
+
+  .tg-chat-action-btn {
+    flex: 1;
+    background: #1b1e2e;
+    border: 1px solid var(--color-accent);
+    color: var(--color-accent);
+    font-size: 10px;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 150ms var(--ease-out-soft);
+    text-align: center;
+  }
+
+  .tg-chat-action-btn:hover {
+    background: var(--color-accent);
+    color: #080810;
+  }
+
+  .tg-chat-footer {
+    padding: 8px 12px;
+    background: #151826;
+    border-top: 1px solid #1f2336;
+    display: flex;
+    gap: 6px;
+  }
+
+  .tg-chat-send-btn {
+    flex: 1;
+    background: var(--color-accent);
+    border: none;
+    color: #080810;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 150ms var(--ease-out-soft);
+  }
+
+  .tg-chat-send-btn:hover {
+    opacity: 0.9;
+  }
+
+  .tg-chat-reset-btn {
+    background: transparent;
+    border: 1px solid var(--color-border-strong);
     color: var(--color-text-muted);
     font-size: 11px;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 150ms var(--ease-out-soft);
   }
 
-  .claw-badge {
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    padding: 3px 8px;
-    border-radius: var(--radius-xs);
-    font-weight: 700;
-    border: 1px solid transparent;
-  }
-
-  .claw-row--running .claw-badge {
-    background: color-mix(in srgb, var(--color-success) 12%, transparent);
-    color: var(--color-success);
-    border-color: color-mix(in srgb, var(--color-success) 20%, transparent);
-  }
-
-  .claw-row--waiting .claw-badge {
-    background: color-mix(in srgb, var(--color-warning) 12%, transparent);
-    color: var(--color-warning);
-    border-color: color-mix(in srgb, var(--color-warning) 20%, transparent);
-  }
-
-  .claw-row--scheduled .claw-badge {
-    background: color-mix(in srgb, var(--color-info) 12%, transparent);
-    color: var(--color-info);
-    border-color: color-mix(in srgb, var(--color-info) 20%, transparent);
-  }
-
-  .claw-row--triggered .claw-badge {
-    background: color-mix(in srgb, var(--color-claude) 12%, transparent);
-    color: var(--color-claude);
-    border-color: color-mix(in srgb, var(--color-claude) 20%, transparent);
-  }
-
-  @keyframes header-pulse {
-    0% { opacity: 0.4; }
-    100% { opacity: 1; }
-  }
-
-  @keyframes ring-pulse {
-    0% { transform: scale(0.6); opacity: 0.8; }
-    100% { transform: scale(2); opacity: 0; }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .claw-indicator-pulse,
-    .claw-ripple { animation: none; }
+  .tg-chat-reset-btn:hover {
+    color: var(--color-text-secondary);
+    border-color: var(--color-text-muted);
   }
 </style>

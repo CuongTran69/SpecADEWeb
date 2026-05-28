@@ -34,8 +34,9 @@ export const en = {
   },
   spotlight: {
     claw: {
-      hook: 'Run AI agents on a schedule, even while you sleep.',
-      body: 'Schedule AI agents like cron jobs. Trigger them from REST. Pause them with one click when they need your input. Connect them to Telegram so you can run a code review from your phone.',
+      chip: 'CLAW FARM',
+      hook: 'Autonomous agent farm (Claw) like OpenClaw, controlled via Telegram.',
+      body: 'A headless automation runner similar to OpenClaw. Create background agent farms, run them on cron schedules, or trigger them via REST. Connect a Telegram bridge to approve actions, run commands, and write code from anywhere.',
     },
     goal: {
       hook: 'Tell the AI when to stop, not when to continue.',
@@ -70,6 +71,7 @@ export const en = {
       viewDetailBtn: 'Explore Multi-Agent Connection →',
     },
     db: {
+      chip: 'DATABASE CONSOLE',
       hook: 'Stop alt-tabbing to TablePlus. Your AI can read the DB, you can edit it — same app.',
       body: '6 drivers (Postgres, MySQL, MariaDB, SQLite, MongoDB, Redis), encrypted backups, ER diagrams, SSH tunnels. Safe Mode auto-escalates on production. The AI can query your schema directly.',
     },
@@ -81,6 +83,11 @@ export const en = {
       hook: 'Use Spec ADE from anywhere — even from your phone.',
       body: 'Forward your Spec ADE workspace port through a Cloudflare Tunnel to get a public URL. Access your entire ADE environment remotely from any browser, secured with Access Key authentication.',
       viewDetailBtn: 'Explore Port Forwarding →',
+    },
+    design: {
+      chip: 'OPEN DESIGN',
+      hook: 'AI-driven UI prototyping, prompt templates, and asset generation.',
+      body: 'Transform wireframes into high-fidelity mockups, generate styled slides, and create custom graphics in a unified workspace. Integrate custom design systems, prompt examples, image templates, and video templates directly connected to your code.',
     },
   },
   featuresRecap: {
@@ -438,8 +445,9 @@ export const vi: typeof en = {
   },
   spotlight: {
     claw: {
-      hook: 'Chạy AI agents theo lịch, kể cả khi bạn đang ngủ.',
-      body: 'Lập lịch AI agents như cron job. Trigger qua REST. Pause bằng một click khi agent cần ý kiến của bạn. Kết nối Telegram để chạy code review từ điện thoại.',
+      chip: 'CLAW FARM',
+      hook: 'Trại agent tự trị (Claw Farm) như OpenClaw, điều khiển qua Telegram.',
+      body: 'Bộ chạy tự động headless tương tự OpenClaw. Tạo các trại agent chạy nền, thiết lập lịch trình cron-job hoặc kích hoạt qua REST API. Kết nối Telegram để duyệt lệnh, nhận thông báo và code từ xa qua điện thoại.',
     },
     goal: {
       hook: 'Nói AI khi nào dừng, không phải khi nào tiếp tục.',
@@ -474,6 +482,7 @@ export const vi: typeof en = {
       viewDetailBtn: 'Khám phá kết nối Multi-Agent →',
     },
     db: {
+      chip: 'DATABASE CONSOLE',
       hook: 'Đừng alt-tab sang TablePlus nữa. AI đọc được DB, bạn edit được — cùng một app.',
       body: '6 drivers (Postgres, MySQL, MariaDB, SQLite, MongoDB, Redis), backup mã hóa, ER diagram, SSH tunnel. Safe Mode tự nâng cấp ở production. AI có thể query schema trực tiếp.',
     },
@@ -485,6 +494,11 @@ export const vi: typeof en = {
       hook: 'Dùng Spec ADE ở mọi nơi — kể cả trên điện thoại.',
       body: 'Chuyển tiếp port workspace Spec ADE qua Cloudflare Tunnel để có URL công khai. Truy cập toàn bộ ADE từ xa qua trình duyệt bất kỳ, bảo mật bằng mã Access Key.',
       viewDetailBtn: 'Khám phá Port Forwarding →',
+    },
+    design: {
+      chip: 'OPEN DESIGN',
+      hook: 'Thiết kế mẫu giao diện UI, prompt mẫu và tạo asset bằng AI.',
+      body: 'Biến các phác thảo wireframe thành mockup độ trung thực cao (high fidelity), tạo slide thuyết trình và đồ họa tùy chỉnh trong cùng một không gian làm việc. Tích hợp trực tiếp hệ thống design system, prompt mẫu, thư viện template ảnh và video liên kết chặt chẽ với mã nguồn.',
     },
   },
   featuresRecap: {

@@ -10,33 +10,6 @@ interface Props {
 
 const { lang } = Astro.props
 const strings = t(lang)
-
-const tabs = [
-  { id: 'mac', label: strings.getStarted.macTab, recommended: true },
-  { id: 'linux', label: strings.getStarted.linuxTab, recommended: false },
-  { id: 'win', label: strings.getStarted.winTab, recommended: false },
-  { id: 'source', label: strings.getStarted.sourceTab, recommended: false },
-]
-
-const blocks: Record<string, { install: string; service?: string; vpsNote?: boolean }> = {
-  mac: {
-    install: `npx -y @spec-ade/cli@latest`,
-    service: `npx -y @spec-ade/cli@latest --install-service`,
-  },
-  linux: {
-    install: `npx -y @spec-ade/cli@latest`,
-    service: `npx -y @spec-ade/cli@latest --install-service`,
-  },
-  win: {
-    install: `npx -y @spec-ade/cli@latest`,
-    service: `npx -y @spec-ade/cli@latest --install-service`,
-  },
-  source: {
-    install: `npx -y @spec-ade/cli@latest --host 0.0.0.0 --port 3100`,
-    service: `npx -y @spec-ade/cli@latest --install-service --host 0.0.0.0`,
-    vpsNote: true,
-  },
-}
 ---
 
 <section id="get-started" class="get-started">
@@ -70,56 +43,24 @@ const blocks: Record<string, { install: string; service?: string; vpsNote?: bool
             <p class="npm-coming-soon-text">{strings.getStarted.npmComingSoon}</p>
           </div>
 
-          <div class="tab-strip" role="tablist" aria-label={lang === 'vi' ? 'Hướng dẫn cài đặt' : 'Install instructions'} data-install-tabs>
-            {tabs.map((tab, i) => (
-              <button
-                type="button"
-                role="tab"
-                id={`itab-${tab.id}`}
-                aria-controls={`ipanel-${tab.id}`}
-                aria-selected={i === 0 ? 'true' : 'false'}
-                tabindex={i === 0 ? 0 : -1}
-                class={`tab${i === 0 ? ' active' : ''}`}
-                data-tab={tab.id}
-                data-testid={`install-tab-${tab.id}`}
-              >
-                {tab.label}
-                {tab.recommended && (
-                  <span class="recommended-badge">{strings.getStarted.recommendedBadge}</span>
-                )}
-              </button>
-            ))}
+          <div class="install-methods">
+            <!-- Method 1: Local installation -->
+            <div class="method-block">
+              <span class="method-label">
+                {lang === 'vi' ? 'Cài đặt và chạy (macOS, Windows, Linux)' : 'Install & Run (macOS, Windows, Linux)'}
+              </span>
+              <CopyBlock code="npx -y @spec-ade/cli@latest" />
+            </div>
+
+            <!-- Method 2: VPS / Server -->
+            <div class="method-block">
+              <span class="method-label">
+                {lang === 'vi' ? 'Cài đặt trên VPS / Cloud Server' : 'Install on VPS / Cloud Server'}
+              </span>
+              <CopyBlock code="npx -y @spec-ade/cli@latest --host 0.0.0.0 --port 3100" />
+              <p class="vps-note">{strings.getStarted.vpsNote}</p>
+            </div>
           </div>
-
-          {tabs.map((tab, i) => {
-            const block = blocks[tab.id]
-            return (
-              <div
-                id={`ipanel-${tab.id}`}
-                role="tabpanel"
-                aria-labelledby={`itab-${tab.id}`}
-                hidden={i !== 0}
-                class="panel"
-                data-panel={tab.id}
-              >
-                <div class="block-row">
-                  <span class="block-label">{strings.getStarted.installLabel}</span>
-                  <CopyBlock code={block?.install ?? ''} />
-                </div>
-
-                {block?.vpsNote && (
-                  <p class="vps-note">{strings.getStarted.vpsNote}</p>
-                )}
-
-                {block?.service && (
-                  <div class="block-row">
-                    <span class="block-label">{strings.getStarted.serviceLabel}</span>
-                    <CopyBlock code={block.service} />
-                  </div>
-                )}
-              </div>
-            )
-          })}
 
           <p class="note">{strings.getStarted.note}</p>
         </div>
@@ -162,53 +103,6 @@ const blocks: Record<string, { install: string; service?: string; vpsNote?: bool
     </div>
   </div>
 </section>
-
-<script>
-  if (!document.documentElement.dataset.installTabsInit) {
-    document.documentElement.dataset.installTabsInit = '1'
-
-    const installTabBar = document.querySelector('[data-install-tabs]')
-    if (installTabBar) {
-      const buttons = installTabBar.querySelectorAll<HTMLButtonElement>('[role="tab"]')
-
-      function activateInstallTab(btn: HTMLButtonElement) {
-        const tabId = btn.dataset.tab
-        if (!tabId) return
-        buttons.forEach((b) => {
-          const isActive = b === btn
-          b.setAttribute('aria-selected', isActive ? 'true' : 'false')
-          b.setAttribute('tabindex', isActive ? '0' : '-1')
-          b.classList.toggle('active', isActive)
-        })
-        document.querySelectorAll<HTMLElement>('[data-panel]').forEach((panel) => {
-          panel.hidden = panel.dataset.panel !== tabId
-        })
-      }
-
-      installTabBar.addEventListener('click', (e) => {
-        const btn = (e.target as Element).closest<HTMLButtonElement>('[role="tab"]')
-        if (btn) activateInstallTab(btn)
-      })
-
-      installTabBar.addEventListener('keydown', (e) => {
-        const ke = e as KeyboardEvent
-        if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(ke.key)) return
-        const btns = Array.from(buttons)
-        const idx = btns.indexOf(document.activeElement as HTMLButtonElement)
-        let next = idx
-        if (ke.key === 'ArrowRight') next = (idx + 1) % btns.length
-        else if (ke.key === 'ArrowLeft') next = (idx - 1 + btns.length) % btns.length
-        else if (ke.key === 'Home') next = 0
-        else if (ke.key === 'End') next = btns.length - 1
-        if (next !== idx) {
-          ke.preventDefault()
-          const target = btns[next]
-          if (target) { activateInstallTab(target); target.focus() }
-        }
-      })
-    }
-  }
-</script>
 
 <style>
   .get-started {
@@ -284,7 +178,7 @@ const blocks: Record<string, { install: string; service?: string; vpsNote?: bool
     padding: 24px;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 24px;
     border-radius: var(--radius-xl);
   }
 
@@ -307,72 +201,19 @@ const blocks: Record<string, { install: string; service?: string; vpsNote?: bool
     line-height: 1.55;
   }
 
-  /* Tab strip */
-  .tab-strip {
-    display: inline-flex;
-    gap: 3px;
-    padding: 4px;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-lg);
-    background: var(--color-bg);
-    flex-wrap: wrap;
-  }
-
-  .tab {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 8px 14px;
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--color-text-secondary);
-    background: transparent;
-    border: 1px solid transparent;
-    border-radius: var(--radius-md);
-    cursor: pointer;
-    transition: color 200ms var(--ease-out-soft), background 200ms var(--ease-out-soft), border-color 200ms var(--ease-out-soft);
-  }
-
-  .tab:hover { color: var(--color-text); }
-
-  .tab.active {
-    color: var(--color-text);
-    background: var(--color-surface);
-    border-color: var(--color-border);
-    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-  }
-
-  .tab:focus-visible {
-    outline: 2px solid var(--color-accent);
-    outline-offset: 2px;
-  }
-
-  .recommended-badge {
-    font-size: 10px;
-    font-weight: 700;
-    font-family: var(--font-mono);
-    color: var(--color-accent);
-    background: var(--color-accent-soft);
-    border: 1px solid color-mix(in oklab, var(--color-accent) 25%, transparent);
-    border-radius: 999px;
-    padding: 2px 7px;
-    letter-spacing: 0.04em;
-  }
-
-  /* Panel */
-  .panel {
+  .install-methods {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 20px;
   }
 
-  .block-row {
+  .method-block {
     display: flex;
     flex-direction: column;
     gap: 8px;
   }
 
-  .block-label {
+  .method-label {
     font-size: 11px;
     font-weight: 600;
     text-transform: uppercase;

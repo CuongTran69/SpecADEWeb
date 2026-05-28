@@ -1,0 +1,223 @@
+---
+import type { Lang } from '~/i18n/strings'
+import { t } from '~/i18n/strings'
+import { pathFor } from '~/i18n/utils'
+
+interface Props {
+  lang: Lang
+}
+
+const { lang } = Astro.props
+const strings = t(lang)
+const s = strings.spotlight
+
+const title = lang === 'vi' ? 'Tính năng cốt lõi' : 'Core Capabilities'
+const subtitle = lang === 'vi' 
+  ? 'Môi trường làm việc toàn diện, được tích hợp sẵn giúp tối ưu hóa hiệu năng của các tác nhân AI.' 
+  : 'A comprehensive, built-in development environment optimized for AI agents.'
+
+const features = [
+  {
+    id: 'multi-agent',
+    title: lang === 'vi' ? 'Tích hợp đa tác nhân' : 'Multi-Agent CLI Hub',
+    desc: s.multiCli.hook,
+    icon: `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
+    color: '#a78bfa',
+    href: pathFor(lang, '/features#multi-agent'),
+  },
+  {
+    id: 'goal',
+    title: lang === 'vi' ? 'Mục tiêu tự trị' : 'Autonomous Goal Runner',
+    desc: s.goal.hook,
+    icon: `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>`,
+    color: '#22d3ee',
+    href: pathFor(lang, '/features#goal-showcase'),
+  },
+  {
+    id: 'port',
+    title: lang === 'vi' ? 'Chia sẻ port bảo mật' : 'Secure Port Forwarding',
+    desc: s.port.hook,
+    icon: `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg>`,
+    color: '#10b981',
+    href: pathFor(lang, '/features#port-forwarding'),
+  },
+  {
+    id: 'claw',
+    title: lang === 'vi' ? 'Trại lập lịch Claw' : 'Claw Scheduled Agents',
+    desc: s.claw.hook,
+    icon: `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>`,
+    color: '#fbbf24',
+    href: pathFor(lang, '/features#claw'),
+  },
+  {
+    id: 'db',
+    title: lang === 'vi' ? 'Console database tích hợp' : 'Integrated DB Console',
+    desc: s.db.hook,
+    icon: `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"/></svg>`,
+    color: '#ec4899',
+    href: pathFor(lang, '/features#db'),
+  },
+  {
+    id: 'design',
+    title: lang === 'vi' ? 'Thiết kế mẫu bằng AI' : 'AI Prototyping & Design',
+    desc: s.design.hook,
+    icon: `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M8 11.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zm3.5-3a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zm4.5 3.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zm-2 5.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/></svg>`,
+    color: '#f97316',
+    href: pathFor(lang, '/features#design'),
+  },
+]
+---
+
+<section class="key-features" id="key-features">
+  <div class="container-wide">
+    <header class="section-head reveal">
+      <span class="chip">{lang === 'vi' ? 'Tính năng' : 'Features'}</span>
+      <h2 class="section-title">{title}</h2>
+      <p class="section-subtitle">{subtitle}</p>
+    </header>
+
+    <div class="features-grid">
+      {features.map((f) => (
+        <a href={f.href} class="feature-card shine-hover reveal" style={`--accent-color: ${f.color}`} data-testid={`key-feature-${f.id}`}>
+          <div class="card-header">
+            <div class="feature-icon" set:html={f.icon}></div>
+            <h3 class="feature-title">{f.title}</h3>
+          </div>
+          <p class="feature-desc">{f.desc}</p>
+          <span class="explore-link">
+            {lang === 'vi' ? 'Khám phá chi tiết' : 'Explore details'}
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+            </svg>
+          </span>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .key-features {
+    padding-block: clamp(64px, 8vw, 100px);
+    background: var(--color-bg);
+    border-block-end: 1px solid var(--color-border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .section-head {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 48px;
+    max-width: 44rem;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  @media (min-width: 640px) {
+    .features-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .features-grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+  }
+
+  .feature-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    text-decoration: none;
+    transition: border-color 250ms var(--ease-out-soft), transform 250ms var(--ease-out-soft), box-shadow 250ms var(--ease-out-soft);
+    position: relative;
+  }
+
+  .feature-card:hover {
+    border-color: var(--accent-color);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px color-mix(in oklab, var(--accent-color) 6%, transparent);
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .feature-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: var(--radius-md);
+    background: color-mix(in oklab, var(--accent-color) 10%, transparent);
+    color: var(--accent-color);
+    border: 1px solid color-mix(in oklab, var(--accent-color) 25%, transparent);
+    flex-shrink: 0;
+    transition: background 250ms var(--ease-out-soft), color 250ms var(--ease-out-soft);
+  }
+
+  .feature-card:hover .feature-icon {
+    background: var(--accent-color);
+    color: #080810;
+  }
+
+  .feature-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--color-text);
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+
+  .feature-desc {
+    font-size: 13.5px;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+    margin: 0;
+    flex-grow: 1;
+  }
+
+  .explore-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--accent-color);
+    margin-top: auto;
+    transition: gap 200ms var(--ease-out-soft);
+  }
+
+  .explore-link svg {
+    transition: transform 200ms var(--ease-out-soft);
+  }
+
+  .feature-card:hover .explore-link {
+    gap: 8px;
+  }
+
+  .feature-card:hover .explore-link svg {
+    transform: translateX(2px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .feature-card:hover {
+      transform: none;
+    }
+  }
+</style>

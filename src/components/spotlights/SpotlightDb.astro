@@ -9,6 +9,55 @@ interface Props {
 
 const { lang } = Astro.props
 const strings = t(lang)
+const isVi = lang === 'vi'
+
+const l = {
+  connections: isVi ? 'KẾT NỐI' : 'CONNECTIONS',
+  filterPlaceholder: isVi ? 'Tìm kiếm DB...' : 'Filter...',
+  
+  // Sidebar connections
+  prodPg: 'prod-pg',
+  stagingMysql: 'staging-mysql',
+  localSqlite: 'local-sqlite',
+  cacheRedis: 'cache-redis',
+  analyticsMongo: 'analytics-mongo',
+  
+  // Connection Dialog
+  addConn: isVi ? 'KẾT NỐI MỚI' : 'ADD CONNECTION',
+  editMysql: isVi ? 'Cấu hình MySQL' : 'MySQL Connection',
+  pasteUrl: isVi ? 'Dán chuỗi kết nối URL (Connection URL)' : 'Paste URL',
+  parse: isVi ? 'Phân tích' : 'Parse',
+  driver: isVi ? 'Trình điều khiển (Driver)' : 'Driver',
+  dbName: isVi ? 'Tên kết nối' : 'Connection Name',
+  statusColor: isVi ? 'Màu trạng thái' : 'Status color',
+  host: 'Host',
+  port: 'Port',
+  user: isVi ? 'Người dùng' : 'User',
+  password: isVi ? 'Mật khẩu' : 'Password',
+  database: 'Database',
+  sslMode: 'SSL Mode',
+  overSsh: isVi ? 'Chạy qua SSH Tunnel' : 'Over SSH Tunnel',
+  cancel: isVi ? 'Hủy' : 'Cancel',
+  test: isVi ? 'Thử' : 'Test',
+  save: isVi ? 'Lưu' : 'Save',
+  startSimulation: isVi ? 'Bắt đầu giả lập' : 'Start Simulation',
+  resetSimulation: isVi ? 'Đặt lại' : 'Reset',
+  simSuccess: isVi ? '✓ Giả lập hoàn tất — Cơ sở dữ liệu đã được kết nối thành công!' : '✓ Simulation complete — Database connected successfully!',
+  
+  // Query view
+  showUsers: 'show users with no email',
+  rowsFound: isVi ? '3 dòng · 12ms' : '3 rows · 12ms',
+  
+  // Benefits List
+  b1Title: isVi ? 'Hỗ trợ 6 Driver thông dụng' : '6 Supported Drivers',
+  b1Desc: isVi ? 'Tương thích trực tiếp với PostgreSQL, MySQL, MariaDB, SQLite, MongoDB và Redis.' : 'Native compatibility with PostgreSQL, MySQL, MariaDB, SQLite, MongoDB, and Redis.',
+  b2Title: isVi ? 'Trình duyệt & chỉnh sửa trực quan' : 'Visual Table Inspector & Editor',
+  b2Desc: isVi ? 'Xem cấu trúc bảng, truy vấn dữ liệu và chỉnh sửa trực tiếp mà không cần công cụ ngoài.' : 'Browse tables, search records, and edit values directly within the workspace.',
+  b3Title: isVi ? 'Truy vấn bằng ngôn ngữ tự nhiên' : 'AI Schema Reader & Auto-Query',
+  b3Desc: isVi ? 'Tích hợp AI để tự động đọc schema, đề xuất câu lệnh SQL hoặc thực hiện migration tự động.' : 'Let AI agents read database schemas, draft queries, and run safe migration scripts.',
+  b4Title: isVi ? 'Bảo mật kết nối tối đa' : 'Secure Tunneling & Safety',
+  b4Desc: isVi ? 'Hỗ trợ SSH Tunnel, chế độ Safe Mode nâng cấp bảo mật khi truy cập DB production.' : 'Integrates SSH Tunneling, encrypted connection details, and production Safe Mode protection.',
+}
 
 const rows = [
   { id: '1', name: 'Alice Chen', email: 'alice@example.com', isNull: false },
@@ -18,60 +67,811 @@ const rows = [
 ]
 ---
 
-<Spotlight id="db" hook={strings.spotlight.db.hook} body={strings.spotlight.db.body} tone="accent" flip>
-  <div slot="visual" class="db-mock" aria-hidden="true">
-    <div class="db-chat">
-      <div class="db-bubble">
-        <span class="db-bubble-icon">›</span>
-        <span class="db-bubble-text">show users with no email</span>
-        <span class="db-cursor"></span>
+<section class="spotlight-section spotlight--accent" id="db">
+  <div class="container-wide">
+    <!-- Top Header -->
+    <header class="section-head reveal">
+      <span class="chip">{strings.spotlight.db.chip}</span>
+      <h2 class="section-title">{strings.spotlight.db.hook}</h2>
+      <p class="section-subtitle">{strings.spotlight.db.body}</p>
+    </header>
+
+    <div class="spotlight-grid">
+      <!-- Left Column: Visual Mockup Container -->
+      <div class="spotlight-visual reveal">
+        <div class="db-mock" id="db-mock-container" data-vi={isVi ? "true" : "false"} aria-hidden="true">
+          <div class="db-mock-grid">
+            <!-- 1. LEFT SIDEBAR: CONNECTIONS -->
+            <aside class="db-sidebar">
+              <div class="sidebar-header">
+                <span class="sidebar-title">{l.connections}</span>
+                <button type="button" class="add-connection-btn" id="db-add-btn" title="Add Connection">+</button>
+              </div>
+              <div class="sidebar-search">
+                <input type="text" class="search-input" placeholder={l.filterPlaceholder} readonly />
+              </div>
+              <div class="connection-list">
+                <div class="conn-item conn-item--active" data-conn="pg">
+                  <span class="status-dot dot-red"></span>
+                  <div class="conn-meta">
+                    <span class="conn-name">{l.prodPg}</span>
+                    <span class="conn-driver">PostgreSQL</span>
+                  </div>
+                  <span class="tag-badge badge-prod">prod</span>
+                </div>
+
+                <div class="conn-item" data-conn="sqlite">
+                  <span class="status-dot dot-green"></span>
+                  <div class="conn-meta">
+                    <span class="conn-name">{l.localSqlite}</span>
+                    <span class="conn-driver">SQLite</span>
+                  </div>
+                  <span class="tag-badge badge-local">local</span>
+                </div>
+
+                <div class="conn-item" data-conn="redis">
+                  <span class="status-dot dot-purple"></span>
+                  <div class="conn-meta">
+                    <span class="conn-name">{l.cacheRedis}</span>
+                    <span class="conn-driver">Redis</span>
+                  </div>
+                  <span class="tag-badge badge-cache">cache</span>
+                </div>
+
+                <div class="conn-item" data-conn="mongo">
+                  <span class="status-dot dot-orange"></span>
+                  <div class="conn-meta">
+                    <span class="conn-name">{l.analyticsMongo}</span>
+                    <span class="conn-driver">MongoDB</span>
+                  </div>
+                  <span class="tag-badge badge-analytics">analytics</span>
+                </div>
+              </div>
+            </aside>
+
+            <!-- 2. MAIN DISPLAY WINDOW -->
+            <main class="db-main">
+              <!-- VIEW A: QUERY AND GRID -->
+              <div class="db-view-panel" id="db-panel-query">
+                <div class="db-chat">
+                  <div class="db-bubble">
+                    <span class="db-bubble-icon">›</span>
+                    <span class="db-bubble-text">{l.showUsers}</span>
+                    <span class="db-cursor"></span>
+                  </div>
+                </div>
+                <div class="db-grid-wrap">
+                  <div class="db-grid-meta">
+                    <span class="db-table-name">users</span>
+                    <span class="db-row-count">{l.rowsFound}</span>
+                  </div>
+                  <table class="db-grid">
+                    <thead>
+                      <tr>
+                        <th>id</th>
+                        <th>name</th>
+                        <th>email</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {rows.map((row) => (
+                        <tr class={row.isNull ? 'db-row--matched animate-pulse-light' : ''}>
+                          <td class="db-cell-id">{row.id}</td>
+                          <td>{row.name}</td>
+                          <td>
+                            {row.isNull
+                              ? <span class="db-null">NULL</span>
+                              : <span class="db-email">{row.email}</span>
+                            }
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- VIEW B: CONNECTION MANAGER FORM -->
+              <div class="db-view-panel" id="db-panel-form" style="display: none;">
+                <div class="db-form-header">
+                  <span class="form-title-text">{l.editMysql}</span>
+                  <span class="form-driver-badge">MySQL</span>
+                </div>
+                
+                <div class="db-form-body">
+                  <div class="db-form-row">
+                    <label class="form-field-label">{l.pasteUrl}</label>
+                    <div class="url-input-group">
+                      <input type="text" class="form-field-input text-muted" value="postgres://user@host:5432/db" disabled />
+                      <button type="button" class="form-action-btn">{l.parse}</button>
+                    </div>
+                  </div>
+
+                  <div class="db-form-grid-fields">
+                    <div class="db-form-row">
+                      <label class="form-field-label">{l.driver}</label>
+                      <div class="custom-select-wrap">
+                        <button type="button" class="select-field-btn" id="db-driver-select-btn">
+                          <span>MySQL</span>
+                          <span class="select-chevron">▼</span>
+                        </button>
+                        
+                        <!-- Dropdown Menu Options (Image 3 Style) -->
+                        <div class="select-dropdown-options" id="db-driver-options" style="display: none;">
+                          <div class="option-item" data-value="PostgreSQL">PostgreSQL</div>
+                          <div class="option-item option-item--active" data-value="MySQL">✓ MySQL</div>
+                          <div class="option-item" data-value="MariaDB">MariaDB</div>
+                          <div class="option-item" data-value="SQLite">SQLite</div>
+                          <div class="option-item" data-value="MongoDB">MongoDB</div>
+                          <div class="option-item" data-value="Redis">Redis</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="db-form-row">
+                      <label class="form-field-label">{l.dbName}</label>
+                      <input type="text" class="form-field-input" value="staging-mysql" id="db-name-input" />
+                    </div>
+                  </div>
+
+                  <div class="db-form-row">
+                    <label class="form-field-label">{l.statusColor}</label>
+                    <div class="color-picker-row">
+                      <span class="color-dot dot-blue selected" data-color="blue"></span>
+                      <span class="color-dot dot-pink" data-color="pink"></span>
+                      <span class="color-dot dot-red" data-color="red"></span>
+                      <span class="color-dot dot-orange" data-color="orange"></span>
+                      <span class="color-dot dot-green" data-color="green"></span>
+                      <span class="color-dot dot-cyan" data-color="cyan"></span>
+                    </div>
+                  </div>
+
+                  <div class="db-form-grid-fields">
+                    <div class="db-form-row">
+                      <label class="form-field-label">{l.host}</label>
+                      <input type="text" class="form-field-input" value="localhost" />
+                    </div>
+                    <div class="db-form-row">
+                      <label class="form-field-label">{l.port}</label>
+                      <input type="text" class="form-field-input" value="3306" id="db-port-field" />
+                    </div>
+                  </div>
+
+                  <div class="db-form-checkbox-row">
+                    <input type="checkbox" id="db-ssh-chk" />
+                    <label for="db-ssh-chk">{l.overSsh}</label>
+                  </div>
+                </div>
+
+                <div class="db-form-footer">
+                  <button type="button" class="footer-btn btn-secondary" id="db-form-cancel">{l.cancel}</button>
+                  <div class="right-footer-btns">
+                    <button type="button" class="footer-btn btn-secondary" id="db-form-test">{l.test}</button>
+                    <button type="button" class="footer-btn btn-primary" id="db-form-save">{l.save}</button>
+                  </div>
+                </div>
+              </div>
+            </main>
+          </div>
+        </div>
+
+        <!-- Action Panel: Start Simulation / Success -->
+        <div class="showcase-actions">
+          <button type="button" class="action-btn-start" id="db-sim-btn-start">
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right:6px;"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            {l.startSimulation}
+          </button>
+
+          <div class="success-banner-card" id="db-sim-success-banner" style="display: none;">
+            <span class="success-banner-text">{l.simSuccess}</span>
+            <button type="button" class="action-btn-reset" id="db-sim-btn-reset">
+              <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+              {l.resetSimulation}
+            </button>
+          </div>
+        </div>
       </div>
-    </div>
-    <div class="db-grid-wrap">
-      <div class="db-grid-meta">
-        <span class="db-table-name">users</span>
-        <span class="db-row-count">3 rows · 12ms</span>
+
+      <!-- Right Column: Detail Copy Lists -->
+      <div class="spotlight-copy reveal">
+        <div class="benefit-list">
+          <div class="benefit-item">
+            <h3 class="benefit-item-title">{l.b1Title}</h3>
+            <p class="benefit-item-desc">{l.b1Desc}</p>
+          </div>
+          <div class="benefit-item">
+            <h3 class="benefit-item-title">{l.b2Title}</h3>
+            <p class="benefit-item-desc">{l.b2Desc}</p>
+          </div>
+          <div class="benefit-item">
+            <h3 class="benefit-item-title">{l.b3Title}</h3>
+            <p class="benefit-item-desc">{l.b3Desc}</p>
+          </div>
+          <div class="benefit-item">
+            <h3 class="benefit-item-title">{l.b4Title}</h3>
+            <p class="benefit-item-desc">{l.b4Desc}</p>
+          </div>
+        </div>
       </div>
-      <table class="db-grid">
-        <thead>
-          <tr>
-            <th>id</th>
-            <th>name</th>
-            <th>email</th>
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((row) => (
-            <tr class={row.isNull ? 'db-row--matched animate-pulse-light' : ''}>
-              <td class="db-cell-id">{row.id}</td>
-              <td>{row.name}</td>
-              <td>
-                {row.isNull
-                  ? <span class="db-null">NULL</span>
-                  : <span class="db-email">{row.email}</span>
-                }
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
     </div>
   </div>
-</Spotlight>
+</section>
+
+<script>
+  function initDbSpotlight() {
+    const container = document.getElementById('db-mock-container');
+    if (!container) return;
+
+    const queryPanel = container.querySelector('#db-panel-query') as HTMLElement | null;
+    const formPanel = container.querySelector('#db-panel-form') as HTMLElement | null;
+    const addBtn = container.querySelector('#db-add-btn');
+    
+    const cancelBtn = container.querySelector('#db-form-cancel');
+    const saveBtn = container.querySelector('#db-form-save');
+    const testBtn = container.querySelector('#db-form-test') as HTMLButtonElement | null;
+    
+    const driverSelectBtn = container.querySelector('#db-driver-select-btn') as HTMLButtonElement | null;
+    const driverOptions = container.querySelector('#db-driver-options') as HTMLElement | null;
+    const optionItems = container.querySelectorAll('.option-item');
+    const formDriverBadge = container.querySelector('.form-driver-badge') as HTMLElement | null;
+    const selectLabel = driverSelectBtn?.querySelector('span') as HTMLElement | null;
+
+    const colorDots = container.querySelectorAll('.color-dot');
+    const listContainer = container.querySelector('.connection-list');
+    const initialListHtml = listContainer ? listContainer.innerHTML : '';
+
+    // Simulation Controls
+    const parentSection = container.closest('.spotlight-section');
+    const startBtn = parentSection?.querySelector('#db-sim-btn-start') as HTMLButtonElement | null;
+    const resetBtn = parentSection?.querySelector('#db-sim-btn-reset') as HTMLButtonElement | null;
+    const successBanner = parentSection?.querySelector('#db-sim-success-banner') as HTMLElement | null;
+
+    let simTimeouts: number[] = [];
+    let simRunning = false;
+
+    // Toggle driver dropdown
+    driverSelectBtn?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (driverOptions) {
+        const isShown = driverOptions.style.display === 'block';
+        driverOptions.style.display = isShown ? 'none' : 'block';
+      }
+    });
+
+    // Close dropdown on click outside
+    document.addEventListener('click', () => {
+      if (driverOptions) driverOptions.style.display = 'none';
+    });
+
+    // Select driver option
+    optionItems.forEach(item => {
+      item.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const value = item.getAttribute('data-value');
+        if (value) {
+          // Update dropdown active class
+          optionItems.forEach(o => o.classList.remove('option-item--active'));
+          item.classList.add('option-item--active');
+          
+          // Update button text and badge
+          if (selectLabel) selectLabel.textContent = value;
+          if (formDriverBadge) formDriverBadge.textContent = value;
+          
+          // Set checked indicator
+          optionItems.forEach(o => {
+            const val = o.getAttribute('data-value');
+            o.textContent = val === value ? `✓ ${val}` : val;
+          });
+
+          // Autofill standard port based on driver
+          const portField = container.querySelector('#db-port-field') as HTMLInputElement | null;
+          const nameField = container.querySelector('#db-name-input') as HTMLInputElement | null;
+          if (portField) {
+            if (value === 'PostgreSQL') portField.value = '5432';
+            else if (value === 'MySQL' || value === 'MariaDB') portField.value = '3306';
+            else if (value === 'MongoDB') portField.value = '27017';
+            else if (value === 'Redis') portField.value = '6379';
+            else portField.value = '';
+          }
+          if (nameField && value) {
+            nameField.value = `staging-${value.toLowerCase()}`;
+          }
+        }
+        if (driverOptions) driverOptions.style.display = 'none';
+      });
+    });
+
+    // Select color dot
+    colorDots.forEach(dot => {
+      dot.addEventListener('click', () => {
+        colorDots.forEach(d => d.classList.remove('selected'));
+        dot.classList.add('selected');
+      });
+    });
+
+    function showPanel(panel: 'query' | 'form') {
+      if (queryPanel) queryPanel.style.display = panel === 'query' ? 'flex' : 'none';
+      if (formPanel) formPanel.style.display = panel === 'form' ? 'flex' : 'none';
+    }
+
+    addBtn?.addEventListener('click', () => {
+      showPanel('form');
+    });
+
+    // Set connection list listeners initially
+    function refreshListListeners() {
+      if (!listContainer) return;
+      const connItems = listContainer.querySelectorAll('.conn-item');
+      connItems.forEach(item => {
+        // Remove existing listener to prevent duplicates
+        const newItem = item.cloneNode(true) as HTMLElement;
+        item.parentNode?.replaceChild(newItem, item);
+        
+        newItem.addEventListener('click', () => {
+          if (listContainer) {
+            listContainer.querySelectorAll('.conn-item').forEach(i => i.classList.remove('conn-item--active'));
+          }
+          newItem.classList.add('conn-item--active');
+          showPanel('query');
+        });
+      });
+    }
+    
+    refreshListListeners();
+
+    cancelBtn?.addEventListener('click', () => {
+      showPanel('query');
+    });
+
+    saveBtn?.addEventListener('click', () => {
+      // Check if connection already exists in list to prevent duplicates
+      const nameInput = container.querySelector('#db-name-input') as HTMLInputElement | null;
+      const connName = nameInput ? nameInput.value.trim() : 'staging-mysql';
+      
+      if (listContainer) {
+        // Search if item with same name exists
+        let exists = false;
+        const currentNames = listContainer.querySelectorAll('.conn-name');
+        currentNames.forEach(node => {
+          if (node.textContent === connName) exists = true;
+        });
+
+        if (!exists) {
+          const item = document.createElement('div');
+          item.className = 'conn-item conn-item--active';
+          
+          // Get selected color
+          const selectedColorDot = container.querySelector('.color-dot.selected');
+          const colorClass = selectedColorDot ? selectedColorDot.classList[1] : 'dot-blue';
+          
+          // Get selected driver
+          const selectedDriver = selectLabel ? selectLabel.textContent : 'MySQL';
+
+          item.innerHTML = `
+            <span class="status-dot ${colorClass}"></span>
+            <div class="conn-meta">
+              <span class="conn-name">${connName}</span>
+              <span class="conn-driver">${selectedDriver}</span>
+            </div>
+            <span class="tag-badge badge-staging">staging</span>
+          `;
+
+          // Deactivate other connections
+          listContainer.querySelectorAll('.conn-item').forEach(i => i.classList.remove('conn-item--active'));
+          
+          // Append new connection
+          listContainer.appendChild(item);
+          
+          // Refresh click listeners on connection list
+          refreshListListeners();
+        } else {
+          // If it exists, just activate the existing node
+          listContainer.querySelectorAll('.conn-item').forEach(i => {
+            const node = i.querySelector('.conn-name');
+            if (node && node.textContent === connName) {
+              i.classList.add('conn-item--active');
+            } else {
+              i.classList.remove('conn-item--active');
+            }
+          });
+        }
+      }
+
+      showPanel('query');
+    });
+
+    testBtn?.addEventListener('click', () => {
+      const isVi = container.getAttribute('data-vi') === 'true';
+      const origText = testBtn.textContent;
+      testBtn.textContent = isVi ? '✓ Thành công' : '✓ Connected';
+      testBtn.classList.add('btn-success-green');
+      setTimeout(() => {
+        testBtn.textContent = origText;
+        testBtn.classList.remove('btn-success-green');
+      }, 1500);
+    });
+
+    // ===== Simulation Logic =====
+    function schedule(fn: () => void, delay: number) {
+      const id = window.setTimeout(fn, delay);
+      simTimeouts.push(id);
+    }
+
+    function resetDbSimulation() {
+      simTimeouts.forEach(id => clearTimeout(id));
+      simTimeouts = [];
+      simRunning = false;
+
+      // Restore list HTML
+      if (listContainer) {
+        listContainer.innerHTML = initialListHtml;
+      }
+      
+      // Close driver dropdown
+      if (driverOptions) driverOptions.style.display = 'none';
+      showPanel('query');
+      
+      // Restore default values in form
+      const portField = container.querySelector('#db-port-field') as HTMLInputElement | null;
+      const nameField = container.querySelector('#db-name-input') as HTMLInputElement | null;
+      if (portField) portField.value = '3306';
+      if (nameField) nameField.value = 'staging-mysql';
+      if (selectLabel) selectLabel.textContent = 'MySQL';
+      if (formDriverBadge) formDriverBadge.textContent = 'MySQL';
+      
+      // Reset option items checked indicators
+      optionItems.forEach(o => {
+        const val = o.getAttribute('data-value');
+        o.classList.remove('option-item--active');
+        if (val === 'MySQL') {
+          o.classList.add('option-item--active');
+          o.textContent = '✓ MySQL';
+        } else {
+          o.textContent = val;
+        }
+      });
+      
+      // Select blue color dot as default
+      colorDots.forEach(d => d.classList.remove('selected'));
+      const defaultDot = container.querySelector('.color-dot[data-color="blue"]');
+      if (defaultDot) defaultDot.classList.add('selected');
+
+      // Reset test button state if needed
+      testBtn?.classList.remove('btn-success-green');
+
+      // Reset buttons
+      if (startBtn) startBtn.style.display = 'inline-flex';
+      if (successBanner) {
+        successBanner.hidden = true;
+        successBanner.style.display = 'none';
+      }
+
+      refreshListListeners();
+    }
+
+    function runDbSimulation() {
+      if (simRunning) return;
+      simRunning = true;
+
+      if (startBtn) startBtn.style.display = 'none';
+      if (successBanner) {
+        successBanner.hidden = true;
+        successBanner.style.display = 'none';
+      }
+
+      // Step 1: Click "+" button after 600ms
+      schedule(() => {
+        addBtn?.dispatchEvent(new Event('click'));
+      }, 600);
+
+      // Step 2: Open driver select dropdown after 1800ms
+      schedule(() => {
+        driverSelectBtn?.dispatchEvent(new Event('click'));
+      }, 1800);
+
+      // Step 3: Choose PostgreSQL after 3000ms
+      schedule(() => {
+        const pgOption = container.querySelector('.option-item[data-value="PostgreSQL"]') as HTMLElement | null;
+        if (pgOption) {
+          pgOption.dispatchEvent(new Event('click'));
+        }
+      }, 3000);
+
+      // Step 4: Click green status color dot after 4200ms
+      schedule(() => {
+        const greenDot = container.querySelector('.color-dot[data-color="green"]') as HTMLElement | null;
+        if (greenDot) {
+          greenDot.dispatchEvent(new Event('click'));
+        }
+      }, 4200);
+
+      // Step 5: Click Test after 5400ms
+      schedule(() => {
+        testBtn?.dispatchEvent(new Event('click'));
+      }, 5400);
+
+      // Step 6: Click Save after 7400ms
+      schedule(() => {
+        saveBtn?.dispatchEvent(new Event('click'));
+      }, 7400);
+
+      // Step 7: Finish simulation and show success banner after 8600ms
+      schedule(() => {
+        simRunning = false;
+        if (successBanner) {
+          successBanner.hidden = false;
+          successBanner.style.display = 'flex';
+        }
+      }, 8600);
+    }
+
+    startBtn?.addEventListener('click', runDbSimulation);
+    resetBtn?.addEventListener('click', resetDbSimulation);
+  }
+
+  initDbSpotlight();
+  document.addEventListener('astro:after-swap', initDbSpotlight);
+</script>
 
 <style>
+  .spotlight-section {
+    padding-block: clamp(64px, 8vw, 100px);
+    border-block-end: 1px solid var(--color-border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .spotlight--accent {
+    background: var(--color-surface);
+  }
+
+  .section-head {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 36px;
+    max-width: 44rem;
+  }
+
+  .spotlight-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+    align-items: start;
+  }
+
+  @media (min-width: 1024px) {
+    .spotlight-grid {
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 56px;
+    }
+  }
+
+  .spotlight-visual {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .spotlight-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .benefit-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .benefit-item {
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    padding: 16px 20px;
+    border-radius: var(--radius-lg);
+    transition: all 150ms var(--ease-out-soft);
+  }
+
+  .benefit-item:hover {
+    border-color: var(--color-border-strong);
+    transform: translateX(4px);
+  }
+
+  .benefit-item-title {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--color-text);
+    margin: 0 0 6px 0;
+    letter-spacing: -0.01em;
+  }
+
+  .benefit-item-desc {
+    font-size: 12.5px;
+    color: var(--color-text-secondary);
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  /* Mock database container */
   .db-mock {
     background: var(--color-surface);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-lg);
     overflow: hidden;
-    font-family: var(--font-mono);
+    font-family: var(--font-sans);
     font-size: 12px;
     display: flex;
     flex-direction: column;
-    gap: 0;
+    height: 380px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
   }
 
+  .db-mock-grid {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    height: 100%;
+    width: 100%;
+  }
+
+  /* 1. SIDEBAR CONNECTIONS PANEL */
+  .db-sidebar {
+    background: var(--color-raised);
+    border-right: 1px solid var(--color-border);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    overflow-y: auto;
+  }
+
+  .sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+
+  .sidebar-title {
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--color-text-muted);
+  }
+
+  .add-connection-btn {
+    font-size: 14px;
+    font-weight: bold;
+    background: transparent;
+    border: none;
+    color: var(--color-accent);
+    cursor: pointer;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+  }
+
+  .add-connection-btn:hover {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .sidebar-search {
+    margin-bottom: 8px;
+  }
+
+  .search-input {
+    width: 100%;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    padding: 4px 6px;
+    font-size: 10px;
+    border-radius: 4px;
+    color: var(--color-text-muted);
+    box-sizing: border-box;
+    outline: none;
+  }
+
+  .connection-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .conn-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 150ms var(--ease-out-soft);
+  }
+
+  .conn-item:hover {
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .conn-item.conn-item--active {
+    background: var(--color-surface);
+    border-color: var(--color-border-strong);
+  }
+
+  .status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .dot-red { background: #ef4444; box-shadow: 0 0 4px #ef4444; }
+  .dot-blue { background: #3b82f6; box-shadow: 0 0 4px #3b82f6; }
+  .dot-green { background: #10b981; box-shadow: 0 0 4px #10b981; }
+  .dot-purple { background: #a855f7; box-shadow: 0 0 4px #a855f7; }
+  .dot-orange { background: #f97316; box-shadow: 0 0 4px #f97316; }
+
+  .conn-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    flex-grow: 1;
+    min-width: 0;
+  }
+
+  .conn-name {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--color-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .conn-driver {
+    font-size: 8.5px;
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+  }
+
+  .tag-badge {
+    font-size: 8px;
+    font-weight: 700;
+    padding: 1px 4px;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+
+  .badge-prod { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+  .badge-staging { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
+  .badge-local { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+  .badge-cache { background: rgba(168, 85, 247, 0.1); color: #a855f7; }
+  .badge-analytics { background: rgba(249, 115, 22, 0.1); color: #f97316; }
+
+  /* 2. MAIN WORKSPACE / PANEL */
+  .db-main {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: var(--color-bg);
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  .db-view-panel {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+  }
+
+  /* Query View Panel */
   .db-chat {
     padding: 12px 14px;
     background: var(--color-raised);
@@ -87,15 +887,18 @@ const rows = [
   .db-bubble-icon {
     color: var(--color-accent);
     font-size: 14px;
+    font-family: var(--font-mono);
   }
 
   .db-bubble-text {
     color: var(--color-text);
-    font-size: 13px;
+    font-size: 12.5px;
+    font-family: var(--font-mono);
   }
 
   .db-grid-wrap {
     overflow-x: auto;
+    flex-grow: 1;
   }
 
   .db-grid-meta {
@@ -109,14 +912,14 @@ const rows = [
   .db-table-name {
     font-weight: 600;
     color: var(--color-text);
-    font-size: 11px;
+    font-size: 10.5px;
     text-transform: uppercase;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.05em;
   }
 
   .db-row-count {
     color: var(--color-text-muted);
-    font-size: 11px;
+    font-size: 10.5px;
   }
 
   .db-grid {
@@ -125,11 +928,11 @@ const rows = [
   }
 
   .db-grid th {
-    padding: 7px 14px;
+    padding: 6px 14px;
     text-align: left;
     font-weight: 600;
     color: var(--color-text-muted);
-    font-size: 11px;
+    font-size: 10px;
     text-transform: uppercase;
     letter-spacing: 0.05em;
     border-bottom: 1px dashed var(--color-border);
@@ -137,10 +940,11 @@ const rows = [
   }
 
   .db-grid td {
-    padding: 10px 14px;
+    padding: 8px 14px;
     color: var(--color-text-secondary);
     border-bottom: 1px solid var(--color-border);
-    transition: color 150ms var(--ease-out-soft), background 150ms var(--ease-out-soft);
+    font-family: var(--font-mono);
+    font-size: 11.5px;
   }
 
   .db-grid tr:last-child td {
@@ -154,26 +958,17 @@ const rows = [
 
   .db-null {
     display: inline-block;
-    padding: 2px 6px;
+    padding: 1px 5px;
     border-radius: var(--radius-xs);
     background: color-mix(in srgb, var(--color-warning) 15%, transparent);
     color: var(--color-warning);
-    font-size: 11px;
-    font-weight: 600;
+    font-size: 10px;
+    font-weight: 700;
     letter-spacing: 0.04em;
   }
 
   .db-email {
     color: var(--color-text-secondary);
-  }
-
-  /* Interactive premium overrides */
-  .db-mock {
-    transition: border-color 300ms var(--ease-out-soft);
-  }
-
-  .db-mock:hover {
-    border-color: var(--color-accent);
   }
 
   .db-row--matched {
@@ -190,8 +985,8 @@ const rows = [
 
   .db-cursor {
     display: inline-block;
-    width: 6px;
-    height: 14px;
+    width: 5px;
+    height: 13px;
     background: var(--color-accent);
     margin-left: 2px;
     vertical-align: middle;
@@ -209,6 +1004,288 @@ const rows = [
   @keyframes pulse-light {
     from { background-color: color-mix(in srgb, var(--color-accent) 4%, transparent); }
     to { background-color: color-mix(in srgb, var(--color-accent) 9%, transparent); }
+  }
+
+  /* Connection Form Panel */
+  .db-form-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--color-border);
+    padding: 8px 12px;
+    background: var(--color-raised);
+  }
+
+  .form-title-text {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--color-text);
+  }
+
+  .form-driver-badge {
+    font-size: 9px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--color-border);
+    color: var(--color-accent);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: var(--font-mono);
+    font-weight: bold;
+  }
+
+  .db-form-body {
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex-grow: 1;
+    overflow-y: auto;
+    box-sizing: border-box;
+  }
+
+  .db-form-row {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .form-field-label {
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .form-field-input {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: 5px 8px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--color-text);
+    outline: none;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .form-field-input:focus {
+    border-color: var(--color-accent);
+  }
+
+  .url-input-group {
+    display: flex;
+    gap: 6px;
+  }
+
+  .url-input-group .form-field-input {
+    flex-grow: 1;
+    opacity: 0.6;
+  }
+
+  .form-action-btn {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-secondary);
+    font-size: 10px;
+    font-weight: 600;
+    padding: 5px 10px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 150ms var(--ease-out-soft);
+  }
+
+  .form-action-btn:hover {
+    border-color: var(--color-border-strong);
+    color: var(--color-text);
+  }
+
+  .db-form-grid-fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .custom-select-wrap {
+    position: relative;
+  }
+
+  .select-field-btn {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: 5px 8px;
+    font-size: 11px;
+    color: var(--color-text);
+    cursor: pointer;
+    box-sizing: border-box;
+  }
+
+  .select-chevron {
+    font-size: 8px;
+    color: var(--color-text-muted);
+  }
+
+  .select-dropdown-options {
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    right: 0;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius-sm);
+    margin-bottom: 2px;
+    z-index: 100;
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+  }
+
+  .option-item {
+    padding: 6px 10px;
+    font-size: 11px;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    text-align: left;
+  }
+
+  .option-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--color-text);
+  }
+
+  .option-item.option-item--active {
+    color: var(--color-accent);
+    font-weight: 700;
+    background: rgba(6, 182, 212, 0.05);
+  }
+
+  .color-picker-row {
+    display: flex;
+    gap: 8px;
+    padding: 2px 0;
+  }
+
+  .color-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid transparent;
+    box-sizing: border-box;
+  }
+
+  .color-dot.selected {
+    border-color: var(--color-text);
+    transform: scale(1.1);
+  }
+
+  .db-form-checkbox-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 2px 0;
+  }
+
+  .db-form-checkbox-row label {
+    font-size: 11px;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+  }
+
+  .db-form-checkbox-row input {
+    cursor: pointer;
+  }
+
+  .db-form-footer {
+    display: flex;
+    justify-content: space-between;
+    border-top: 1px solid var(--color-border);
+    padding: 8px 12px;
+    background: var(--color-raised);
+    margin-top: auto;
+  }
+
+  .footer-btn {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 150ms var(--ease-out-soft);
+  }
+
+  .footer-btn.btn-secondary {
+    background: transparent;
+    border: 1px solid var(--color-border);
+    color: var(--color-text-secondary);
+  }
+
+  .footer-btn.btn-secondary:hover {
+    border-color: var(--color-border-strong);
+    color: var(--color-text);
+  }
+
+  .footer-btn.btn-primary {
+    background: var(--color-accent);
+    border: none;
+    color: #080810;
+  }
+
+  .footer-btn.btn-primary:hover {
+    opacity: 0.9;
+  }
+
+  .btn-success-green {
+    background: var(--color-success) !important;
+    border-color: var(--color-success) !important;
+    color: #080810 !important;
+  }
+
+  /* ===== Action Panel ===== */
+  .showcase-actions {
+    margin-top: 20px; display: flex; align-items: center; justify-content: center;
+    min-height: 44px; gap: 12px;
+  }
+
+  .action-btn-start {
+    display: inline-flex; align-items: center; justify-content: center;
+    background: var(--color-accent); color: #080810; border: none;
+    padding: 10px 28px; border-radius: var(--radius-md);
+    font-size: 13px; font-weight: 700; cursor: pointer;
+    transition: opacity 200ms var(--ease-out-soft), transform 200ms var(--ease-out-soft);
+    letter-spacing: 0.02em;
+    font-family: var(--font-sans);
+  }
+  .action-btn-start:hover { opacity: 0.9; transform: translateY(-1px); }
+
+  .success-banner-card {
+    display: flex; align-items: center; justify-content: center; gap: 16px;
+    background: color-mix(in oklab, var(--color-success) 8%, var(--color-surface));
+    border: 1px solid color-mix(in oklab, var(--color-success) 20%, transparent);
+    border-radius: var(--radius-md); padding: 10px 20px;
+    animation: stateReveal 400ms var(--ease-out-soft) forwards;
+  }
+
+  .success-banner-text { font-size: 13px; font-weight: 600; color: var(--color-success); font-family: var(--font-sans); }
+
+  .action-btn-reset {
+    display: inline-flex; align-items: center;
+    background: var(--color-raised); border: 1px solid var(--color-border-strong);
+    color: var(--color-text-secondary); padding: 6px 14px;
+    border-radius: var(--radius-sm); font-size: 12px; font-weight: 500;
+    cursor: pointer; transition: all 200ms var(--ease-out-soft);
+    font-family: var(--font-sans);
+  }
+  .action-btn-reset:hover { border-color: var(--color-accent); color: var(--color-accent); }
+
+  @keyframes stateReveal {
+    from { opacity: 0; transform: scale(0.97); }
+    to { opacity: 1; transform: scale(1); }
   }
 
   @media (prefers-reduced-motion: reduce) {

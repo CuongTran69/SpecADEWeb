@@ -29,6 +29,7 @@ const homePath = pathFor(lang, '/')
 
     <nav class="nav-links" aria-label="Primary">
       <a href={pathFor(lang, '/features')} class="nav-link">{strings.nav.features}</a>
+      <a href={pathFor(lang, '/install')} class="nav-link">{strings.nav.getStarted}</a>
       <a href={pathFor(lang, '/faq')} class="nav-link">{strings.nav.faq}</a>
     </nav>
 
@@ -38,7 +39,7 @@ const homePath = pathFor(lang, '/')
       </a>
       <ThemeToggle client:load />
       <a
-        href={`${homePath}#get-started`}
+        href={pathFor(lang, '/install')}
         class="btn btn-primary header-cta"
         data-testid="header-cta"
       >
@@ -68,8 +69,9 @@ const homePath = pathFor(lang, '/')
   <div id="mobile-nav" class="mobile-nav" hidden data-testid="mobile-nav">
     <nav class="mobile-nav-links" aria-label="Mobile primary">
       <a href={pathFor(lang, '/features')} data-testid="mobile-nav-link-features">{strings.nav.features}</a>
+      <a href={pathFor(lang, '/install')} data-testid="mobile-nav-link-install">{strings.nav.getStarted}</a>
       <a href={pathFor(lang, '/faq')} data-testid="mobile-nav-link-faq">{strings.nav.faq}</a>
-      <a href={`${homePath}#get-started`} data-testid="mobile-nav-link-get-started" class="mobile-cta">{strings.nav.getStarted}</a>
+      <a href={pathFor(lang, '/install')} data-testid="mobile-nav-link-get-started" class="mobile-cta">{strings.nav.getStarted}</a>
       <a href={otherPath} hreflang={otherLang} class="mobile-lang-link">{strings.nav.switchTo}</a>
     </nav>
   </div>

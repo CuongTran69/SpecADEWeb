@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref } from 'vue'
+import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 
 interface Line {
   prefix?: string
@@ -9,30 +9,42 @@ interface Line {
 }
 
 const lines: Line[] = [
-  { prefix: '$', prefixClass: 'prompt', text: 'spec-ade open my-project', textClass: 'cmd' },
-  { prefix: '◆', prefixClass: 'claude', text: 'Claude  Reading your codebase…', textClass: 'agent' },
-  { prefix: '◆', prefixClass: 'claude', text: "Claude  I'll add a login page with JWT auth. Starting now.", textClass: 'agent' },
-  { text: 'M  src/pages/Login.vue', textClass: 'git-modified' },
-  { text: 'A  src/stores/auth.ts', textClass: 'git-added' },
-  { text: 'A  src/api/auth.rs', textClass: 'git-added' },
-  { prefix: '✓', prefixClass: 'success', text: 'Done · 3 files · 0 conflicts · tests passing', textClass: 'success-text' },
+  { prefix: '$', prefixClass: 'prompt', text: 'npx -y @spec-ade/cli@latest', textClass: 'cmd' },
+  { text: "License valid for org 'BETA', plan '1m', expires in 19 days", textClass: 'agent' },
+  { text: 'Port 4123 in use, using port 4125 instead', textClass: 'git-modified' },
+  { text: 'Server running on http://0.0.0.0:4125', textClass: 'success-text' },
+  { text: '', textClass: 'agent' },
+  { text: 'Tip: closing this terminal will stop the server.', textClass: 'muted' },
+  { text: 'To keep it running in the background (auto-starts on logon):', textClass: 'muted' },
+  { text: '  spec-ade --install-service', textClass: 'cmd' },
+  { text: 'Backend on this platform: macOS launchd (LaunchAgent, per-user). Remove later with `spec-ade --uninstall-service`.', textClass: 'muted' },
+  { text: '', textClass: 'agent' },
+  { text: '[claw] start_all_auto_start: 0 claws to auto-start', textClass: 'muted' },
+  { text: '[git-watcher] Watching /Users/specADE/.git (git dir, recursive)', textClass: 'muted' },
+  { text: '[file-watcher] Watching /Users/specADE (recursive)', textClass: 'muted' },
   { prefix: '$', prefixClass: 'prompt', text: '_', textClass: 'cursor' },
 ]
 
 const visibleCount = ref(0)
+const terminalBody = ref<HTMLElement | null>(null)
 let timer: ReturnType<typeof setTimeout> | undefined
 
 function step() {
   if (visibleCount.value < lines.length) {
     visibleCount.value++
-    const delay = visibleCount.value === lines.length ? 2400 : 480 + Math.random() * 360
+    nextTick(() => {
+      if (terminalBody.value) {
+        terminalBody.value.scrollTop = terminalBody.value.scrollHeight
+      }
+    })
+    const delay = visibleCount.value === lines.length ? 3000 : 400 + Math.random() * 200
     timer = setTimeout(step, delay)
   } else {
     // Reset for loop
     timer = setTimeout(() => {
       visibleCount.value = 0
       step()
-    }, 4000)
+    }, 6000)
   }
 }
 
@@ -68,9 +80,9 @@ onBeforeUnmount(() => {
       <span class="dot dot-red" />
       <span class="dot dot-amber" />
       <span class="dot dot-green" />
-      <span class="terminal-title">~/projects/my-project · spec-ade</span>
+      <span class="terminal-title">~ · spec-ade</span>
     </header>
-    <div class="terminal-body">
+    <div ref="terminalBody" class="terminal-body">
       <div
         v-for="(line, i) in lines.slice(0, visibleCount)"
         :key="i"
@@ -137,11 +149,14 @@ onBeforeUnmount(() => {
 
 .terminal-body {
   padding: 20px;
-  min-height: 280px;
+  height: 330px;
   display: flex;
   flex-direction: column;
   gap: 6px;
   background: color-mix(in srgb, var(--color-bg) 20%, var(--color-surface));
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border-strong) transparent;
 }
 
 .line {

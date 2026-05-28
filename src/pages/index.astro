@@ -3,19 +3,7 @@ import BaseLayout from '~/layouts/BaseLayout.astro'
 import Hero from '~/components/Hero.astro'
 import WhatIsSpecAde from '~/components/WhatIsSpecAde.astro'
 import TrustRow from '~/components/TrustRow.astro'
-import SpotlightClaw from '~/components/spotlights/SpotlightClaw.astro'
-import SpotlightGoal from '~/components/spotlights/SpotlightGoal.astro'
-import SpotlightPort from '~/components/spotlights/SpotlightPort.astro'
-import SpotlightMultiCli from '~/components/spotlights/SpotlightMultiCli.astro'
-import SpotlightDb from '~/components/spotlights/SpotlightDb.astro'
-import SpotlightBinary from '~/components/spotlights/SpotlightBinary.astro'
-import ViewAllFeaturesCta from '~/components/ViewAllFeaturesCta.astro'
-import Architecture from '~/components/Architecture.astro'
-import TechStack from '~/components/TechStack.astro'
-import UseCases from '~/components/UseCases.astro'
-import LicenseModel from '~/components/LicenseModel.astro'
-import FAQ from '~/components/FAQ.astro'
-import GetStarted from '~/components/GetStarted.astro'
+import KeyFeatures from '~/components/KeyFeatures.astro'
 
 const lang = 'en' as const
 ---
@@ -24,18 +12,7 @@ const lang = 'en' as const
   <Hero lang={lang} />
   <WhatIsSpecAde lang={lang} />
   <TrustRow lang={lang} />
-  <SpotlightClaw lang={lang} />
-  <SpotlightGoal lang={lang} />
-  <SpotlightPort lang={lang} />
-  <SpotlightMultiCli lang={lang} />
-  <SpotlightDb lang={lang} />
-  <SpotlightBinary lang={lang} />
-  <ViewAllFeaturesCta lang={lang} />
-  {/* ScreenshotsPlaceholder hidden until real screenshots are ready */}
-  <Architecture lang={lang} />
-  <TechStack lang={lang} />
-  <UseCases lang={lang} />
-  <FAQ lang={lang} topOnly={true} />
-  <LicenseModel lang={lang} />
-  <GetStarted lang={lang} />
+  <KeyFeatures lang={lang} />
 </BaseLayout>
+
+

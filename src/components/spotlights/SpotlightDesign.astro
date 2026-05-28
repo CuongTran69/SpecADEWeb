@@ -1,0 +1,2174 @@
+---
+import type { Lang } from '~/i18n/strings'
+import { t } from '~/i18n/strings'
+
+interface Props {
+  lang: Lang
+}
+
+const { lang } = Astro.props
+const strings = t(lang)
+const isVi = lang === 'vi'
+
+const l = {
+  tabDesigns: 'Designs',
+  tabExamples: 'Examples',
+  tabDesignSystems: 'Design systems',
+  tabConnectors: 'Connectors',
+  tabImageTemplates: 'Image templates',
+  tabVideoTemplates: 'Video templates',
+  
+  // Left Sidebar Form
+  newPrototype: isVi ? 'PROTOTYPE MỚI' : 'NEW PROTOTYPE',
+  projectNameLabel: isVi ? 'Tên dự án' : 'Project name',
+  designSystemLabel: isVi ? 'Hệ thống thiết kế' : 'Design system',
+  fidelityLabel: isVi ? 'Độ chi tiết (Fidelity)' : 'Fidelity',
+  wireframe: isVi ? 'Bản phác thảo' : 'Wireframe',
+  highFidelity: isVi ? 'Mẫu chi tiết' : 'High fidelity',
+  btnCreate: isVi ? '+ Tạo thiết kế' : '+ Create',
+  btnImport: isVi ? 'Nhập tệp ZIP thiết kế từ Claude' : 'Import Claude Design ZIP',
+  visibilityText: isVi ? 'Mặc định chỉ bạn mới có thể xem dự án.' : 'Only you can see your project by default.',
+  
+  // Simulation text
+  startSimulation: isVi ? 'Bắt đầu giả lập' : 'Start Simulation',
+  resetSimulation: isVi ? 'Đặt lại' : 'Reset',
+  simSuccess: isVi ? '✓ Giả lập hoàn tất — Bản thiết kế mẫu đã được khởi tạo thành công!' : '✓ Simulation complete — Prototype created successfully!',
+  
+  // Examples
+  useThisPrompt: isVi ? 'Sử dụng prompt này' : 'Use this prompt',
+  openPreview: isVi ? 'Xem trước' : 'Open preview',
+  share: isVi ? 'Chia sẻ' : 'Share',
+  
+  // Benefits List
+  b1Title: isVi ? 'Prompt Mẫu (Prompt Examples)' : 'Prompt Examples',
+  b1Desc: isVi ? 'Thư viện prompt tối ưu cho landing page, slide thuyết trình, ứng dụng di động hay giao diện phức tạp để thiết kế chỉ trong tích tắc.' : 'A rich library of production-tested prompts for landing pages, slide decks, mobile layouts, and complex interfaces to start designing in seconds.',
+  b2Title: isVi ? 'Hệ thống thiết kế (Design Systems)' : 'Design Systems',
+  b2Desc: isVi ? 'Đồng bộ hóa typography, bảng màu và bộ kit UI riêng giúp đảm bảo giao diện tạo ra luôn đồng nhất với nhận diện thương hiệu.' : 'Synchronize typography, palettes, and custom UI kits so that generated interfaces always align with your design guidelines.',
+  b3Title: isVi ? 'Thư viện mẫu ảnh (Image Templates)' : 'Image Templates',
+  b3Desc: isVi ? 'Tích hợp sẵn các template tạo infographic 3D, ảnh minh họa game, thiết kế phong cách anime hay giao diện live-stream e-commerce từ mô tả văn bản.' : 'Built-in templates to generate 3D infographics, game illustrations, anime art, and e-commerce live-stream interfaces directly from text prompts.',
+  b4Title: isVi ? 'Thư viện mẫu video (Video Templates)' : 'Video Templates',
+  b4Desc: isVi ? 'Tạo video thuyết trình thuyết phục với người dẫn ảo AI (AI Presenter) hoặc các clip quảng bá sản phẩm dạng motion loop mượt mà chỉ bằng một cú click.' : 'Create compelling product presentations using AI avatar presenters or sleek motion graphic loop clips to showcase your application.',
+}
+---
+
+<section class="spotlight-section spotlight--accent" id="design">
+  <div class="container-wide">
+    <!-- Top Header -->
+    <header class="section-head reveal">
+      <span class="chip">{strings.spotlight.design.chip}</span>
+      <h2 class="section-title">{strings.spotlight.design.hook}</h2>
+      <p class="section-subtitle">{strings.spotlight.design.body}</p>
+    </header>
+
+    <div class="spotlight-grid">
+      <!-- Left Column: Visual Mockup Container -->
+      <div class="spotlight-visual reveal">
+        <div class="design-mock" id="design-mock-container" data-vi={isVi ? "true" : "false"} aria-hidden="true">
+          
+          <!-- Mockup Top Bar -->
+          <div class="design-mock-top">
+            <div class="design-logo-area">
+              <span class="design-logo-icon">🎨</span>
+              <span class="design-logo-text">Open Design</span>
+            </div>
+            <div class="design-top-right">
+              <span class="settings-gear">⚙️</span>
+            </div>
+          </div>
+
+          <div class="design-mock-grid" id="design-mock-grid">
+            <!-- 1. LEFT SIDEBAR: CREATOR PANEL -->
+            <aside class="design-sidebar">
+              <div class="design-sidebar-tabs">
+                <span class="sidebar-tab active">Prototype</span>
+                <span class="sidebar-tab">Live artifact</span>
+                <span class="sidebar-tab">Slide deck</span>
+                <span class="sidebar-tab scroll-fade">From temp...</span>
+              </div>
+              
+              <div class="design-form-box">
+                <div class="form-title">{l.newPrototype}</div>
+                
+                <div class="form-group">
+                  <label class="form-label">{l.projectNameLabel}</label>
+                  <input type="text" class="design-input" id="design-proj-name" placeholder="e.g. Spec ADE Landing" />
+                </div>
+                
+                <div class="form-group">
+                  <label class="form-label">{l.designSystemLabel}</label>
+                  <div class="design-select-btn" id="design-sys-dropdown-btn">
+                    <span id="design-selected-sys">Neutral Modern</span>
+                    <span class="chevron">▼</span>
+                  </div>
+                  <!-- Dropdown options -->
+                  <div class="design-dropdown-options" id="design-sys-options" style="display: none;">
+                    <div class="design-opt-item active" data-val="Neutral Modern">Neutral Modern</div>
+                    <div class="design-opt-item" data-val="Terminal Dark">Terminal Dark</div>
+                    <div class="design-opt-item" data-val="Glassmorphism">Glassmorphism</div>
+                    <div class="design-opt-item" data-val="Neon Cyberpunk">Neon Cyberpunk</div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">{l.fidelityLabel}</label>
+                  <div class="fidelity-cards">
+                    <div class="fidelity-card" id="fid-wireframe">
+                      <div class="fid-icon fid-wire-icon">
+                        <span></span><span></span><span></span>
+                      </div>
+                      <span class="fid-label">{l.wireframe}</span>
+                    </div>
+                    <div class="fidelity-card active" id="fid-hifi">
+                      <div class="fid-icon fid-hifi-icon">
+                        <span></span><span></span><span></span>
+                      </div>
+                      <span class="fid-label">{l.highFidelity}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <button type="button" class="btn-create-design" id="design-btn-create">{l.btnCreate}</button>
+                
+                <div class="btn-import-zip">
+                  <span class="zip-icon">📁</span>
+                  <span>{l.btnImport}</span>
+                </div>
+
+                <p class="visibility-note">{l.visibilityText}</p>
+              </div>
+
+              <!-- Bottom sidebar meta (Change Pet and CLI version) -->
+              <div class="design-sidebar-footer">
+                <button type="button" class="btn-change-pet" id="btn-change-pet">
+                  <span>🦄</span>
+                  <span>Change pet</span>
+                </button>
+                <div class="footer-meta-item dim">Local CLI · Claude Code - 2.1.133 [Claude ..</div>
+                <div class="footer-meta-item dim">Follow @nexudotio</div>
+                <div class="footer-meta-item dim select-lang-meta">
+                  <span>🌐 English</span>
+                  <span class="chevron">▼</span>
+                </div>
+              </div>
+            </aside>
+
+            <!-- 2. MAIN HUB WORKSPACE -->
+            <main class="design-main">
+              <!-- Tab bar navigation -->
+              <div class="design-tabs">
+                <button type="button" class="design-tab active" data-tab="designs">{l.tabDesigns}</button>
+                <button type="button" class="design-tab" data-tab="examples">{l.tabExamples}</button>
+                <button type="button" class="design-tab" data-tab="design-systems">{l.tabDesignSystems}</button>
+                <button type="button" class="design-tab" data-tab="connectors">{l.tabConnectors}</button>
+                <button type="button" class="design-tab" data-tab="image-templates">{l.tabImageTemplates}</button>
+                <button type="button" class="design-tab" data-tab="video-templates">{l.tabVideoTemplates}</button>
+              </div>
+
+              <!-- Content views -->
+              <div class="design-content-area">
+                
+                <!-- VIEW A: DESIGNS PANEL (Active by default) -->
+                <div class="design-view" id="view-designs">
+                  <div class="designs-header">
+                    <div class="sub-tabs">
+                      <span class="sub-tab active">Recent</span>
+                      <span class="sub-tab">Your designs</span>
+                    </div>
+                    <div class="search-bar-wrap">
+                      <input type="text" class="search-input" placeholder="Search..." readonly />
+                    </div>
+                  </div>
+
+                  <div class="designs-grid" id="design-projects-list">
+                    <!-- Card 1 -->
+                    <div class="design-folder-card">
+                      <div class="folder-icon">📁</div>
+                      <h4 class="folder-name">Prototype - 5/18/2026</h4>
+                      <p class="folder-meta">Neutral Modern - blog-post - <span class="state-not">Not st...</span></p>
+                    </div>
+
+                    <!-- Card 2 -->
+                    <div class="design-folder-card">
+                      <div class="folder-icon">📁</div>
+                      <h4 class="folder-name">Prototype - 5/18/2026</h4>
+                      <p class="folder-meta">Neutral Modern - blog-post - <span class="state-comp">Comp...</span></p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- VIEW B: EXAMPLES PANEL (Prompt Examples) -->
+                <div class="design-view" id="view-examples" style="display: none;">
+                  <div class="examples-filters">
+                    <div class="filter-row">
+                      <span class="filter-label">SURFACE</span>
+                      <span class="filter-chip active">All 70</span>
+                      <span class="filter-chip">Web 60</span>
+                      <span class="filter-chip">Image 6</span>
+                      <span class="filter-chip">Video 3</span>
+                      <span class="filter-chip">Audio 1</span>
+                    </div>
+                    <div class="filter-row">
+                      <span class="filter-label">TYPE</span>
+                      <span class="filter-chip active">All 70</span>
+                      <span class="filter-chip">Prototypes - Desktop 32</span>
+                      <span class="filter-chip">Prototypes - Mobile 3</span>
+                      <span class="filter-chip">Slides 22</span>
+                      <span class="filter-chip">Docs & templates 0</span>
+                      <span class="filter-chip">Orbit 5</span>
+                    </div>
+                    <div class="filter-row">
+                      <span class="filter-label">SCENARIO</span>
+                      <span class="filter-chip active">All 70</span>
+                      <span class="filter-chip">Engineering 12</span>
+                      <span class="filter-chip">Product 4</span>
+                      <span class="filter-chip">Design 7</span>
+                      <span class="filter-chip">Marketing 21</span>
+                      <span class="filter-chip">Sales 1</span>
+                      <span class="filter-chip">Finance 3</span>
+                      <span class="filter-chip">HR 2</span>
+                      <span class="filter-chip">Operations 5</span>
+                      <span class="filter-chip">Education 1</span>
+                      <span class="filter-chip">Personal 5</span>
+                      <span class="filter-chip">General 1</span>
+                    </div>
+                    <div class="filter-row" style="margin-left: 50px;">
+                      <span class="filter-chip">Creator 1</span>
+                      <span class="filter-chip">Orbit 5</span>
+                      <span class="filter-chip">Planning 1</span>
+                      <span class="filter-chip">Video 1</span>
+                    </div>
+                  </div>
+
+                  <div class="example-content-split">
+                    <!-- Left example visual card -->
+                    <div class="example-visual-side">
+                      <div class="vintage-editorial-mock">
+                        <div class="editorial-header">
+                          <span>OD / 2026 · VOL. 01 / ISSUE Nº 28</span>
+                          <span>● LIVE · V0.3.0</span>
+                          <span>EN DE 中文 日本語</span>
+                        </div>
+                        <h3 class="editorial-logo">Open Design</h3>
+                        <p class="editorial-tagline">Designing intelligence with skills, taste, and...</p>
+                        <div class="editorial-body-placeholder">
+                          <span></span><span></span><span></span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <!-- Right example copy details -->
+                    <div class="example-details-side">
+                      <div class="example-card-head">
+                        <h4 class="example-title">open-design-landing</h4>
+                        <div class="example-badges">
+                          <span class="badge-tag">DESKTOP PROTOTYPE</span>
+                          <span class="badge-tag accent">MARKETING</span>
+                        </div>
+                      </div>
+                      <p class="example-description">
+                        "Produce a world-class single-page editorial landing site in the Atelier Zero visual language (Monocle / Apartamento / Études editorial collage) — the same aesthetic Open Design uses for its own marketing surface."
+                      </p>
+                      <div class="example-actions">
+                        <button type="button" class="example-btn btn-use-prompt" id="btn-use-example-prompt">{l.useThisPrompt}</button>
+                        <span class="example-btn btn-secondary" style="opacity:0.6; cursor:not-allowed;">{l.openPreview}</span>
+                        <span class="example-btn btn-secondary" style="opacity:0.6; cursor:not-allowed;">{l.share}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- VIEW C: DESIGN SYSTEMS PANEL -->
+                <div class="design-view" id="view-design-systems" style="display: none;">
+                  <div class="design-systems-list">
+                    <div class="ds-card active">
+                      <div class="ds-meta">
+                        <h4 class="ds-name">Neutral Modern</h4>
+                        <span class="ds-badge">Default</span>
+                      </div>
+                      <div class="ds-palette">
+                        <span class="color-block" style="background: #ffffff; border: 1px solid var(--color-border);"></span>
+                        <span class="color-block" style="background: #f4f4f5;"></span>
+                        <span class="color-block" style="background: #18181b;"></span>
+                        <span class="color-block" style="background: #f97316;"></span>
+                      </div>
+                    </div>
+
+                    <div class="ds-card">
+                      <div class="ds-meta">
+                        <h4 class="ds-name">Terminal Dark</h4>
+                        <span class="ds-badge">System</span>
+                      </div>
+                      <div class="ds-palette">
+                        <span class="color-block" style="background: #09090b;"></span>
+                        <span class="color-block" style="background: #22c55e;"></span>
+                        <span class="color-block" style="background: #27272a;"></span>
+                        <span class="color-block" style="background: #3f3f46;"></span>
+                      </div>
+                    </div>
+
+                    <div class="ds-card">
+                      <div class="ds-meta">
+                        <h4 class="ds-name">Glassmorphism</h4>
+                        <span class="ds-badge">Premium</span>
+                      </div>
+                      <div class="ds-palette">
+                        <span class="color-block" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);"></span>
+                        <span class="color-block" style="background: #06b6d4;"></span>
+                        <span class="color-block" style="background: #3b82f6;"></span>
+                        <span class="color-block" style="background: #1e1b4b;"></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- VIEW F: CONNECTORS PANEL -->
+                <div class="design-view" id="view-connectors" style="display: none;">
+                  <div class="design-systems-list">
+                    <div class="ds-card">
+                      <div class="ds-meta">
+                        <h4 class="ds-name">Figma Connector</h4>
+                        <span class="ds-badge">Official Plugin</span>
+                      </div>
+                      <span style="font-size: 10px; color: var(--color-text-muted);">Sync layouts & component assets</span>
+                    </div>
+                    <div class="ds-card">
+                      <div class="ds-meta">
+                        <h4 class="ds-name">Github Assets</h4>
+                        <span class="ds-badge" style="color: #22c55e;">Active Tunnel</span>
+                      </div>
+                      <span style="font-size: 10px; color: var(--color-text-muted);">Auto-push design system changes to git</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- VIEW D: IMAGE TEMPLATES PANEL -->
+                <div class="design-view" id="view-image-templates" style="display: none;">
+                  <div class="templates-grid">
+                    <!-- Template Card 1 -->
+                    <div class="template-card">
+                      <div class="template-media-placeholder img-staircase">
+                        <div class="mock-image-stairs">
+                          <span class="text-stairs">3D Stone Staircase</span>
+                          <span class="evolution-label">Evolution Timeline</span>
+                        </div>
+                        <span class="gpt-badge">GPT Image 2</span>
+                      </div>
+                      <div class="template-info">
+                        <h5 class="template-title">3D Stone Staircase Evolution Infographic</h5>
+                        <p class="template-desc">Transforms a flat evolutionary timeline into a realistic 3D stone staircase infographic with detailed organism renders and structured si...</p>
+                        <div class="template-tags">
+                          <span class="t-tag">INFOGRAPHIC</span>
+                          <span class="t-tag">3d-render</span>
+                        </div>
+                        <span class="template-source">Source: 知识描图解 · awesome-gpt-image-2</span>
+                      </div>
+                    </div>
+
+                    <!-- Template Card 2 -->
+                    <div class="template-card">
+                      <div class="template-media-placeholder img-anime">
+                        <div class="mock-image-anime">
+                          <span class="text-anime">Anime Martial Arts</span>
+                          <span class="action-label">Dojo Clash</span>
+                        </div>
+                        <span class="gpt-badge">GPT Image 2</span>
+                      </div>
+                      <div class="template-info">
+                        <h5 class="template-title">Anime Martial Arts Battle Illustration</h5>
+                        <p class="template-desc">Generates a dynamic, high-impact anime illustration of two female characters fighting in a traditional dojo with elemental energy...</p>
+                        <div class="template-tags">
+                          <span class="t-tag">ANIME / MANGA</span>
+                          <span class="t-tag">anime</span>
+                          <span class="t-tag">action</span>
+                        </div>
+                        <span class="template-source">Source: たねもみ 2.0 / Tanemomi Ver2.0 · awesome-gpt-image-2</span>
+                      </div>
+                    </div>
+
+                    <!-- Template Card 3 -->
+                    <div class="template-card">
+                      <div class="template-media-placeholder img-stream">
+                        <div class="mock-image-stream">
+                          <span class="text-stream">E-commerce Live UI</span>
+                          <span class="ui-label">Overlay & Chat</span>
+                        </div>
+                        <span class="gpt-badge">GPT Image 2</span>
+                      </div>
+                      <div class="template-info">
+                        <h5 class="template-title">E-commerce Live Stream UI Mockup</h5>
+                        <p class="template-desc">Generates a realistic social media live stream interface overlaying a portrait, featuring customizable chat messages, gift popups,...</p>
+                        <div class="template-tags">
+                          <span class="t-tag">APP / WEB DESIGN</span>
+                          <span class="t-tag">portrait</span>
+                          <span class="t-tag">fantasy</span>
+                          <span class="t-tag">product</span>
+                        </div>
+                        <span class="template-source">Source: 神经病不想好转 · awesome-gpt-image-2</span>
+                      </div>
+                    </div>
+
+                    <!-- Template Card 4 -->
+                    <div class="template-card">
+                      <div class="template-media-placeholder img-game">
+                        <div class="mock-image-game">
+                          <span class="text-game">Anime Fighting HUD</span>
+                          <span class="hud-label">45s · HUD UI</span>
+                        </div>
+                        <span class="gpt-badge">Open Design</span>
+                      </div>
+                      <div class="template-info">
+                        <h5 class="template-title">Game Screenshot - Anime Fighting Game: Captain Ryuuga vs Kaze Renshin</h5>
+                        <p class="template-desc">An in-game fighting game key visual / combat screenshot in the style of Street Fighter 6 or Tekken 8 intro art. Two anime-style male...</p>
+                        <div class="template-tags">
+                          <span class="t-tag">GAME UI</span>
+                          <span class="t-tag">game-ui</span>
+                          <span class="t-tag">fighting-game</span>
+                          <span class="t-tag">anime</span>
+                        </div>
+                        <span class="template-source">Source: open-design contributors · open-design</span>
+                      </div>
+                    </div>
+
+                    <!-- Template Card 5 -->
+                    <div class="template-card">
+                      <div class="template-media-placeholder img-ancient">
+                        <div class="mock-image-ancient">
+                          <span class="text-game">Chinese Warrior</span>
+                          <span class="hud-label">Stormy Sky</span>
+                        </div>
+                        <span class="gpt-badge">Open Design</span>
+                      </div>
+                      <div class="template-info">
+                        <h5 class="template-title">Ancient Chinese Warrior Showdown</h5>
+                        <p class="template-desc">Cinematic action shot of a warrior on horseback confronting an army under stormy skies.</p>
+                        <div class="template-tags">
+                          <span class="t-tag">GAME ART</span>
+                          <span class="t-tag">cinematic</span>
+                          <span class="t-tag">fantasy</span>
+                        </div>
+                        <span class="template-source">Source: open-design contributors</span>
+                      </div>
+                    </div>
+
+                    <!-- Template Card 6 -->
+                    <div class="template-card">
+                      <div class="template-media-placeholder img-sunset">
+                        <div class="mock-image-sunset">
+                          <span class="text-game">Sunset Archer</span>
+                          <span class="hud-label">Silhouette</span>
+                        </div>
+                        <span class="gpt-badge">Open Design</span>
+                      </div>
+                      <div class="template-info">
+                        <h5 class="template-title">Sunset Archer Concept</h5>
+                        <p class="template-desc">An archer standing on a clifftop aiming at the sunset, silhouette lighting with high contrast.</p>
+                        <div class="template-tags">
+                          <span class="t-tag">CONCEPT ART</span>
+                          <span class="t-tag">sunset</span>
+                          <span class="t-tag">silhouette</span>
+                        </div>
+                        <span class="template-source">Source: open-design contributors</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- VIEW E: VIDEO TEMPLATES PANEL -->
+                <div class="design-view" id="view-video-templates" style="display: none;">
+                  <div class="templates-grid">
+                    <!-- Video Card 1 -->
+                    <div class="template-card">
+                      <div class="template-media-placeholder video-presenter">
+                        <div class="video-preview-mesh">
+                          <span class="play-btn-icon">▶</span>
+                          <span>AI Avatar Presenter</span>
+                        </div>
+                        <span class="gpt-badge">Open Design</span>
+                      </div>
+                      <div class="template-info">
+                        <h5 class="template-title">AI Presenter - Product Pitch</h5>
+                        <p class="template-desc">Photorealistic AI avatar speaking about product features with automated slides.</p>
+                        <div class="template-tags">
+                          <span class="t-tag">VIDEO PRESENTATION</span>
+                          <span class="t-tag">ai-avatar</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Video Card 2 -->
+                    <div class="template-card">
+                      <div class="template-media-placeholder video-promo">
+                        <div class="video-preview-mesh">
+                          <span class="play-btn-icon">▶</span>
+                          <span>B-roll Promo Loop</span>
+                        </div>
+                        <span class="gpt-badge">Open Design</span>
+                      </div>
+                      <div class="template-info">
+                        <h5 class="template-title">Sleek App Promo Loop</h5>
+                        <p class="template-desc">Cinematic transitions displaying screenshots and code editors with subtle glows.</p>
+                        <div class="template-tags">
+                          <span class="t-tag">PROMOTIONAL</span>
+                          <span class="t-tag">motion-graphics</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </main>
+
+            <!-- 3. RIGHT SIDEBAR: PETS PANEL -->
+            <aside class="design-right-sidebar" id="design-pets-sidebar">
+              <div class="pets-header">
+                <span class="pets-title">⚡ PETS</span>
+                <div class="pets-window-actions">
+                  <span style="cursor:default;">‹</span>
+                  <span style="cursor:default;">›</span>
+                  <span class="close-pets-btn" id="close-pets-btn">×</span>
+                </div>
+              </div>
+              <p class="pets-desc">Pick a companion to float over your workspace.</p>
+              
+              <button type="button" class="btn-tuck-away" id="btn-tuck-away">
+                <span class="tuck-icon">💤</span>
+                <span class="tuck-text">Tuck away</span>
+              </button>
+              
+              <div class="pets-list">
+                <div class="pet-item active" id="pet-item-buddy">
+                  <span class="pet-icon">🦄</span>
+                  <div class="pet-info">
+                    <span class="pet-name">Buddy</span>
+                    <span class="pet-sub">Your own - name, gly...</span>
+                  </div>
+                  <span class="pet-check">✓</span>
+                </div>
+              </div>
+              
+              <button type="button" class="btn-customize-pet">
+                <span class="wand-icon">🪄</span>
+                <span>Customize...</span>
+              </button>
+            </aside>
+          </div>
+
+          <!-- Floating Pet -->
+          <div class="floating-pet" id="design-floating-buddy">
+            <span class="pet-emoji">🦄</span>
+            <div class="pet-bubble">Hi!</div>
+          </div>
+        </div>
+
+        <!-- Action Panel: Start Simulation / Success -->
+        <div class="showcase-actions">
+          <button type="button" class="action-btn-start" id="design-sim-btn-start">
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right:6px;"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            {l.startSimulation}
+          </button>
+
+          <div class="success-banner-card" id="design-sim-success-banner" style="display: none;">
+            <span class="success-banner-text">{l.simSuccess}</span>
+            <button type="button" class="action-btn-reset" id="design-sim-btn-reset">
+              <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+              {l.resetSimulation}
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right Column: Detail Copy Lists -->
+      <div class="spotlight-copy reveal">
+        <div class="benefit-list">
+          <div class="benefit-item">
+            <h3 class="benefit-item-title">{l.b1Title}</h3>
+            <p class="benefit-item-desc">{l.b1Desc}</p>
+          </div>
+          <div class="benefit-item">
+            <h3 class="benefit-item-title">{l.b2Title}</h3>
+            <p class="benefit-item-desc">{l.b2Desc}</p>
+          </div>
+          <div class="benefit-item">
+            <h3 class="benefit-item-title">{l.b3Title}</h3>
+            <p class="benefit-item-desc">{l.b3Desc}</p>
+          </div>
+          <div class="benefit-item">
+            <h3 class="benefit-item-title">{l.b4Title}</h3>
+            <p class="benefit-item-desc">{l.b4Desc}</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<script>
+  function initDesignSpotlight() {
+    const container = document.getElementById('design-mock-container');
+    if (!container) return;
+
+    const isVi = container.getAttribute('data-vi') === 'true';
+    const views = container.querySelectorAll('.design-view');
+    const tabs = container.querySelectorAll('.design-tab');
+    const selectBtn = container.querySelector('#design-sys-dropdown-btn') as HTMLElement | null;
+    const selectOptions = container.querySelector('#design-sys-options') as HTMLElement | null;
+    const selectedSysText = container.querySelector('#design-selected-sys') as HTMLElement | null;
+    const optItems = container.querySelectorAll('.design-opt-item');
+    const fidelityCards = container.querySelectorAll('.fidelity-card');
+    const createBtn = container.querySelector('#design-btn-create') as HTMLButtonElement | null;
+    const projNameInput = container.querySelector('#design-proj-name') as HTMLInputElement | null;
+    const projectsList = container.querySelector('#design-projects-list');
+
+    // Example panel trigger
+    const usePromptBtn = container.querySelector('#btn-use-example-prompt');
+
+    // Pets & Sidebars
+    const mockGrid = container.querySelector('#design-mock-grid') as HTMLElement | null;
+    const changePetBtn = container.querySelector('#btn-change-pet') as HTMLButtonElement | null;
+    const closePetsBtn = container.querySelector('#close-pets-btn') as HTMLElement | null;
+    const tuckAwayBtn = container.querySelector('#btn-tuck-away') as HTMLButtonElement | null;
+    const floatingBuddy = container.querySelector('#design-floating-buddy') as HTMLElement | null;
+    const tuckText = tuckAwayBtn?.querySelector('.tuck-text') as HTMLElement | null;
+
+    // Simulation controls
+    const parentSection = container.closest('.spotlight-section');
+    const startBtn = parentSection?.querySelector('#design-sim-btn-start') as HTMLButtonElement | null;
+    const resetBtn = parentSection?.querySelector('#design-sim-btn-reset') as HTMLButtonElement | null;
+    const successBanner = parentSection?.querySelector('#design-sim-success-banner') as HTMLElement | null;
+
+    let simTimeouts: number[] = [];
+    let simRunning = false;
+    const initialProjectsHtml = projectsList ? projectsList.innerHTML : '';
+
+    // Switch views tab helper
+    function switchViewTab(tabName: string) {
+      tabs.forEach(tab => {
+        const isActive = tab.getAttribute('data-tab') === tabName;
+        tab.classList.toggle('active', isActive);
+      });
+
+      views.forEach(view => {
+        const id = view.getAttribute('id');
+        const matches = id === `view-${tabName}`;
+        view.style.display = matches ? 'block' : 'none';
+      });
+    }
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const tabName = tab.getAttribute('data-tab');
+        if (tabName) switchViewTab(tabName);
+      });
+    });
+
+    // Dropdown toggle
+    selectBtn?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (selectOptions) {
+        selectOptions.style.display = selectOptions.style.display === 'block' ? 'none' : 'block';
+      }
+    });
+
+    document.addEventListener('click', () => {
+      if (selectOptions) selectOptions.style.display = 'none';
+    });
+
+    // Select options click
+    optItems.forEach(item => {
+      item.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const val = item.getAttribute('data-val');
+        if (val && selectedSysText) {
+          selectedSysText.textContent = val;
+          optItems.forEach(opt => opt.classList.remove('active'));
+          item.classList.add('active');
+        }
+        if (selectOptions) selectOptions.style.display = 'none';
+      });
+    });
+
+    // Select fidelity card click
+    fidelityCards.forEach(card => {
+      card.addEventListener('click', () => {
+        fidelityCards.forEach(c => c.classList.remove('active'));
+        card.classList.add('active');
+      });
+    });
+
+    // Use this prompt example
+    function applyExamplePrompt() {
+      if (projNameInput) {
+        projNameInput.value = 'Open Design Landing';
+        projNameInput.classList.add('saved-pulse');
+        setTimeout(() => projNameInput.classList.remove('saved-pulse'), 1000);
+      }
+
+      // Set Design System to Neutral Modern
+      if (selectedSysText) selectedSysText.textContent = 'Neutral Modern';
+      optItems.forEach(opt => {
+        const val = opt.getAttribute('data-val');
+        opt.classList.toggle('active', val === 'Neutral Modern');
+      });
+
+      // Set fidelity to High fidelity
+      fidelityCards.forEach(c => {
+        c.classList.toggle('active', c.getAttribute('id') === 'fid-hifi');
+      });
+    }
+
+    usePromptBtn?.addEventListener('click', applyExamplePrompt);
+
+    // Create Design Button
+    function createNewDesign() {
+      const name = projNameInput?.value.trim() || 'Untitled Prototype';
+      
+      if (projectsList) {
+        // Prevent duplicate creation in list
+        let exists = false;
+        projectsList.querySelectorAll('.folder-name').forEach(el => {
+          if (el.textContent === name) exists = true;
+        });
+
+        if (!exists) {
+          const card = document.createElement('div');
+          card.className = 'design-folder-card active-pulse';
+          
+          const selectedSys = selectedSysText ? selectedSysText.textContent : 'Neutral Modern';
+          const fidCard = container?.querySelector('.fidelity-card.active');
+          const isHifi = fidCard?.getAttribute('id') === 'fid-hifi';
+          const detailsText = `${selectedSys} - ${isHifi ? 'high-fidelity' : 'wireframe'} - Active`;
+
+          card.innerHTML = `
+            <div class="folder-icon" style="color: var(--color-accent);">📁</div>
+            <h4 class="folder-name">${name}</h4>
+            <p class="folder-meta">${detailsText}</p>
+          `;
+
+          // Put it at the top of the list
+          projectsList.insertBefore(card, projectsList.firstChild);
+          setTimeout(() => card.classList.remove('active-pulse'), 1200);
+        }
+      }
+
+      switchViewTab('designs');
+    }
+
+    createBtn?.addEventListener('click', createNewDesign);
+
+    // Change pet interaction
+    changePetBtn?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      mockGrid?.classList.toggle('show-pets');
+    });
+
+    closePetsBtn?.addEventListener('click', () => {
+      mockGrid?.classList.remove('show-pets');
+    });
+
+    // Tuck away pet interaction
+    tuckAwayBtn?.addEventListener('click', () => {
+      const isTucked = floatingBuddy?.classList.toggle('tucked');
+      if (tuckText) {
+        if (isTucked) {
+          tuckText.textContent = isVi ? 'Hiện pet' : 'Show pet';
+        } else {
+          tuckText.textContent = isVi ? 'Ẩn pet' : 'Tuck away';
+        }
+      }
+    });
+
+    // ===== Simulation Logic =====
+    function schedule(fn: () => void, delay: number) {
+      const id = window.setTimeout(fn, delay);
+      simTimeouts.push(id);
+    }
+
+    function resetDesignSimulation() {
+      simTimeouts.forEach(id => clearTimeout(id));
+      simTimeouts = [];
+      simRunning = false;
+
+      // Restore list
+      if (projectsList) projectsList.innerHTML = initialProjectsHtml;
+
+      // Restore inputs
+      if (projNameInput) projNameInput.value = '';
+      if (selectedSysText) selectedSysText.textContent = 'Neutral Modern';
+      optItems.forEach(o => {
+        o.classList.toggle('active', o.getAttribute('data-val') === 'Neutral Modern');
+      });
+      fidelityCards.forEach(c => {
+        c.classList.toggle('active', c.getAttribute('id') === 'fid-hifi');
+      });
+
+      // Switch to Designs tab & hide pets sidebar
+      switchViewTab('designs');
+      mockGrid?.classList.remove('show-pets');
+
+      // Reset buttons
+      if (startBtn) startBtn.style.display = 'inline-flex';
+      if (successBanner) {
+        successBanner.hidden = true;
+        successBanner.style.display = 'none';
+      }
+    }
+
+    function runDesignSimulation() {
+      if (simRunning) return;
+      simRunning = true;
+
+      if (startBtn) startBtn.style.display = 'none';
+      if (successBanner) {
+        successBanner.hidden = true;
+        successBanner.style.display = 'none';
+      }
+
+      // Step 1: Switch to Examples tab (800ms) and open pets sidebar
+      schedule(() => {
+        switchViewTab('examples');
+        mockGrid?.classList.add('show-pets');
+      }, 800);
+
+      // Step 2: Click "Use this prompt" on the example (2200ms)
+      schedule(() => {
+        const promptBtn = container.querySelector('#btn-use-example-prompt') as HTMLElement | null;
+        promptBtn?.dispatchEvent(new Event('click'));
+      }, 2200);
+
+      // Step 3: Trigger the Create button click (3700ms)
+      schedule(() => {
+        createBtn?.dispatchEvent(new Event('click'));
+      }, 3700);
+
+      // Step 4: Show success banner after returning to Designs panel (5000ms) and close pets sidebar
+      schedule(() => {
+        simRunning = false;
+        mockGrid?.classList.remove('show-pets');
+        if (successBanner) {
+          successBanner.hidden = false;
+          successBanner.style.display = 'flex';
+        }
+      }, 5000);
+    }
+
+    startBtn?.addEventListener('click', runDesignSimulation);
+    resetBtn?.addEventListener('click', resetDesignSimulation);
+  }
+
+  initDesignSpotlight();
+  document.addEventListener('astro:after-swap', initDesignSpotlight);
+</script>
+
+<style>
+  .spotlight-section {
+    padding-block: clamp(64px, 8vw, 100px);
+    border-block-end: 1px solid var(--color-border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .spotlight--accent {
+    background: var(--color-surface);
+  }
+
+  .section-head {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 36px;
+    max-width: 44rem;
+  }
+
+  .spotlight-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+    align-items: start;
+  }
+
+  @media (min-width: 1024px) {
+    .spotlight-grid {
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 56px;
+    }
+  }
+
+  .spotlight-visual {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .spotlight-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .benefit-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .benefit-item {
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    padding: 16px 20px;
+    border-radius: var(--radius-lg);
+    transition: all 150ms var(--ease-out-soft);
+  }
+
+  .benefit-item:hover {
+    border-color: var(--color-border-strong);
+    transform: translateX(4px);
+  }
+
+  .benefit-item-title {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--color-text);
+    margin: 0 0 6px 0;
+    letter-spacing: -0.01em;
+  }
+
+  .benefit-item-desc {
+    font-size: 12.5px;
+    color: var(--color-text-secondary);
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  /* Mock design container */
+  .design-mock {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    font-family: var(--font-sans);
+    font-size: 12px;
+    display: flex;
+    flex-direction: column;
+    height: 400px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
+    position: relative;
+  }
+
+  .design-mock-top {
+    background: #11131e;
+    border-bottom: 1px solid var(--color-border);
+    padding: 8px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .design-logo-area {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 700;
+    color: var(--color-text);
+  }
+
+  .design-logo-text {
+    font-size: 12.5px;
+    letter-spacing: -0.01em;
+  }
+
+  .settings-gear {
+    font-size: 12px;
+    opacity: 0.6;
+    cursor: default;
+  }
+
+  .design-mock-grid {
+    display: grid;
+    grid-template-columns: 155px 1fr 0px;
+    height: calc(100% - 33px);
+    width: 100%;
+    overflow: hidden;
+    transition: grid-template-columns 250ms var(--ease-out-soft);
+  }
+
+  .design-mock-grid.show-pets {
+    grid-template-columns: 155px 1fr 130px;
+  }
+
+  /* Right Pets Sidebar */
+  .design-right-sidebar {
+    background: #11131e;
+    border-left: 1px solid var(--color-border);
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    box-sizing: border-box;
+    overflow-y: auto;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 200ms var(--ease-out-soft);
+  }
+
+  .design-mock-grid.show-pets .design-right-sidebar {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .pets-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px dashed var(--color-border);
+    padding-bottom: 6px;
+    margin-bottom: 8px;
+  }
+
+  .pets-title {
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  .pets-window-actions {
+    display: flex;
+    gap: 6px;
+    font-size: 10px;
+    color: var(--color-text-muted);
+    line-height: 1;
+  }
+
+  .close-pets-btn {
+    cursor: pointer;
+  }
+
+  .close-pets-btn:hover {
+    color: var(--color-text);
+  }
+
+  .pets-desc {
+    font-size: 8px;
+    color: var(--color-text-muted);
+    margin: 0 0 8px 0;
+    line-height: 1.3;
+  }
+
+  .btn-tuck-away {
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-secondary);
+    font-size: 9px;
+    font-weight: 600;
+    padding: 4px 6px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    cursor: pointer;
+    margin-bottom: 8px;
+    width: 100%;
+  }
+
+  .btn-tuck-away:hover {
+    border-color: var(--color-border-strong);
+    color: var(--color-text);
+  }
+
+  .pets-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: auto;
+  }
+
+  .pet-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 6px;
+    border-radius: 4px;
+    border: 1.5px solid var(--color-border);
+    background: var(--color-bg);
+    cursor: pointer;
+    position: relative;
+  }
+
+  .pet-item.active {
+    border-color: #f97316;
+  }
+
+  .pet-icon {
+    font-size: 14px;
+  }
+
+  .pet-info {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .pet-name {
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--color-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .pet-sub {
+    font-size: 7px;
+    color: var(--color-text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .pet-check {
+    font-size: 8px;
+    color: #f97316;
+    margin-left: auto;
+    font-weight: bold;
+  }
+
+  .btn-customize-pet {
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-secondary);
+    font-size: 9px;
+    font-weight: 600;
+    padding: 5px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    cursor: pointer;
+    margin-top: 8px;
+    width: 100%;
+  }
+
+  .btn-customize-pet:hover {
+    border-color: var(--color-border-strong);
+    color: var(--color-text);
+  }
+
+  /* Floating Pet Buddy */
+  .floating-pet {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    pointer-events: auto;
+    cursor: pointer;
+    transition: transform 300ms ease, opacity 300ms ease;
+  }
+
+  .floating-pet.tucked {
+    opacity: 0;
+    transform: translateY(20px) scale(0.8);
+    pointer-events: none;
+  }
+
+  .pet-emoji {
+    font-size: 24px;
+    animation: petBobbing 2.5s ease-in-out infinite;
+  }
+
+  @keyframes petBobbing {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+
+  .pet-bubble {
+    position: absolute;
+    bottom: 28px;
+    background: #1c1f30;
+    border: 1px solid var(--color-border-strong);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 8px;
+    color: var(--color-text-secondary);
+    white-space: nowrap;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: opacity 200ms ease, transform 200ms ease;
+    pointer-events: none;
+  }
+
+  .floating-pet:hover .pet-bubble {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  /* Change Pet bottom sidebar button & languages */
+  .btn-change-pet {
+    background: transparent;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    color: var(--color-text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 8px;
+    font-size: 9px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 4px;
+    width: 100%;
+    box-sizing: border-box;
+    font-family: var(--font-sans);
+  }
+
+  .btn-change-pet:hover {
+    border-color: var(--color-border-strong);
+    color: var(--color-text);
+  }
+
+  .select-lang-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    cursor: pointer;
+  }
+
+
+  /* 1. SIDEBAR CREATOR */
+  .design-sidebar {
+    background: #151824;
+    border-right: 1px solid var(--color-border);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    overflow-y: auto;
+  }
+
+  .design-sidebar-tabs {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: 6px;
+    border-bottom: 1px dashed var(--color-border);
+    margin-bottom: 8px;
+  }
+
+  .design-sidebar-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .sidebar-tab {
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--color-text-muted);
+    cursor: default;
+    white-space: nowrap;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  .sidebar-tab.active {
+    color: var(--color-accent);
+  }
+
+  .design-form-box {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex-grow: 1;
+  }
+
+  .form-title {
+    font-size: 9.5px;
+    font-weight: 800;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 2px;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .form-label {
+    font-size: 8.5px;
+    font-weight: 700;
+    color: var(--color-text-secondary);
+    opacity: 0.8;
+  }
+
+  .design-input {
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    color: var(--color-text);
+    font-size: 10.5px;
+    padding: 4px 6px;
+    border-radius: 4px;
+    outline: none;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .design-input:focus {
+    border-color: var(--color-accent);
+  }
+
+  .design-select-btn {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-secondary);
+    font-size: 10.5px;
+    padding: 4px 6px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .design-select-btn .chevron {
+    font-size: 8px;
+    color: var(--color-text-muted);
+  }
+
+  .design-dropdown-options {
+    position: absolute;
+    background: #1c1f30;
+    border: 1px solid var(--color-border-strong);
+    border-radius: 4px;
+    z-index: 100;
+    width: 135px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    overflow: hidden;
+  }
+
+  .design-opt-item {
+    padding: 5px 8px;
+    font-size: 10.5px;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+  }
+
+  .design-opt-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--color-text);
+  }
+
+  .design-opt-item.active {
+    color: var(--color-accent);
+    font-weight: 700;
+    background: rgba(6, 182, 212, 0.08);
+  }
+
+  .fidelity-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+
+  .fidelity-card {
+    background: var(--color-bg);
+    border: 1.5px solid var(--color-border);
+    border-radius: 4px;
+    padding: 6px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    transition: all 150ms var(--ease-out-soft);
+  }
+
+  .fidelity-card:hover {
+    border-color: var(--color-border-strong);
+  }
+
+  .fidelity-card.active {
+    border-color: #f97316;
+  }
+
+  .fid-icon {
+    width: 24px;
+    height: 16px;
+    border: 1px solid var(--color-text-muted);
+    border-radius: 2px;
+    display: flex;
+    flex-direction: column;
+    padding: 2px;
+    gap: 2px;
+    opacity: 0.5;
+    box-sizing: border-box;
+  }
+
+  .fidelity-card.active .fid-icon {
+    opacity: 1;
+    border-color: #f97316;
+  }
+
+  .fid-wire-icon span {
+    display: block;
+    height: 2px;
+    background: var(--color-text-muted);
+  }
+
+  .fid-hifi-icon span {
+    display: block;
+    height: 3px;
+    background: #f97316;
+    border-radius: 1px;
+  }
+
+  .fid-label {
+    font-size: 8px;
+    font-weight: 700;
+    color: var(--color-text-secondary);
+  }
+
+  .btn-create-design {
+    background: #f97316;
+    color: #0c0c14;
+    border: none;
+    border-radius: 4px;
+    padding: 6px;
+    font-size: 10.5px;
+    font-weight: 700;
+    cursor: pointer;
+    text-align: center;
+    transition: all 150ms var(--ease-out-soft);
+    margin-top: 4px;
+  }
+
+  .btn-create-design:hover {
+    opacity: 0.9;
+  }
+
+  .btn-import-zip {
+    border: 1px dashed var(--color-border-strong);
+    color: var(--color-text-muted);
+    border-radius: 4px;
+    padding: 5px;
+    font-size: 8.5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    margin-top: 4px;
+    cursor: default;
+  }
+
+  .visibility-note {
+    font-size: 8px;
+    color: var(--color-text-muted);
+    text-align: center;
+    margin: 4px 0 0 0;
+  }
+
+  .design-sidebar-footer {
+    border-top: 1px solid var(--color-border);
+    padding-top: 6px;
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .footer-meta-item {
+    font-size: 8.5px;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+  }
+
+  .footer-meta-item.dim {
+    color: var(--color-text-muted);
+  }
+
+  /* 2. MAIN HUB WORKSPACE */
+  .design-main {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: var(--color-bg);
+    overflow: hidden;
+  }
+
+  .design-tabs {
+    display: flex;
+    background: #11131e;
+    border-bottom: 1px solid var(--color-border);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .design-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .design-tab {
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--color-text-secondary);
+    padding: 8px 12px;
+    font-size: 10.5px;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    font-family: var(--font-sans);
+    transition: all 150ms var(--ease-out-soft);
+  }
+
+  .design-tab:hover {
+    color: var(--color-text);
+  }
+
+  .design-tab.active {
+    color: var(--color-accent);
+    border-bottom-color: var(--color-accent);
+    background: rgba(6, 182, 212, 0.03);
+  }
+
+  .design-content-area {
+    padding: 12px;
+    flex-grow: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .design-view {
+    height: 100%;
+  }
+
+  /* VIEW A: DESIGNS VIEW */
+  .designs-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 6px;
+    margin-bottom: 10px;
+  }
+
+  .sub-tabs {
+    display: flex;
+    gap: 12px;
+  }
+
+  .sub-tab {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    cursor: default;
+  }
+
+  .sub-tab.active {
+    color: var(--color-text);
+  }
+
+  .search-bar-wrap .search-input {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    font-size: 9.5px;
+    padding: 3px 6px;
+    color: var(--color-text-muted);
+    outline: none;
+    width: 100px;
+  }
+
+  .designs-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .design-folder-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    transition: all 200ms var(--ease-out-soft);
+  }
+
+  .design-folder-card:hover {
+    border-color: var(--color-border-strong);
+  }
+
+  .folder-icon {
+    font-size: 18px;
+  }
+
+  .folder-name {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--color-text);
+    margin: 0;
+  }
+
+  .folder-meta {
+    font-size: 9px;
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+
+  .state-not {
+    color: var(--color-text-muted);
+  }
+
+  .state-comp {
+    color: var(--color-success);
+    font-weight: 700;
+  }
+
+  /* VIEW B: EXAMPLES VIEW */
+  .examples-filters {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 12px;
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 8px;
+  }
+
+  .filter-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .filter-label {
+    font-size: 8px;
+    font-weight: 800;
+    color: var(--color-text-muted);
+    min-width: 45px;
+  }
+
+  .filter-chip {
+    font-size: 9px;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    padding: 2px 6px;
+    border-radius: 4px;
+    cursor: default;
+  }
+
+  .filter-chip.active {
+    background: rgba(249, 115, 22, 0.08);
+    border-color: #f97316;
+    color: #f97316;
+  }
+
+  .example-content-split {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 12px;
+    align-items: start;
+  }
+
+  .example-visual-side {
+    background: #f4efe6;
+    border-radius: 4px;
+    padding: 8px;
+    color: #1a1a1a;
+    border: 1px solid var(--color-border);
+  }
+
+  .vintage-editorial-mock {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .editorial-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 5px;
+    font-family: var(--font-mono);
+    color: #666;
+    border-bottom: 0.5px solid #ccc;
+    padding-bottom: 2px;
+  }
+
+  .editorial-logo {
+    font-family: "Georgia", serif;
+    font-size: 14px;
+    margin: 4px 0 0 0;
+    line-height: 1.1;
+    font-weight: 700;
+  }
+
+  .editorial-tagline {
+    font-size: 6px;
+    font-style: italic;
+    color: #444;
+    margin: 0;
+    border-bottom: 0.5px solid #ccc;
+    padding-bottom: 4px;
+  }
+
+  .editorial-body-placeholder {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    margin-top: 4px;
+  }
+
+  .editorial-body-placeholder span {
+    display: block;
+    height: 3px;
+    background: #666;
+    border-radius: 0.5px;
+  }
+
+  .editorial-body-placeholder span:nth-child(2) {
+    width: 80%;
+  }
+
+  .editorial-body-placeholder span:nth-child(3) {
+    width: 60%;
+  }
+
+  .example-details-side {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .example-card-head {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .example-title {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--color-text);
+    margin: 0;
+  }
+
+  .example-badges {
+    display: flex;
+    gap: 4px;
+  }
+
+  .badge-tag {
+    font-size: 7.5px;
+    font-weight: 700;
+    padding: 1px 4px;
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--color-text-secondary);
+  }
+
+  .badge-tag.accent {
+    background: rgba(249, 115, 22, 0.1);
+    color: #f97316;
+  }
+
+  .example-description {
+    font-size: 10px;
+    color: var(--color-text-secondary);
+    line-height: 1.4;
+    margin: 0;
+    font-style: italic;
+  }
+
+  .example-actions {
+    display: flex;
+    gap: 6px;
+    margin-top: 4px;
+  }
+
+  .example-btn {
+    font-size: 9px;
+    font-weight: 700;
+    padding: 4px 8px;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+
+  .btn-use-prompt {
+    background: #f97316;
+    color: #0c0c14;
+    border: none;
+  }
+
+  .btn-use-prompt:hover {
+    opacity: 0.9;
+  }
+
+  .example-btn.btn-secondary {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-secondary);
+  }
+
+  .example-btn.btn-secondary:hover {
+    border-color: var(--color-border-strong);
+    color: var(--color-text);
+  }
+
+  /* VIEW C: DESIGN SYSTEMS */
+  .design-systems-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .ds-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    padding: 8px 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .ds-card.active {
+    border-color: var(--color-accent);
+  }
+
+  .ds-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+
+  .ds-name {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--color-text);
+    margin: 0;
+  }
+
+  .ds-badge {
+    font-size: 8px;
+    color: var(--color-accent);
+    font-weight: bold;
+  }
+
+  .ds-palette {
+    display: flex;
+    gap: 4px;
+  }
+
+  .color-block {
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+  }
+
+  /* VIEW D & E: IMAGE & VIDEO TEMPLATES */
+  .templates-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .template-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .template-media-placeholder {
+    height: 60px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+  }
+
+  .template-media-placeholder .mock-image-stairs {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #2e2620, #40342a);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 9px;
+  }
+
+  .mock-image-stairs .evolution-label {
+    font-size: 6px;
+    opacity: 0.6;
+  }
+
+  .template-media-placeholder .mock-image-anime {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #381a1a, #522323);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 9px;
+  }
+
+  .mock-image-anime .action-label {
+    font-size: 6px;
+    opacity: 0.6;
+  }
+
+  .template-media-placeholder .mock-image-stream {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #1b203a, #272e54);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 9px;
+  }
+
+  .mock-image-stream .ui-label {
+    font-size: 6px;
+    opacity: 0.6;
+  }
+
+  .template-media-placeholder .mock-image-game {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #1b2a24, #273e34);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 9px;
+  }
+
+  .mock-image-game .hud-label {
+    font-size: 6px;
+    opacity: 0.6;
+  }
+
+  .template-media-placeholder .mock-image-ancient {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #2b2518, #453c29);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 9px;
+  }
+
+  .template-media-placeholder .mock-image-sunset {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #452415, #633621);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 9px;
+  }
+
+  .template-source {
+    font-size: 7px;
+    color: var(--color-text-muted);
+    opacity: 0.75;
+    margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .video-preview-mesh {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #2b1f3c, #3f2f59);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 9px;
+    gap: 2px;
+  }
+
+  .play-btn-icon {
+    font-size: 14px;
+    color: var(--color-accent);
+  }
+
+  .gpt-badge {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    font-size: 7.5px;
+    background: rgba(0,0,0,0.6);
+    color: var(--color-text);
+    padding: 1px 4px;
+    border-radius: 3px;
+    font-weight: 700;
+  }
+
+  .template-info {
+    padding: 6px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .template-title {
+    font-size: 9.5px;
+    font-weight: 700;
+    color: var(--color-text);
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .template-desc {
+    font-size: 8.5px;
+    color: var(--color-text-muted);
+    margin: 0;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .template-tags {
+    display: flex;
+    gap: 4px;
+    margin-top: 2px;
+  }
+
+  .t-tag {
+    font-size: 7px;
+    font-weight: 700;
+    color: var(--color-text-secondary);
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    padding: 1px 3px;
+    border-radius: 2px;
+  }
+
+  /* ===== Action Panel ===== */
+  .showcase-actions {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    gap: 12px;
+  }
+
+  .action-btn-start {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-accent);
+    color: #080810;
+    border: none;
+    padding: 10px 28px;
+    border-radius: var(--radius-md);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 200ms var(--ease-out-soft), transform 200ms var(--ease-out-soft);
+    letter-spacing: 0.02em;
+    font-family: var(--font-sans);
+  }
+
+  .action-btn-start:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+  }
+
+  .success-banner-card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    background: color-mix(in oklab, var(--color-success) 8%, var(--color-surface));
+    border: 1px solid color-mix(in oklab, var(--color-success) 20%, transparent);
+    border-radius: var(--radius-md);
+    padding: 10px 20px;
+    animation: stateReveal 400ms var(--ease-out-soft) forwards;
+  }
+
+  .success-banner-text {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-success);
+    font-family: var(--font-sans);
+  }
+
+  .action-btn-reset {
+    display: inline-flex;
+    align-items: center;
+    background: var(--color-raised);
+    border: 1px solid var(--color-border-strong);
+    color: var(--color-text-secondary);
+    padding: 6px 14px;
+    border-radius: var(--radius-sm);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 200ms var(--ease-out-soft);
+    font-family: var(--font-sans);
+  }
+
+  .action-btn-reset:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+
+  /* Utility animations */
+  .active-pulse {
+    animation: activePulseRing 1.2s ease-in-out;
+  }
+
+  @keyframes activePulseRing {
+    0% { border-color: var(--color-border); box-shadow: 0 0 0 rgba(6, 182, 212, 0); }
+    50% { border-color: var(--color-accent); box-shadow: 0 0 8px rgba(6, 182, 212, 0.4); }
+    100% { border-color: var(--color-border); box-shadow: 0 0 0 rgba(6, 182, 212, 0); }
+  }
+
+  .saved-pulse {
+    animation: savedInputPulse 1s ease-in-out;
+  }
+
+  @keyframes savedInputPulse {
+    0%, 100% { border-color: var(--color-border); }
+    50% { border-color: #f97316; box-shadow: 0 0 6px rgba(249, 115, 22, 0.3); }
+  }
+
+  @keyframes stateReveal {
+    from { opacity: 0; transform: scale(0.97); }
+    to { opacity: 1; transform: scale(1); }
+  }
+</style>

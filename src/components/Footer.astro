@@ -43,9 +43,8 @@ const year = new Date().getFullYear()
       <h4>{strings.footer.links}</h4>
       <ul>
         <li><a href={pathFor(lang, '/features')}>{strings.nav.features}</a></li>
-        <li><a href={`${pathFor(lang, '/')}#architecture`}>{strings.nav.architecture}</a></li>
-        <li><a href={`${pathFor(lang, '/')}#faq`}>{strings.nav.faq}</a></li>
-        <li><a href={`${pathFor(lang, '/')}#get-started`}>{strings.nav.getStarted}</a></li>
+        <li><a href={pathFor(lang, '/install')}>{strings.nav.getStarted}</a></li>
+        <li><a href={pathFor(lang, '/faq')}>{strings.nav.faq}</a></li>
         <li><a href={strings.footer.supportHref} rel="noopener">{strings.footer.support}</a></li>
       </ul>
     </div>
