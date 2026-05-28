@@ -80,7 +80,8 @@ const homePath = pathFor(lang, '/')
 </header>
 
 <script>
-  if (!document.documentElement.dataset.navToggleInit) {
+  function initHeader() {
+    if (document.documentElement.dataset.navToggleInit === '1') return
     document.documentElement.dataset.navToggleInit = '1'
 
     if (!CSS.supports('(animation-timeline: scroll()) and (animation-range: 0% 100%)')) {
@@ -137,9 +138,9 @@ const homePath = pathFor(lang, '/')
 
       function trapFocus(e: KeyboardEvent) {
         if (e.key !== 'Tab') return
-        if (toggle.getAttribute('aria-expanded') !== 'true') return
+        if (toggle!.getAttribute('aria-expanded') !== 'true') return
         const focusable = Array.from(mobileNav!.querySelectorAll<HTMLElement>('a, button'))
-        const allFocusable = [toggle, ...focusable]
+        const allFocusable = [toggle!, ...focusable]
         if (allFocusable.length === 0) return
         const first = allFocusable[0]
         const last = allFocusable[allFocusable.length - 1]
@@ -154,6 +155,9 @@ const homePath = pathFor(lang, '/')
       document.addEventListener('keydown', trapFocus)
     }
   }
+
+  initHeader()
+  document.addEventListener('astro:after-swap', initHeader)
 </script>
 
 <style>

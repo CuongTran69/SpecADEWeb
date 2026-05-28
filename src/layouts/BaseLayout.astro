@@ -14,7 +14,8 @@ const { lang } = Astro.props
 const strings = t(lang)
 
 // Canonical and alternate URLs for SEO
-const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://cuongtran69.github.io/SpecADEWeb'
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://iamdev.io.vn'
+const faviconHref = `${import.meta.env.BASE_URL}favicon.svg`.replace(/\/{2,}/g, '/')
 const currentPath = Astro.url.pathname
 const canonicalUrl = siteUrl + currentPath
 const altEnUrl = siteUrl + swapLangPath(currentPath, 'en')
@@ -26,7 +27,7 @@ const altViUrl = siteUrl + swapLangPath(currentPath, 'vi')
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href={faviconHref} />
     <meta name="generator" content={Astro.generator} />
 
     <title>{strings.meta.title}</title>
@@ -45,9 +46,6 @@ const altViUrl = siteUrl + swapLangPath(currentPath, 'vi')
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:title" content={strings.meta.title} />
     <meta property="og:description" content={strings.meta.description} />
-    <!-- TODO: add /og.png to public/ then uncomment:
-    <meta property="og:image" content={`${siteUrl}/og.png`} />
-    -->
     <meta property="og:locale" content={lang === 'vi' ? 'vi_VN' : 'en_US'} />
     <meta property="og:locale:alternate" content={lang === 'vi' ? 'en_US' : 'vi_VN'} />
 
@@ -55,9 +53,6 @@ const altViUrl = siteUrl + swapLangPath(currentPath, 'vi')
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={strings.meta.title} />
     <meta name="twitter:description" content={strings.meta.description} />
-    <!-- TODO: add /og.png to public/ then uncomment:
-    <meta name="twitter:image" content={`${siteUrl}/og.png`} />
-    -->
 
     <!-- Theme -->
     <meta name="color-scheme" content="dark light" />

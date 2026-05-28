@@ -21,11 +21,11 @@ const { code } = Astro.props
 </div>
 
 <script>
-  // Idempotent: only initialise copy blocks once per page load
-  if (!document.documentElement.dataset.copyInit) {
-    document.documentElement.dataset.copyInit = '1'
-
+  function initCopyBlocks() {
     document.querySelectorAll<HTMLElement>('[data-copy-block]').forEach((block) => {
+      if (block.dataset.copyInit === '1') return
+      block.dataset.copyInit = '1'
+
       const btn = block.querySelector<HTMLButtonElement>('[data-copy-trigger]')
       const pre = block.querySelector('pre')
       const statusEl = block.querySelector<HTMLElement>('[data-copy-status]')
@@ -64,6 +64,9 @@ const { code } = Astro.props
       })
     })
   }
+
+  initCopyBlocks()
+  document.addEventListener('astro:after-swap', initCopyBlocks)
 </script>
 
 <style>

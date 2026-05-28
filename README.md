@@ -3,45 +3,48 @@
 Marketing landing page for **Spec ADE**, built with Astro 6 + Tailwind v4 + Vue 3 islands.
 
 ```
-web/
-├── astro.config.mjs        # Astro + Vite + Tailwind v4 + Vue islands
+SpecADEWeb/
+├── astro.config.mjs        # Astro + Vite + Tailwind v4 + Vue islands; base '/SpecADEWeb', outDir './docs'
 ├── package.json
 ├── playwright.config.ts    # Playwright test config (chromium)
-├── public/                 # Static assets (favicon, og images)
-│   └── screenshots/        # TODO: add real screenshots here
+├── public/                 # Static assets (favicon)
 ├── src/
 │   ├── styles/global.css   # Tailwind v4 + Spec ADE design tokens
 │   ├── layouts/
-│   │   └── BaseLayout.astro  # hreflang alternate links, OG, theme
+│   │   └── BaseLayout.astro  # SEO meta, hreflang alternates, anti-flash theme
 │   ├── components/
-│   │   ├── Header.astro
-│   │   ├── Footer.astro
-│   │   ├── Hero.astro
-│   │   ├── WhatIsSpecAde.astro     # "What is Spec ADE?" explainer + comparison table
-│   │   ├── FeaturesRecap.astro     # Feature recap grid (3 columns)
-│   │   ├── ScreenshotsPlaceholder.astro
-│   │   ├── Architecture.astro
-│   │   ├── TechStack.astro
-│   │   ├── UseCases.astro
-│   │   ├── LicenseModel.astro      # License model mini-section
-│   │   ├── FAQ.astro               # 8-item FAQ (topOnly prop shows top 3 + see-all link)
-│   │   ├── GetStarted.astro        # Vanilla JS tabs + copy blocks (full version on homepage)
-│   │   └── islands/                # Vue 3 client islands (2 only)
+│   │   ├── Header.astro / Footer.astro / SubpageHeader.astro / BrandMark.astro
+│   │   ├── Hero.astro              # Disruptive headline, CopyBlock, Vue terminal demo
+│   │   ├── WhatIsSpecAde.astro     # 3-pillar explainer + comparison table
+│   │   ├── TrustRow.astro          # 4-stat trust signals
+│   │   ├── KeyFeatures.astro       # 6 cards linking to /features#<id>
+│   │   ├── Pricing.astro           # Free Core + Coming Soon Gateway
+│   │   ├── FAQ.astro               # 8-item accordion (topOnly slices to 3)
+│   │   ├── GetStarted.astro        # Install methods + Node.js prerequisite details
+│   │   ├── FeaturesRecap.astro     # Tag-grid recap of remaining capabilities
+│   │   ├── MultiAgent.astro        # Interactive agent connection hub
+│   │   ├── GoalShowcase.astro      # Coder ↔ Watcher loop simulation
+│   │   ├── PortForwarding.astro    # Cloudflare tunnel + Access Key flow
+│   │   ├── Spotlight.astro         # Shared layout primitive
+│   │   ├── spotlights/
+│   │   │   ├── SpotlightClaw.astro     # Telegram-controlled agent farm
+│   │   │   ├── SpotlightDb.astro       # Database console with 6 drivers
+│   │   │   └── SpotlightDesign.astro   # AI design prototyping workspace
+│   │   ├── CopyBlock.astro / Icon.astro
+│   │   └── islands/                # Vue 3 client islands
 │   │       ├── ThemeToggle.vue
 │   │       └── TerminalDemo.vue
 │   ├── i18n/               # Static translations (en + vi)
 │   │   ├── strings.ts
 │   │   └── utils.ts
 │   └── pages/
-│       ├── index.astro     # English (default) — /
-│       ├── faq.astro       # English FAQ sub-page — /faq
-│       ├── install.astro   # English install guide — /install
-│       └── vi/
-│           ├── index.astro   # Vietnamese — /vi/
-│           ├── faq.astro     # Vietnamese FAQ sub-page — /vi/faq
-│           └── install.astro # Vietnamese install guide — /vi/install
+│       ├── index.astro        # English (default) — /
+│       ├── faq.astro          # English FAQ — /faq
+│       ├── install.astro      # English install guide — /install
+│       ├── features.astro     # English full features — /features
+│       └── vi/                # Vietnamese mirror
 ├── tests/
-│   └── landing.spec.ts     # Playwright smoke + a11y + visual regression
+│   └── landing.spec.ts        # Playwright smoke + a11y + visual regression
 └── tsconfig.json
 ```
 
@@ -51,58 +54,54 @@ web/
 |-------|--------|
 | Framework | [Astro 6](https://astro.build) — content-first, zero JS by default |
 | Styling | [Tailwind CSS v4](https://tailwindcss.com) (CSS-first via `@theme`) |
-| Interactivity | Vue 3 islands via `@astrojs/vue` (2 islands: ThemeToggle, TerminalDemo) |
+| Interactivity | Vue 3 islands via `@astrojs/vue` (ThemeToggle, TerminalDemo) |
 | Icons | `lucide-vue-next` (matches main app) |
 | i18n | Astro built-in `i18n` config — no extra package |
 | Testing | Playwright + @axe-core/playwright |
-| Deploy | Cloudflare Pages (recommended) — unlimited bandwidth, zero cold start |
+| Deploy | Cloudflare Pages with custom domain |
 
 ## Design system
 
-The site mirrors the Spec ADE app design system from `CLAUDE.md`:
+The site mirrors the Spec ADE app design system:
 
-- **No box-shadow**. Depth comes from borders + background contrast.
 - Tokens: `--color-bg/surface/raised/border/text/accent`, `--space-xs..xl`, `--radius-xs..xl`.
 - Fonts: IBM Plex Sans (system fallback) + Lilex/JetBrains Mono.
 - Transitions: 150–300 ms with `cubic-bezier(0.32, 0.72, 0.24, 1)` (Apple-inspired).
 - Lucide icons at `:size="16"` `:stroke-width="1.75"`.
 - Dark default with light theme via `[data-theme="light"]` and `localStorage` persistence.
 - Inline anti-flash script in `<head>` applies the right theme before paint.
+- Subtle `box-shadow` is used for elevated surfaces (cards, callouts, modals); flat sections rely on borders alone.
 
 ## Sections
 
 ### Homepage (`/` and `/vi/`)
 
-1. **Hero** — disruptive headline ("Stop using an IDE. Start using an ADE."), dual CTA (Get Started + Learn more → #what-is-spec-ade), animated terminal demo (Vue island). CSS-only noise overlay + animated gradient drift. Subtitle meta line shows tech stack in monospace (Claude Code first).
-2. **What is Spec ADE?** — 3-pillar explainer (ADE concept / Specs not prompts / Parallel agents) + comparison table (Traditional IDE vs AI IDE vs Spec ADE). New section between Hero and Features.
-3. **Features** — 6-category tabbed section (AI Agents / Editor & Panes / Git / Database / Terminal & System / Cross-platform). Each card shows a plain-language `lead` sentence + technical `detail` in muted color. Killer features marked with `★ Unique` badge. Vanilla JS tab switching with full ARIA keyboard support.
-4. **ScreenshotsPlaceholder** — 5 placeholder cards (16/9 aspect ratio, hatched pattern). Replace with real screenshots in `public/screenshots/`.
-5. **Architecture** — three layered cards (Frontend / Backend / Storage) plus a protocols sidebar.
-6. **TechStack** — language and framework chips.
-7. **UseCases** — four developer personas.
-8. **FAQ (condensed)** — top 3 Q&A items with a "See all questions →" link to `/faq`.
-9. **GetStarted (full)** — all 4 platform tabs, auto-open callout, Node.js prerequisite details, and activation note. The homepage now shows the same full install experience as `/install`.
-10. **LicenseModel** — "Free during private beta" — one-paragraph summary linking to the FAQ. Last content section before the footer.
+1. **Hero** — disruptive headline, install copy block, dual CTA (Get Started → `/install`, Learn more → `#what-is-spec-ade`), animated Vue terminal demo, trust stats row.
+2. **What is Spec ADE?** — 3-pillar explainer + comparison table (Traditional IDE vs AI IDE vs Spec ADE).
+3. **Trust row** — 4 headline stats (AI agents, DB drivers, single binary, local-first).
+4. **Key Features** — 6 cards (Multi-Agent, Goal, Port Forwarding, Claw, Database, Design) that link to `/features#<id>`.
+5. **Pricing** — Free Core Workspace + Coming Soon Gateway AI plan with model-agnostic copy.
 
 ### Sub-pages
 
-- `/faq` and `/vi/faq` — full 8-item FAQ page with back-link to home.
-- `/install` and `/vi/install` — full install guide with all 4 platform tabs, Node.js prerequisite details, and activation note.
+- `/faq` and `/vi/faq` — full 8-item FAQ with back-link to home.
+- `/install` and `/vi/install` — install guide (npx command, VPS variant, Node.js prerequisite details).
+- `/features` and `/vi/features` — deep-dive sections: MultiAgent, GoalShowcase, PortForwarding, SpotlightClaw, SpotlightDb, SpotlightDesign, FeaturesRecap.
 
 ## Vue islands
 
-Only 2 Vue islands remain (down from 4):
+Two islands ship to the browser:
 
-- `ThemeToggle.vue` — dark/light toggle with localStorage persistence
-- `TerminalDemo.vue` — animated terminal demo in the hero
+- `ThemeToggle.vue` — dark/light toggle with localStorage persistence.
+- `TerminalDemo.vue` — animated terminal demo in the hero, IntersectionObserver-gated.
 
-`InstallTabs.vue` and `CopyBlock.vue` have been replaced with vanilla HTML + inline `<script>` (~40 lines total). No hydration cost.
+The rest of the page is server-rendered HTML with small inline `<script>` blocks for tab switching, copy buttons, and showcase simulations. The interactive showcase scripts re-bind on `astro:after-swap`.
 
 ## Internationalization
 
 Two locales ship out of the box:
 
-- `/` → English (default, no prefix)
+- `/` → English (default, no language prefix)
 - `/vi/` → Vietnamese
 
 Both share the same components — only `i18n/strings.ts` differs. The header has a one-tap language switcher. `BaseLayout.astro` emits `<link rel="alternate" hreflang="...">` tags for SEO.
@@ -116,10 +115,9 @@ To add a third locale:
 ## Develop
 
 ```bash
-cd web
-npm install              # or bun install / pnpm install
-npm run dev              # Astro dev server on http://localhost:4321
-npm run build            # Production build → dist/
+npm install
+npm run dev              # Astro dev server on http://localhost:4321/
+npm run build            # Production build → docs/
 npm run preview          # Preview the production build
 ```
 
@@ -128,66 +126,62 @@ npm run preview          # Preview the production build
 ## Testing
 
 ```bash
-cd web
 npm install
 npm run build && npm test              # Run all Playwright tests
 npm run test:ui                        # Playwright interactive UI
 npm run test:update-snapshots          # Regenerate visual regression snapshots
 ```
 
-Tests in `web/tests/landing.spec.ts`:
+Tests in `tests/landing.spec.ts` cover:
 
-1. `/` returns 200, hero heading visible, primary CTA present
-2. `/vi/` returns 200, hero heading visible (Vietnamese)
-3. Theme toggle switches `data-theme` attribute on click
-4. Install tabs switch panels and update `aria-selected`
-5. Language switcher link points to correct alternate
-6. axe-core scan on `/` — no critical violations
-7. axe-core scan on `/vi/` — no critical violations
-8. Visual regression — 3 viewports (375/768/1280) × 2 themes (dark/light) × 2 routes = 12 snapshots
-9. `/faq` returns 200 and shows all 8 FAQ items
-10. `/install` returns 200 and shows the install command
+1. `/` returns 200, hero heading visible, primary CTA points to `/install`.
+2. `/vi/` returns 200, hero heading visible.
+3. Theme toggle switches `data-theme` attribute on click.
+4. Language switcher href points to the correct alternate (with base prefix).
+5. axe-core scan on `/` and `/vi/` — no critical violations.
+6. Visual regression — 3 viewports (375 / 768 / 1280) × 2 themes (dark / light) × 2 routes = 12 snapshots.
+7. Homepage shows 6 key feature cards.
+8. Homepage pricing section renders with both plan cards.
+9. `/faq` returns 200 and shows all 8 FAQ items.
+10. `/install` returns 200 and shows the install command.
+11. `/features` and `/vi/features` render the recap and all six showcase sections.
+12. Goal Showcase scenario selector updates goal text, milestones, and runs the simulation to completion.
 
-Run `npm run test:update-snapshots` the first time to generate baseline snapshots.
+Run `npm run test:update-snapshots` once to generate the baseline snapshots — they were intentionally not committed because the homepage layout has changed.
 
 ## Deploy
 
-The site is fully static and ships zero JS unless an island opts in. Recommended host: **Cloudflare Pages**.
+The site is fully static. The build output is written to `./docs/` (configured in `astro.config.mjs`) and is served from **Cloudflare Pages**, mapped to the custom domain `iamdev.io.vn`.
+
+Cloudflare Pages settings:
+
+- **Build command**: `npm run build`
+- **Build output directory**: `docs`
+- **Custom domains**: `iamdev.io.vn`, `www.iamdev.io.vn`
+
+Pushing to `main` triggers a new deployment automatically.
 
 ```bash
-# Cloudflare Pages — connect this repo, set:
-#   Build command: cd web && npm install && npm run build
-#   Build output:  web/dist
+npm run build           # Local build for verification → docs/
 ```
-
-Other supported targets: Vercel, Netlify, GitHub Pages, any static host.
 
 ## Test affordances
 
-Every interactive element exposes a stable `data-testid` attribute:
+Stable `data-testid` attributes on interactive elements:
 
-- `hero-badge`, `hero-primary-cta`, `hero-secondary-cta`
-- `feature-tab-{category}` (ai-agents, editor-panes, git, database, terminal-system, cross-platform)
-- `feature-card-{n}`
-- `faq-item-{n}`
-- `screenshot-placeholder-{n}`
-- `license-section`
-- `install-tab-{mac|linux|win|source}`
-- `copy-button`
-- `activation-note`
-- `theme-toggle`, `lang-switch`, `header-cta`
+- `hero-badge`, `hero-primary-cta`, `hero-secondary-cta`, `hero-coming-soon`
+- `key-feature-{multi-agent|goal|port|claw|db|design}`
+- `faq-item-{0..7}`, `faq-see-all`
+- `nav-toggle`, `mobile-nav`, `mobile-nav-link-{features|pricing|install|faq|get-started}`
+- `theme-toggle`, `lang-switch`, `header-cta`, `back-to-home`
+- `features-recap`, `activation-note`, `auto-open-callout`, `nodejs-details`, `npm-coming-soon-note`
 
 ## TODO before launch
 
-- [ ] Publish `@spec-ade/cli` on npm (currently the install commands assume the package will exist)
-- [ ] Confirm the official viber.vn support contact channel and link it from the footer
-- [ ] Add real screenshots to `public/screenshots/` and replace the placeholders in `ScreenshotsPlaceholder.astro`
-- [ ] Add OG image to `public/og.png` and wire it in `BaseLayout.astro`
-- [ ] Update `astro.config.mjs` `site` URL once the production domain is fixed
-- [ ] When the project goes public, restore the GitHub link in Header/Footer and update the FAQ answer about open source
-- [ ] Run `npm run test:update-snapshots` to generate baseline visual regression snapshots
-- [ ] Update `astro.config.mjs` `site` URL if domain changes from `spec-ade.dev`
-- [ ] Run `npm run test:update-snapshots` to generate baseline visual regression snapshots
+- [ ] Publish `@spec-ade/cli` on npm (the install commands assume the package will exist).
+- [ ] Confirm the official viber.vn support contact channel and link it from the footer.
+- [ ] Add an OG image (`public/og.png`) and re-introduce the `og:image` / `twitter:image` meta tags in `BaseLayout.astro`.
+- [ ] Run `npm run test:update-snapshots` to generate baseline visual regression snapshots.
 
 ## What is intentionally missing
 

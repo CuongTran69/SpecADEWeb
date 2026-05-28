@@ -27,15 +27,17 @@ const strings = t(lang)
           <div class="activation-icon" aria-hidden="true">
             <Icon name="lock" size={18} />
           </div>
-          <p class="activation-text">{(() => {
+          {(() => {
             const note = strings.getStarted.comingSoonNote
-            const token = '`ADE-xxx`'
-            const idx = note.indexOf(token)
-            if (idx === -1) return note
-            const before = note.slice(0, idx)
-            const after = note.slice(idx + token.length)
-            return <>{before}<code>ADE-xxx</code>{after}</>
-          })()}</p>
+            const parts = note.split('`ADE-xxx`')
+            return (
+              <p class="activation-text">
+                {parts[0]}
+                {parts.length > 1 && <code>ADE-xxx</code>}
+                {parts.slice(1).join('`ADE-xxx`')}
+              </p>
+            )
+          })()}
         </div>
 
         <div class="install-card surface reveal">
