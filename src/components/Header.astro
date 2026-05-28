@@ -15,8 +15,6 @@ const otherLang = altLang(lang)
 const currentPath = Astro.url.pathname
 const otherPath = swapLangPath(currentPath, otherLang)
 
-// Detect if we're on a subpage (not the home page)
-const isHome = currentPath === pathFor(lang, '/') || currentPath === pathFor(lang, '/')
 const homePath = pathFor(lang, '/')
 ---
 

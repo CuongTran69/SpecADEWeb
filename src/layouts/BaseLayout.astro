@@ -14,7 +14,7 @@ const { lang } = Astro.props
 const strings = t(lang)
 
 // Canonical and alternate URLs for SEO
-const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://spec-ade.dev'
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://cuongtran69.github.io/SpecADEWeb'
 const currentPath = Astro.url.pathname
 const canonicalUrl = siteUrl + currentPath
 const altEnUrl = siteUrl + swapLangPath(currentPath, 'en')

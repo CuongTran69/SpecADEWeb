@@ -16,11 +16,9 @@ const featuresPath = pathFor(lang, '/features')
 <section class="view-features reveal">
   <div class="container-narrow text-center">
     <div class="cta-box surface-raised">
-      <h3 class="cta-title">{lang === 'vi' ? 'Khám phá tất cả tính năng' : 'Explore all capabilities'}</h3>
+      <h3 class="cta-title">{strings.featuresPage.viewAllTitle}</h3>
       <p class="cta-desc">
-        {lang === 'vi' 
-          ? 'Từ quản lý layout đệ quy, SSH tunnel, phân tích tiến trình GPU cho đến hybrid Git. Xem danh sách chi tiết các công cụ có sẵn.' 
-          : 'From recursive layouts, SSH tunnels, GPU monitors, to hybrid Git. See the complete checklist of built-in tools.'}
+        {strings.featuresPage.viewAllDesc}
       </p>
       <a href={featuresPath} class="btn btn-primary shine-hover" data-testid="view-all-features-btn">
         {strings.featuresPage.viewAllCta}

@@ -54,7 +54,15 @@ const blocks: Record<string, { install: string; service?: string; vpsNote?: bool
           <div class="activation-icon" aria-hidden="true">
             <Icon name="lock" size={18} />
           </div>
-          <p class="activation-text" set:html={strings.getStarted.comingSoonNote.replaceAll('`ADE-xxx`', '<code>ADE-xxx</code>')}></p>
+          <p class="activation-text">{(() => {
+            const note = strings.getStarted.comingSoonNote
+            const token = '`ADE-xxx`'
+            const idx = note.indexOf(token)
+            if (idx === -1) return note
+            const before = note.slice(0, idx)
+            const after = note.slice(idx + token.length)
+            return <>{before}<code>ADE-xxx</code>{after}</>
+          })()}</p>
         </div>
 
         <div class="install-card surface reveal">

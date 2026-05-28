@@ -25,6 +25,12 @@ export const en = {
     primaryCta: 'Get Started',
     secondaryCta: 'Learn more',
     runningOn: 'Runs on Windows, macOS, and Linux · Tauri desktop · PWA',
+    trust: [
+      { value: '4+', label: 'AI agents' },
+      { value: '6', label: 'DB drivers' },
+      { value: '1 binary', label: 'No Docker' },
+      { value: '100%', label: 'Local-first' },
+    ],
   },
   spotlight: {
     claw: {
@@ -157,6 +163,17 @@ export const en = {
       'Fifty-plus Pinia stores in Composition API, recursive pane tree, xterm Teleport pool, CodeMirror 6 with Vim and minimap, and a context-aware shortcut store.',
     storageDesc:
       'Single `~/.config/spec-ade/settings.json` file. Passwords go to the OS keychain (with AES-GCM headless fallback). License keys come from the Ed25519-signing portal.',
+    protocols: [
+      { name: 'REST', desc: 'CRUD, git, settings, files, search' },
+      { name: 'WebSocket', desc: 'PTY I/O, ACP relay, DB streaming' },
+      { name: 'SSE', desc: 'Git change events, watch streams' },
+      { name: 'Proxy', desc: '/fw/{port}/{*rest} forwards HTTP + WS' },
+    ],
+    metrics: [
+      { value: '17.9k', label: 'symbols' },
+      { value: '300', label: 'exec flows' },
+      { value: '30.6k', label: 'relationships' },
+    ],
   },
   tech: {
     title: 'Modern stack, no compromises',
@@ -291,6 +308,8 @@ export const en = {
     title: 'Spec ADE Features',
     backToHome: '← Back to home',
     viewAllCta: 'View all features →',
+    viewAllTitle: 'Explore all capabilities',
+    viewAllDesc: 'From recursive layouts, SSH tunnels, GPU monitors, to hybrid Git. See the complete checklist of built-in tools.',
   },
   multiAgent: {
     chip: 'Orchestration',
@@ -410,6 +429,12 @@ export const vi: typeof en = {
     primaryCta: 'Bắt đầu ngay',
     secondaryCta: 'Tìm hiểu thêm',
     runningOn: 'Chạy trên Windows, macOS, Linux · Tauri desktop · PWA',
+    trust: [
+      { value: '4+', label: 'AI agents' },
+      { value: '6', label: 'DB drivers' },
+      { value: '1 binary', label: 'Không Docker' },
+      { value: '100%', label: 'Ưu tiên local' },
+    ],
   },
   spotlight: {
     claw: {
@@ -542,6 +567,17 @@ export const vi: typeof en = {
       'Hơn 50 Pinia stores Composition API, recursive pane tree, xterm Teleport pool, CodeMirror 6 với Vim và minimap, shortcut store context-aware.',
     storageDesc:
       'Một file `~/.config/spec-ade/settings.json` duy nhất. Password lưu OS keychain (AES-GCM fallback nếu headless). License keys ký Ed25519 từ portal.',
+    protocols: [
+      { name: 'REST', desc: 'CRUD, git, cài đặt, file, tìm kiếm' },
+      { name: 'WebSocket', desc: 'PTY I/O, ACP relay, DB streaming' },
+      { name: 'SSE', desc: 'Sự kiện thay đổi Git, watch streams' },
+      { name: 'Proxy', desc: '/fw/{port}/{*rest} chuyển tiếp HTTP + WS' },
+    ],
+    metrics: [
+      { value: '17.9k', label: 'symbols' },
+      { value: '300', label: 'exec flows' },
+      { value: '30.6k', label: 'relationships' },
+    ],
   },
   tech: {
     title: 'Modern stack, không thỏa hiệp',
@@ -676,6 +712,8 @@ export const vi: typeof en = {
     title: 'Tính năng Spec ADE',
     backToHome: '← Về trang chủ',
     viewAllCta: 'Xem tất cả tính năng →',
+    viewAllTitle: 'Khám phá tất cả tính năng',
+    viewAllDesc: 'Từ quản lý layout đệ quy, SSH tunnel, phân tích tiến trình GPU cho đến hybrid Git. Xem danh sách chi tiết các công cụ có sẵn.',
   },
   multiAgent: {
     chip: 'Tích hợp Đa tác nhân',

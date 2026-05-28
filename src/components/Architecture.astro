@@ -14,13 +14,6 @@ const layers = [
   { id: 'backend', title: strings.architecture.backend, desc: strings.architecture.backendDesc, label: 'Rust 2024 · Axum · tokio', tag: 'API', color: 'var(--color-accent)' },
   { id: 'storage', title: strings.architecture.storage, desc: strings.architecture.storageDesc, label: 'settings.json · OS keychain', tag: 'DATA', color: 'var(--color-persona-4)' },
 ]
-
-const protocols = [
-  { name: 'REST', desc: 'CRUD, git, settings, files, search' },
-  { name: 'WebSocket', desc: 'PTY I/O, ACP relay, DB streaming' },
-  { name: 'SSE', desc: 'Git change events, watch streams' },
-  { name: 'Proxy', desc: '/fw/{port}/{*rest} forwards HTTP + WS' },
-]
 ---
 
 <section id="architecture" class="arch">
@@ -51,7 +44,7 @@ const protocols = [
           <span class="chip">{strings.architecture.chip}</span>
         </header>
         <ul class="protocol-list">
-          {protocols.map((p) => (
+          {strings.architecture.protocols.map((p) => (
             <li class="protocol-item">
               <span class="proto-name">{p.name}</span>
               <span class="proto-desc">{p.desc}</span>
@@ -59,18 +52,12 @@ const protocols = [
           ))}
         </ul>
         <div class="numbers">
-          <div class="metric">
-            <span class="metric-value">17.9k</span>
-            <span class="metric-label">symbols</span>
-          </div>
-          <div class="metric">
-            <span class="metric-value">300</span>
-            <span class="metric-label">exec flows</span>
-          </div>
-          <div class="metric">
-            <span class="metric-value">30.6k</span>
-            <span class="metric-label">relationships</span>
-          </div>
+          {strings.architecture.metrics.map((m) => (
+            <div class="metric">
+              <span class="metric-value">{m.value}</span>
+              <span class="metric-label">{m.label}</span>
+            </div>
+          ))}
         </div>
       </aside>
     </div>

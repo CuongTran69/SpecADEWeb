@@ -12,7 +12,7 @@ const s = strings.goalShowcase
 const goalStrings = strings.spotlight.goal
 ---
 
-<section class="goal-showcase" id="goal-showcase">
+<section class="goal-showcase" id="goal-showcase" data-lang={lang}>
   <div class="container-wide">
     <header class="section-head reveal">
       <span class="chip">{s.chip}</span>
@@ -242,7 +242,7 @@ const goalStrings = strings.spotlight.goal
     let activeTimeouts: number[] = [];
 
     const getLogs = (goalId: string): SimLog[] => {
-      const isVi = document.documentElement.lang === 'vi';
+      const isVi = section.dataset.lang === 'vi';
       
       const logsMap: Record<string, SimLog[]> = {
         auth: [
@@ -361,7 +361,7 @@ const goalStrings = strings.spotlight.goal
       if (startBtn) startBtn.style.display = 'none';
 
       const simLogs = getLogs(activeGoalId);
-      simLogs.forEach(log => {
+      simLogs.forEach((log, i) => {
         const timeoutId = window.setTimeout(() => {
           if (logsContainer) {
             const line = document.createElement('div');
@@ -385,7 +385,7 @@ const goalStrings = strings.spotlight.goal
             updateVisualState(log.nodeAction);
           }
 
-          if (log === simLogs[simLogs.length - 1]) {
+          if (i === simLogs.length - 1) {
             setTimeout(() => {
               if (successBanner) {
                 successBanner.hidden = false;

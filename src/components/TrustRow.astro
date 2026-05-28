@@ -59,13 +59,12 @@ const stats = [
     display: flex;
     align-items: flex-start;
     gap: 14px;
-    transition: border-color 250ms var(--ease-out-soft), transform 250ms var(--ease-out-soft), box-shadow 250ms var(--ease-out-soft);
+    transition: border-color 250ms var(--ease-out-soft), transform 250ms var(--ease-out-soft);
   }
 
   .trust-card:hover {
     border-color: color-mix(in oklab, var(--color-accent) 40%, transparent);
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px color-mix(in oklab, var(--color-accent) 6%, transparent);
   }
 
   .trust-content {

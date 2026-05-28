@@ -49,25 +49,15 @@ const strings = t(lang)
       </div>
 
       <div class="hero-trust" aria-label="Key stats">
-        <div class="hero-trust-item">
-          <span class="hero-trust-value">4+</span>
-          <span class="hero-trust-label">AI agents</span>
-        </div>
-        <div class="hero-trust-divider" aria-hidden="true"></div>
-        <div class="hero-trust-item">
-          <span class="hero-trust-value">6</span>
-          <span class="hero-trust-label">DB drivers</span>
-        </div>
-        <div class="hero-trust-divider" aria-hidden="true"></div>
-        <div class="hero-trust-item">
-          <span class="hero-trust-value">1 binary</span>
-          <span class="hero-trust-label">No Docker</span>
-        </div>
-        <div class="hero-trust-divider" aria-hidden="true"></div>
-        <div class="hero-trust-item">
-          <span class="hero-trust-value">100%</span>
-          <span class="hero-trust-label">Local-first</span>
-        </div>
+        {strings.hero.trust.map((item, i) => (
+          <>
+            {i > 0 && <div class="hero-trust-divider" aria-hidden="true"></div>}
+            <div class="hero-trust-item">
+              <span class="hero-trust-value">{item.value}</span>
+              <span class="hero-trust-label">{item.label}</span>
+            </div>
+          </>
+        ))}
       </div>
     </div>
 
