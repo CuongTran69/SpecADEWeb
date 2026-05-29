@@ -10,14 +10,15 @@ interface Props {
 
 const { lang } = Astro.props
 const strings = t(lang)
+const gs = strings.getStarted
 ---
 
 <section id="get-started" class="get-started">
   <div class="container-wide">
     <header class="section-head reveal">
-      <span class="chip">{strings.getStarted.chip}</span>
-      <h2 class="section-title">{strings.getStarted.title}</h2>
-      <p class="section-subtitle">{strings.getStarted.subtitle}</p>
+      <span class="chip">{gs.chip}</span>
+      <h2 class="section-title">{gs.title}</h2>
+      <p class="section-subtitle">{gs.subtitle}</p>
     </header>
 
     <div class="get-started-layout">
@@ -28,7 +29,7 @@ const strings = t(lang)
             <Icon name="lock" size={18} />
           </div>
           {(() => {
-            const note = strings.getStarted.comingSoonNote
+            const note = gs.comingSoonNote
             const parts = note.split('`ADE-xxx`')
             return (
               <p class="activation-text">
@@ -45,11 +46,11 @@ const strings = t(lang)
             <p class="npm-coming-soon-text">
               {lang === 'vi' ? (
                 <>
-                  Đã chính thức phát hành <a href="https://www.npmjs.com/package/@spec-ade/cli" target="_blank" rel="noopener noreferrer" class="npm-link">@spec-ade/cli</a> trên npm. Chạy lệnh bên dưới để cài đặt và sử dụng ngay lập tức.
+                  Đã chính thức phát hành <a href="https://www.npmjs.com/package/@spec-ade/cli" target="_blank" rel="noopener noreferrer" class="npm-link">@spec-ade/cli</a> trên npm. {gs.npmPublishedNote.replace('@spec-ade/cli đã chính thức được phát hành trên npm. ', '')}
                 </>
               ) : (
                 <>
-                  <a href="https://www.npmjs.com/package/@spec-ade/cli" target="_blank" rel="noopener noreferrer" class="npm-link">@spec-ade/cli</a> is officially published on npm. Run the command below to install and run the workspace instantly.
+                  <a href="https://www.npmjs.com/package/@spec-ade/cli" target="_blank" rel="noopener noreferrer" class="npm-link">@spec-ade/cli</a> is officially published on npm. {gs.npmPublishedNote.replace('@spec-ade/cli is officially published on npm. ', '')}
                 </>
               )}
             </p>
@@ -58,28 +59,24 @@ const strings = t(lang)
           <div class="install-methods">
             <!-- Method 1: Local installation -->
             <div class="method-block">
-              <span class="method-label">
-                {lang === 'vi' ? 'Cài đặt và chạy (macOS, Windows, Linux)' : 'Install & Run (macOS, Windows, Linux)'}
-              </span>
+              <span class="method-label">{gs.installLocalLabel}</span>
               <CopyBlock code="npx -y @spec-ade/cli@latest" />
             </div>
 
             <!-- Method 2: VPS / Server -->
             <div class="method-block">
-              <span class="method-label">
-                {lang === 'vi' ? 'Cài đặt trên VPS / Cloud Server' : 'Install on VPS / Cloud Server'}
-              </span>
+              <span class="method-label">{gs.installVpsLabel}</span>
               <CopyBlock code="npx -y @spec-ade/cli@latest --host 0.0.0.0 --port 3100" />
-              <p class="vps-note">{strings.getStarted.vpsNote}</p>
+              <p class="vps-note">{gs.vpsNote}</p>
             </div>
           </div>
 
-          <p class="note">{strings.getStarted.note}</p>
+          <p class="note">{gs.note}</p>
         </div>
 
         <div class="auto-open-callout" data-testid="auto-open-callout">
           <Icon name="external-link" size={15} />
-          <span>{strings.getStarted.autoOpenNote}</span>
+          <span>{gs.autoOpenNote}</span>
         </div>
       </div>
 
@@ -87,26 +84,26 @@ const strings = t(lang)
       <div class="prereq-side reveal">
         <details class="nodejs-details" data-testid="nodejs-details">
           <summary class="nodejs-summary">
-            <span>{strings.getStarted.dontHaveNpx}</span>
+            <span>{gs.dontHaveNpx}</span>
             <Icon name="chevron-down" size={14} class="details-chevron" />
           </summary>
           <div class="nodejs-body">
-            <p class="nodejs-required">{strings.getStarted.nodejsRequired}</p>
+            <p class="nodejs-required">{gs.nodejsRequired}</p>
             <div class="nodejs-platforms">
               <div class="nodejs-platform">
-                <h4 class="platform-name">{strings.getStarted.nodeMac}</h4>
+                <h4 class="platform-name">{gs.nodeMac}</h4>
                 <CopyBlock code="brew install node@22" />
-                <p class="platform-alt">or visit <a href="https://nodejs.org/" target="_blank" rel="noopener noreferrer">nodejs.org</a></p>
+                <p class="platform-alt">{gs.nodeAltMac} <a href="https://nodejs.org/" target="_blank" rel="noopener noreferrer">{gs.nodeAltMacLink}</a></p>
               </div>
               <div class="nodejs-platform">
-                <h4 class="platform-name">{strings.getStarted.nodeLinux}</h4>
+                <h4 class="platform-name">{gs.nodeLinux}</h4>
                 <CopyBlock code={`curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -\nsudo apt-get install -y nodejs`} />
-                <p class="platform-alt">Ubuntu/Debian. For RHEL/Fedora see <a href="https://github.com/nodesource/distributions#rhel-versions" target="_blank" rel="noopener noreferrer">NodeSource RHEL guide</a>.</p>
+                <p class="platform-alt">{gs.nodeAltLinux} <a href="https://github.com/nodesource/distributions#rhel-versions" target="_blank" rel="noopener noreferrer">{gs.nodeAltLinuxLink}</a>.</p>
               </div>
               <div class="nodejs-platform">
-                <h4 class="platform-name">{strings.getStarted.nodeWin}</h4>
+                <h4 class="platform-name">{gs.nodeWin}</h4>
                 <CopyBlock code="winget install OpenJS.NodeJS" />
-                <p class="platform-alt">or download installer at <a href="https://nodejs.org/" target="_blank" rel="noopener noreferrer">nodejs.org</a></p>
+                <p class="platform-alt">{gs.nodeAltWin} <a href="https://nodejs.org/" target="_blank" rel="noopener noreferrer">{gs.nodeAltWinLink}</a></p>
               </div>
             </div>
           </div>
