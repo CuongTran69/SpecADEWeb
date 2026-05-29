@@ -21,7 +21,7 @@ test('/ returns 200, hero heading visible, primary CTA points to /install', asyn
 
   const heading = page.getByRole('heading', { level: 1 })
   await expect(heading).toBeVisible()
-  await expect(heading).toContainText('AI coding agents')
+  await expect(heading).toContainText('Spec ADE')
 
   const cta = page.getByTestId('hero-primary-cta')
   await expect(cta).toBeVisible()
@@ -34,7 +34,7 @@ test('/vi/ returns 200, hero heading visible (Vietnamese)', async ({ page }) => 
 
   const heading = page.getByRole('heading', { level: 1 })
   await expect(heading).toBeVisible()
-  await expect(heading).toContainText('AI coding agent')
+  await expect(heading).toContainText('Spec ADE')
 })
 
 // ─── Theme toggle ────────────────────────────────────────────────────────────

@@ -19,22 +19,34 @@ const strings = t(lang)
 
   <div class="container-wide hero-inner">
     <div class="hero-copy fade-in-up">
+      <h1 class="hero-mega-title">
+        Spec <span class="hero-mega-accent">ADE</span>
+      </h1>
+
       <div class="hero-badge-row">
         <span class="chip" data-testid="hero-badge">{strings.hero.badge}</span>
         <span class="hero-badge-sep" aria-hidden="true">·</span>
         <span class="hero-platform-note">{strings.hero.runningOn}</span>
       </div>
 
-      <h1 class="hero-title">
+      <h2 class="hero-title">
         {strings.hero.titlePrefix}<span class="hero-title-accent">{strings.hero.titleAccent}</span>{strings.hero.titleSuffix}
-      </h1>
+      </h2>
 
       <p class="hero-subtitle">{strings.hero.subtitle}</p>
 
       <div class="hero-install">
         <div class="hero-install-header">
           <span class="hero-install-label">{strings.hero.installPrompt}</span>
-          <span class="hero-coming-soon chip" data-testid="hero-coming-soon">{strings.hero.installComingSoon}</span>
+          <a
+            href="https://www.npmjs.com/package/@spec-ade/cli"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="hero-coming-soon chip"
+            data-testid="hero-coming-soon"
+          >
+            {strings.hero.installComingSoon}
+          </a>
         </div>
         <CopyBlock code="npx -y @spec-ade/cli@latest" />
       </div>
@@ -122,11 +134,24 @@ const strings = t(lang)
     font-family: var(--font-mono);
   }
 
+  .hero-mega-title {
+    font-size: clamp(3.5rem, 8.5vw, 6.5rem);
+    font-weight: 900;
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+    color: var(--color-text);
+    margin: 0;
+  }
+
+  .hero-mega-accent {
+    color: var(--color-accent);
+  }
+
   .hero-title {
-    font-size: clamp(2.5rem, 5.5vw, 4rem);
+    font-size: clamp(1.8rem, 3.8vw, 2.8rem);
     font-weight: 800;
-    line-height: 1.05;
-    letter-spacing: -0.03em;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
     color: var(--color-text);
     margin: 0;
   }
@@ -166,10 +191,18 @@ const strings = t(lang)
   }
 
   .hero-coming-soon {
-    background: color-mix(in oklab, var(--color-warning) 10%, transparent);
-    color: var(--color-warning);
-    border-color: color-mix(in oklab, var(--color-warning) 25%, transparent);
+    background: color-mix(in oklab, var(--color-success) 10%, transparent);
+    color: var(--color-success);
+    border-color: color-mix(in oklab, var(--color-success) 25%, transparent);
     font-size: 10px;
+    text-decoration: none;
+    transition: background 150ms var(--ease-out-soft), border-color 150ms var(--ease-out-soft), transform 150ms var(--ease-out-soft);
+  }
+
+  a.hero-coming-soon:hover {
+    background: color-mix(in oklab, var(--color-success) 18%, transparent);
+    border-color: color-mix(in oklab, var(--color-success) 40%, transparent);
+    transform: translateY(-0.5px);
   }
 
   .hero-cta {

@@ -33,19 +33,19 @@
 
 :root,
 [data-theme="dark"] {
-  --color-bg: #080810;
-  --color-surface: #0f0f1a;
-  --color-raised: #161625;
-  --color-border: #1e1e32;
-  --color-border-strong: #2a2a45;
-  --color-text: #e8e8f0;
-  --color-text-secondary: #9898b8;
-  --color-text-muted: #5a5a7a;
-  --color-accent: #22d3ee;
-  --color-accent-hover: #06b6d4;
-  --color-accent-soft: rgba(34, 211, 238, 0.10);
-  --color-purple: #a78bfa;
-  --color-purple-soft: rgba(167, 139, 250, 0.10);
+  --color-bg: #09090b;
+  --color-surface: #18181b;
+  --color-raised: #27272a;
+  --color-border: #1e1e24;
+  --color-border-strong: #3f3f46;
+  --color-text: #f4f4f5;
+  --color-text-secondary: #a1a1aa;
+  --color-text-muted: #52525b;
+  --color-accent: #06b6d4;
+  --color-accent-hover: #0891b2;
+  --color-accent-soft: rgba(6, 182, 212, 0.08);
+  --color-purple: #a855f7;
+  --color-purple-soft: rgba(168, 85, 247, 0.08);
 
   --color-git-modified: #f59e0b;
   --color-git-added: #10b981;
@@ -55,27 +55,27 @@
   --color-error: #ef4444;
   --color-success: #10b981;
 
-  --color-persona-1: #22d3ee;
-  --color-persona-2: #a78bfa;
-  --color-persona-3: #fbbf24;
-  --color-persona-4: #34d399;
+  --color-persona-1: #06b6d4;
+  --color-persona-2: #a855f7;
+  --color-persona-3: #f59e0b;
+  --color-persona-4: #10b981;
 
   --color-claude: #c084fc;
   --color-auggie: #fbbf24;
 }
 
 [data-theme="light"] {
-  --color-bg: #f8f8fc;
+  --color-bg: #fafafa;
   --color-surface: #ffffff;
-  --color-raised: #f0f0f8;
-  --color-border: #e0e0ee;
-  --color-border-strong: #c8c8e0;
-  --color-text: #14142a;
-  --color-text-secondary: #4a4a6a;
-  --color-text-muted: #7a7a9a;
-  --color-accent: #0a5f75;
-  --color-accent-hover: #075066;
-  --color-accent-soft: rgba(10, 95, 117, 0.10);
+  --color-raised: #f4f4f5;
+  --color-border: #e4e4e7;
+  --color-border-strong: #d4d4d8;
+  --color-text: #09090b;
+  --color-text-secondary: #52525b;
+  --color-text-muted: #71717a;
+  --color-accent: #0891b2;
+  --color-accent-hover: #0e7490;
+  --color-accent-soft: rgba(8, 145, 178, 0.08);
   --color-purple: #7c3aed;
   --color-purple-soft: rgba(124, 58, 237, 0.08);
 

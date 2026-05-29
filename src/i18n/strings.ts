@@ -22,7 +22,7 @@ export const en = {
     subtitle:
       'Spec ADE (Agentic Development Environment) is a local, full-stack workspace built specifically for AI agents to write code, run tests, and edit databases. You describe your goal; the agents collaborate in parallel to ship it.',
     installPrompt: 'Install in one command',
-    installComingSoon: 'coming soon · @spec-ade/cli ships with public beta',
+    installComingSoon: 'available now · @spec-ade/cli on npm',
     primaryCta: 'Get Started',
     secondaryCta: 'Learn more',
     runningOn: 'Runs on Windows, macOS, and Linux · Tauri desktop · PWA',
@@ -302,7 +302,7 @@ export const en = {
     nodeMac: 'macOS',
     nodeLinux: 'Linux',
     nodeWin: 'Windows',
-    npmComingSoon: '@spec-ade/cli is not yet published on npm. The install commands below are aspirational — they will work once the public beta launches.',
+    npmComingSoon: '@spec-ade/cli is officially published on npm. Run the command below to install and run the workspace instantly.',
   },
   footer: {
     tagline: 'AI-native workspace by the viber.vn team.',
@@ -434,7 +434,7 @@ export const vi: typeof en = {
     subtitle:
       'Spec ADE (Agentic Development Environment) là môi trường lập trình local, tích hợp trực tiếp các tác nhân AI để tự động viết code, chạy thử nghiệm và quản lý database. Bạn đưa ra mục tiêu; các agent sẽ tự động phối hợp chạy song song để hoàn thành.',
     installPrompt: 'Cài đặt trong một lệnh',
-    installComingSoon: 'sắp ra mắt · @spec-ade/cli sẽ có khi public beta',
+    installComingSoon: 'đã phát hành · cài đặt qua npm',
     primaryCta: 'Bắt đầu ngay',
     secondaryCta: 'Tìm hiểu thêm',
     runningOn: 'Chạy trên Windows, macOS, Linux · Tauri desktop · PWA',
@@ -714,7 +714,7 @@ export const vi: typeof en = {
     nodeMac: 'macOS',
     nodeLinux: 'Linux',
     nodeWin: 'Windows',
-    npmComingSoon: '@spec-ade/cli chưa được publish lên npm. Các lệnh cài đặt bên dưới là dự kiến — chúng sẽ hoạt động khi public beta ra mắt.',
+    npmComingSoon: '@spec-ade/cli đã chính thức được phát hành trên npm. Chạy lệnh bên dưới để cài đặt và sử dụng ngay lập tức.',
   },
   footer: {
     tagline: 'Workspace AI-native do team viber.vn phát triển.',

@@ -10,7 +10,25 @@
       "Bash(npm install *)",
       "Bash(git commit -m 'chore: deploy via gh-pages branch instead of Actions *)",
       "Bash(npm uninstall *)",
-      "Bash(echo \"exit:$?\")"
+      "Bash(echo \"exit:$?\")",
+      "Bash(curl -sI http://localhost:4321/)",
+      "Bash(curl -sI http://localhost:4321/SpecADEWeb/)",
+      "Bash(rm -f /Users/cuongtran/Project/SpecADEWeb/src/components/InstallCta.astro /Users/cuongtran/Project/SpecADEWeb/src/components/ScreenshotsPlaceholder.astro /Users/cuongtran/Project/SpecADEWeb/src/components/LicenseModel.astro /Users/cuongtran/Project/SpecADEWeb/src/components/TechStack.astro /Users/cuongtran/Project/SpecADEWeb/src/components/UseCases.astro /Users/cuongtran/Project/SpecADEWeb/src/components/Architecture.astro /Users/cuongtran/Project/SpecADEWeb/src/components/ViewAllFeaturesCta.astro /Users/cuongtran/Project/SpecADEWeb/src/components/spotlights/SpotlightBinary.astro /Users/cuongtran/Project/SpecADEWeb/src/components/spotlights/SpotlightPort.astro /Users/cuongtran/Project/SpecADEWeb/src/components/spotlights/SpotlightGoal.astro /Users/cuongtran/Project/SpecADEWeb/src/components/spotlights/SpotlightMultiCli.astro /Users/cuongtran/Project/SpecADEWeb/check_features_loop_layout.js)",
+      "Bash(rm -rf /Users/cuongtran/Project/SpecADEWeb/tests/snapshots)",
+      "Bash(git restore *)",
+      "Bash(git commit -m ' *)",
+      "Bash(dig +short iamdev.io.vn A)",
+      "Bash(dig +short iamdev.io.vn AAAA)",
+      "Bash(dig +short iamdev.io.vn CNAME)",
+      "Bash(dig +short www.iamdev.io.vn CNAME)",
+      "Bash(curl -sI https://iamdev.io.vn/ -o /dev/null -w \"Status: %{http_code}\\\\nFinal URL: %{url_effective}\\\\nServer: %{header_server}\\\\n\" -L --max-time 15)",
+      "Bash(curl -sI https://specadeweb.pages.dev/ -o /dev/null -w \"Status: %{http_code}\\\\n\" --max-time 15)",
+      "Bash(curl -s https://specadeweb.pages.dev/ --max-time 15)",
+      "Bash(curl -sI https://0dc39609.specadeweb.pages.dev/ -o /dev/null -w \"Status: %{http_code}\\\\n\" --max-time 15)",
+      "Bash(curl -s https://0dc39609.specadeweb.pages.dev/ --max-time 15)",
+      "Bash(curl -sI https://0dc39609.specadeweb.pages.dev/SpecADEWeb/ -o /dev/null -w \"Status: %{http_code}\\\\n\" --max-time 15)",
+      "Bash(curl -sI https://0dc39609.specadeweb.pages.dev/docs/ -o /dev/null -w \"Status: %{http_code}\\\\n\" --max-time 15)",
+      "Bash(curl -sI https://0dc39609.specadeweb.pages.dev/favicon.svg -o /dev/null -w \"Status: %{http_code}\\\\n\" --max-time 15)"
     ]
   }
 }

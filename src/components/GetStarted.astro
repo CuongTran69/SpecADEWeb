@@ -42,7 +42,17 @@ const strings = t(lang)
 
         <div class="install-card surface reveal">
           <div class="npm-coming-soon-note" data-testid="npm-coming-soon-note">
-            <p class="npm-coming-soon-text">{strings.getStarted.npmComingSoon}</p>
+            <p class="npm-coming-soon-text">
+              {lang === 'vi' ? (
+                <>
+                  Đã chính thức phát hành <a href="https://www.npmjs.com/package/@spec-ade/cli" target="_blank" rel="noopener noreferrer" class="npm-link">@spec-ade/cli</a> trên npm. Chạy lệnh bên dưới để cài đặt và sử dụng ngay lập tức.
+                </>
+              ) : (
+                <>
+                  <a href="https://www.npmjs.com/package/@spec-ade/cli" target="_blank" rel="noopener noreferrer" class="npm-link">@spec-ade/cli</a> is officially published on npm. Run the command below to install and run the workspace instantly.
+                </>
+              )}
+            </p>
           </div>
 
           <div class="install-methods">
@@ -191,16 +201,28 @@ const strings = t(lang)
   /* npm coming-soon notice */
   .npm-coming-soon-note {
     padding: 12px 16px;
-    background: color-mix(in oklab, var(--color-warning) 8%, transparent);
-    border: 1px solid color-mix(in oklab, var(--color-warning) 25%, transparent);
+    background: color-mix(in oklab, var(--color-success) 8%, transparent);
+    border: 1px solid color-mix(in oklab, var(--color-success) 25%, transparent);
     border-radius: var(--radius-md);
   }
 
   .npm-coming-soon-text {
     margin: 0;
     font-size: 13px;
-    color: var(--color-warning);
+    color: var(--color-success);
     line-height: 1.55;
+  }
+
+  .npm-link {
+    font-weight: 600;
+    color: var(--color-success);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: opacity 150ms var(--ease-out-soft);
+  }
+
+  .npm-link:hover {
+    opacity: 0.8;
   }
 
   .install-methods {
