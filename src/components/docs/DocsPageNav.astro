@@ -1,0 +1,96 @@
+---
+import type { DocLang } from '~/i18n/docs'
+import { pathFor } from '~/i18n/utils'
+
+interface Props {
+  prevSlug?: string
+  nextSlug?: string
+  prevTitle?: string
+  nextTitle?: string
+  lang: DocLang
+}
+
+const { prevSlug, nextSlug, prevTitle, nextTitle, lang } = Astro.props
+---
+
+<nav class="pagenav">
+  {prevSlug ? (
+    <a href={pathFor(lang, `/docs/${prevSlug === 'introduction' ? '' : prevSlug + '/'}`)} class="prev">
+      <span class="lbl">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polyline points="15 18 9 12 15 6"/>
+        </svg>
+        {lang === 'vi' ? 'Trước' : 'Previous'}
+      </span>
+      <span class="ttl">{prevTitle}</span>
+    </a>
+  ) : (
+    <div></div>
+  )}
+
+  {nextSlug ? (
+    <a href={pathFor(lang, `/docs/${nextSlug === 'introduction' ? '' : nextSlug + '/'}`)} class="next">
+      <span class="lbl">
+        {lang === 'vi' ? 'Tiếp' : 'Next'}
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polyline points="9 18 15 12 9 6"/>
+        </svg>
+      </span>
+      <span class="ttl">{nextTitle}</span>
+    </a>
+  ) : (
+    <div></div>
+  )}
+</nav>
+
+<style>
+  .pagenav {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-md);
+    margin-top: var(--space-xl);
+    padding-top: var(--space-lg);
+    border-top: 1px solid var(--color-border);
+    max-width: var(--content-max);
+  }
+
+  .pagenav a {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 14px 16px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    transition: border-color 0.15s var(--ease);
+    background: var(--color-surface);
+    color: inherit;
+  }
+
+  .pagenav a:hover {
+    border-color: var(--color-accent);
+  }
+
+  .pagenav a.next {
+    text-align: right;
+    align-items: flex-end;
+  }
+
+  .pagenav .lbl {
+    font: 500 12px / 1 var(--font-mono);
+    color: var(--color-text-muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .pagenav .lbl svg {
+    width: 13px;
+    height: 13px;
+  }
+
+  .pagenav .ttl {
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--color-text);
+  }
+</style>

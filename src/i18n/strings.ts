@@ -11,6 +11,8 @@ export const en = {
     architecture: 'Architecture',
     pricing: 'Pricing',
     faq: 'FAQ',
+    docs: 'Docs',
+    kits: 'Kit',
     getStarted: 'Get Started',
     switchTo: 'Tiếng Việt',
   },
@@ -369,6 +371,11 @@ export const en = {
     viewAllTitle: 'Explore all capabilities',
     viewAllDesc: 'From recursive layouts, SSH tunnels, GPU monitors, to hybrid Git. See the complete checklist of built-in tools.',
   },
+  kitsPage: {
+    title: 'OpenSpec Friendly Kit',
+    subtitle: 'Minimal OpenSpec workflow — fewer commands, more automation.',
+    backToHome: '← Back to home',
+  },
   multiAgent: {
     chip: 'Orchestration',
     title: 'Connect any agent. Run them in parallel.',
@@ -473,6 +480,8 @@ export const vi: typeof en = {
     architecture: 'Kiến trúc',
     pricing: 'Bảng giá',
     faq: 'FAQ',
+    docs: 'Tài liệu',
+    kits: 'Kit',
     getStarted: 'Bắt đầu',
     switchTo: 'English',
   },
@@ -830,6 +839,11 @@ export const vi: typeof en = {
     viewAllCta: 'Xem tất cả tính năng →',
     viewAllTitle: 'Khám phá tất cả tính năng',
     viewAllDesc: 'Từ quản lý layout đệ quy, SSH tunnel, phân tích tiến trình GPU cho đến hybrid Git. Xem danh sách chi tiết các công cụ có sẵn.',
+  },
+  kitsPage: {
+    title: 'OpenSpec Friendly Kit',
+    subtitle: 'Quy trình OpenSpec tối giản — ít lệnh, nhiều tự động hóa.',
+    backToHome: '← Về trang chủ',
   },
   multiAgent: {
     chip: 'Tích hợp Đa tác nhân',

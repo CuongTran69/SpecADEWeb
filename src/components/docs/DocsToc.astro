@@ -1,0 +1,87 @@
+---
+import type { DocLang } from '~/i18n/docs'
+import { t } from '~/i18n/strings'
+
+interface Props {
+  lang: DocLang
+  entries: Array<{ id: string; text: string; lvl: 2 | 3 }>
+}
+
+const { lang, entries } = Astro.props
+const strings = t(lang)
+---
+
+{entries.length > 0 && (
+  <aside class="toc">
+    <div class="toc-title">{lang === 'vi' ? 'Trên trang này' : 'On this page'}</div>
+    <nav>
+      {entries.map((entry) => (
+        <a
+          href={`#${entry.id}`}
+          class={`toc-link ${entry.lvl === 3 ? 'h3' : ''}`}
+        >
+          {entry.text}
+        </a>
+      ))}
+    </nav>
+  </aside>
+)}
+
+<style>
+  .toc {
+    position: sticky;
+    top: var(--topbar-h);
+    align-self: start;
+    height: calc(100vh - var(--topbar-h));
+    overflow-y: auto;
+    padding: var(--space-xl) var(--space-md);
+    scrollbar-width: thin;
+  }
+
+  .toc::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .toc::-webkit-scrollbar-thumb {
+    background: var(--color-border-strong);
+    border-radius: 4px;
+  }
+
+  .toc-title {
+    font: 600 11px / 1 var(--font-mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-md);
+  }
+
+  .toc-link {
+    display: block;
+    font-size: 13px;
+    color: var(--color-text-muted);
+    padding: 5px 0 5px 12px;
+    border-left: 2px solid var(--color-border);
+    transition: all 0.12s var(--ease);
+    line-height: 1.4;
+  }
+
+  .toc-link:hover {
+    color: var(--color-text-secondary);
+  }
+
+  .toc-link.active {
+    color: var(--color-accent);
+    border-left-color: var(--color-accent);
+  }
+
+  .toc-link.h3 {
+    padding-left: 24px;
+    font-size: 12.5px;
+  }
+
+  @media (max-width: 1100px) {
+    .toc {
+      display: none;
+    }
+  }
+</style>

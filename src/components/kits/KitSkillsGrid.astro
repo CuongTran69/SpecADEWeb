@@ -1,0 +1,216 @@
+---
+import type { Lang } from '~/i18n/strings'
+import {
+  getKitSkillsByCategory,
+  SKILL_CATEGORY_ORDER,
+  skillCategoryChipClass,
+  skillCategoryColor,
+  skillCategoryLabel,
+  skillSlug,
+  type KitSkillCategory,
+} from '~/data/kit-manifest'
+import { renderAgentBody } from '~/lib/render-agent-md'
+
+interface Props {
+  lang: Lang
+}
+
+const { lang } = Astro.props
+
+const searchPlaceholder =
+  lang === 'vi' ? 'Tìm kiếm skill...' : 'Search skills...'
+
+const labels = {
+  expand: lang === 'vi' ? 'Xem chi tiết' : 'View details',
+  loads: lang === 'vi' ? 'Load skills' : 'Loads skills',
+  delegates: lang === 'vi' ? 'Delegate subagents' : 'Delegates to',
+  notes: lang === 'vi' ? 'Lưu ý orchestrator' : 'Orchestrator notes',
+  highlights: lang === 'vi' ? 'Điểm chính' : 'Key sections',
+  fullSpec: lang === 'vi' ? 'Toàn bộ skill prompt' : 'Full skill prompt',
+}
+
+const categoryHint: Record<KitSkillCategory, Record<Lang, string>> = {
+  planning: {
+    en: 'Explore → decide scope → delegate implementation',
+    vi: 'Explore → quyết scope → delegate implement',
+  },
+  pipeline: {
+    en: 'Spec-driven phases after planning',
+    vi: 'Các phase spec-driven sau planning',
+  },
+  utility: {
+    en: 'Standalone tasks outside the main planning flow',
+    vi: 'Tác vụ độc lập, ngoài planning flow chính',
+  },
+  internal: {
+    en: 'Loaded automatically by planning commands — not invoked directly',
+    vi: 'Tự load bởi planning commands — không gọi trực tiếp',
+  },
+}
+---
+
+<div class="kit-skills-panel" data-kit-skills>
+  <div class="kit-agents-toolbar">
+    <label class="kit-agents-search">
+      <span class="sr-only">{searchPlaceholder}</span>
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <circle cx="11" cy="11" r="8"></circle>
+        <path d="m21 21-4.3-4.3"></path>
+      </svg>
+      <input
+        type="search"
+        name="skill-search"
+        placeholder={searchPlaceholder}
+        autocomplete="off"
+        data-skill-search
+      />
+    </label>
+  </div>
+
+  {SKILL_CATEGORY_ORDER.map((category) => {
+    const skills = getKitSkillsByCategory(category).map((skill) => ({
+      ...skill,
+      slug: skillSlug(skill.id),
+      bodyHtml: renderAgentBody(skill.bodyMarkdown),
+    }))
+    if (!skills.length) return null
+    return (
+      <div class="kit-skill-group">
+        <div class="kit-skill-group-head">
+          <h4 class="kit-skill-group-title">{skillCategoryLabel(category, lang)}</h4>
+          <p class="kit-skill-group-hint">{categoryHint[category][lang]}</p>
+        </div>
+        <div class="kit-agent-list">
+          {skills.map((skill) => (
+            <details
+              class="kit-agent-detail kit-skill-detail"
+              id={skill.slug}
+              data-skill-card
+              data-search={[
+                skill.id,
+                skill.name,
+                skill.command,
+                skill.description,
+                skill.role,
+                skill.notes.join(' '),
+                skill.delegates.join(' '),
+                skill.loadsSkills.join(' '),
+                skill.bodyMarkdown,
+              ].join(' ').toLowerCase()}
+            >
+              <summary class="kit-agent-summary">
+                <div
+                  class="kit-agent-color-bar"
+                  style={`background-color: ${skillCategoryColor(category)}`}
+                />
+                <div class="kit-agent-summary-body">
+                  <div class="kit-agent-summary-top">
+                    <h4 class="kit-agent-name">{skill.command}</h4>
+                    <span class:list={['kit-model-chip', skillCategoryChipClass(category)]}>
+                      {skill.id}
+                    </span>
+                  </div>
+                  <p class="kit-agent-desc">{skill.description}</p>
+                  {skill.role && <p class="kit-agent-role">{skill.role}</p>}
+                </div>
+                <span class="kit-agent-expand-hint">{labels.expand}</span>
+              </summary>
+
+              <div class="kit-agent-detail-body">
+                <div class="kit-agent-facts">
+                  {skill.loadsSkills.length > 0 && (
+                    <div class="kit-agent-fact">
+                      <span class="kit-agent-fact-label">{labels.loads}</span>
+                      <ul class="kit-agent-invoked">
+                        {skill.loadsSkills.map((item) => (
+                          <li><code>{item}</code></li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                  {skill.delegates.length > 0 && (
+                    <div class="kit-agent-fact">
+                      <span class="kit-agent-fact-label">{labels.delegates}</span>
+                      <ul class="kit-agent-invoked">
+                        {skill.delegates.map((item) => (
+                          <li><code>{item}</code></li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+
+                {skill.notes.length > 0 && (
+                  <div class="kit-agent-gate">
+                    <span class="kit-agent-fact-label">{labels.notes}</span>
+                    <ul class="kit-agent-ul">
+                      {skill.notes.map((note) => (
+                        <li>{note}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {skill.highlights.length > 0 && (
+                  <div class="kit-agent-highlights">
+                    <span class="kit-agent-fact-label">{labels.highlights}</span>
+                    <div class="kit-agent-highlight-grid">
+                      {skill.highlights.map((section) => (
+                        <div class="kit-agent-highlight-card">
+                          <h5 class="kit-agent-highlight-title">{section.title}</h5>
+                          <ul class="kit-agent-ul">
+                            {section.bullets.map((bullet) => (
+                              <li set:html={bullet.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>').replace(/`([^`]+)`/g, '<code>$1</code>')} />
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {skill.bodyMarkdown && (
+                  <div class="kit-agent-full">
+                    <span class="kit-agent-fact-label">{labels.fullSpec}</span>
+                    <div class="kit-agent-md" set:html={skill.bodyHtml} />
+                  </div>
+                )}
+              </div>
+            </details>
+          ))}
+        </div>
+      </div>
+    )
+  })}
+
+  <p class="kit-agent-footnote">
+    {
+      lang === 'vi'
+        ? 'Nội dung đồng bộ từ ~/.claude/skills/ — gọi qua /osf hoặc Skill tool; orchestrator đọc prompt và điều phối workflow.'
+        : 'Content synced from ~/.claude/skills/ — invoke via /osf or the Skill tool; the orchestrator reads the prompt and coordinates the workflow.'
+    }
+  </p>
+</div>
+
+<script>
+  function initSkillSearch(root: ParentNode = document) {
+    root.querySelectorAll<HTMLElement>('[data-kit-skills]').forEach((panel) => {
+      const input = panel.querySelector<HTMLInputElement>('[data-skill-search]')
+      const cards = panel.querySelectorAll<HTMLElement>('[data-skill-card]')
+      if (!input || !cards.length) return
+
+      const filter = () => {
+        const q = input.value.trim().toLowerCase()
+        cards.forEach((card) => {
+          const hay = card.dataset.search ?? ''
+          card.hidden = q.length > 0 && !hay.includes(q)
+        })
+      }
+
+      input.addEventListener('input', filter)
+    })
+  }
+
+  initSkillSearch()
+  document.addEventListener('astro:after-swap', () => initSkillSearch())
+</script>

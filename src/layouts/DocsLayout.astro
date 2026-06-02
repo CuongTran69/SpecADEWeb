@@ -1,0 +1,362 @@
+---
+import '~/styles/global.css'
+import type { DocLang } from '~/i18n/docs'
+import Header from '~/components/Header.astro'
+import Footer from '~/components/Footer.astro'
+import DocsSidebar from '~/components/docs/DocsSidebar.astro'
+import DocsToc from '~/components/docs/DocsToc.astro'
+import DocsCopyIsland from '~/components/docs/DocsCopyIsland.vue'
+
+interface Props {
+  lang: DocLang
+  slug: string
+  pageTitle: string
+  pageDescription?: string
+  tocEntries?: Array<{ id: string; text: string; lvl: 2 | 3 }>
+}
+
+const { lang, slug, pageTitle, pageDescription, tocEntries = [] } = Astro.props
+
+// Canonical and alternate URLs for SEO
+const siteUrl = 'https://iamdev.io.vn'
+const canonicalUrl = `${siteUrl}${lang === 'vi' ? '/vi' : ''}/docs/${slug === 'introduction' ? '' : slug + '/'}`
+const altUrl = `${siteUrl}${lang === 'vi' ? '' : '/vi'}/docs/${slug === 'introduction' ? '' : slug + '/'}`
+const faviconHref = `${import.meta.env.BASE_URL}favicon.svg`.replace(/\/{2,}/g, '/')
+---
+
+<!doctype html>
+<html lang={lang} data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <link rel="icon" type="image/svg+xml" href={faviconHref} />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{pageTitle}</title>
+    {pageDescription && <meta name="description" content={pageDescription} />}
+
+    <!-- Canonical -->
+    <link rel="canonical" href={canonicalUrl} />
+
+    <!-- hreflang alternate links for SEO -->
+    <link rel="alternate" hreflang={lang === 'vi' ? 'en' : 'vi'} href={altUrl} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:title" content={pageTitle} />
+    {pageDescription && <meta property="og:description" content={pageDescription} />}
+    <meta property="og:locale" content={lang === 'vi' ? 'vi_VN' : 'en_US'} />
+    <meta property="og:locale:alternate" content={lang === 'vi' ? 'en_US' : 'vi_VN'} />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    {pageDescription && <meta name="twitter:description" content={pageDescription} />}
+
+    <!-- Theme -->
+    <meta name="color-scheme" content="dark light" />
+    <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#fafafa" media="(prefers-color-scheme: light)" />
+
+    <!-- Avoid flash of wrong theme -->
+    <script is:inline>
+      ;(() => {
+        try {
+          const stored = localStorage.getItem('spec-ade-web:theme')
+          const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches
+          const theme = stored || (prefersLight ? 'light' : 'dark')
+          document.documentElement.setAttribute('data-theme', theme)
+        } catch {}
+      })()
+    </script>
+
+    <style>
+      /* Docs-scoped layout tokens */
+      :root {
+        --font-sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        --font-mono: "JetBrains Mono", "Lilex", "Fira Code", ui-monospace, monospace;
+        --radius-xs: 4px;
+        --radius-sm: 6px;
+        --radius-md: 8px;
+        --radius-lg: 12px;
+        --radius-xl: 16px;
+        --space-xs: 4px;
+        --space-sm: 8px;
+        --space-md: 16px;
+        --space-lg: 24px;
+        --space-xl: 32px;
+        --ease: cubic-bezier(0.32, 0.72, 0.24, 1);
+        --ease-out-soft: cubic-bezier(0.32, 0.72, 0.24, 1);
+        --sidebar-w: 280px;
+        --toc-w: 240px;
+        --topbar-h: 60px;
+        --content-max: 760px;
+      }
+
+      [data-theme="dark"] {
+        --color-bg: #09090b;
+        --color-surface: #18181b;
+        --color-raised: #27272a;
+        --color-border: #1e1e24;
+        --color-border-strong: #3f3f46;
+        --color-text: #f4f4f5;
+        --color-text-secondary: #a1a1aa;
+        --color-text-muted: #52525b;
+        --color-accent: #06b6d4;
+        --color-accent-hover: #22d3ee;
+        --color-accent-soft: #06b6d414;
+        --color-purple: #a855f7;
+        --color-purple-soft: #a855f714;
+        --color-info: #3b82f6;
+        --color-warning: #f59e0b;
+        --color-error: #ef4444;
+        --color-success: #10b981;
+        --color-code-bg: #0c0c0f;
+        --color-kbd: #27272a;
+      }
+
+      [data-theme="light"] {
+        --color-bg: #fafafa;
+        --color-surface: #ffffff;
+        --color-raised: #f4f4f5;
+        --color-border: #e4e4e7;
+        --color-border-strong: #d4d4d8;
+        --color-text: #09090b;
+        --color-text-secondary: #52525b;
+        --color-text-muted: #71717a;
+        --color-accent: #0891b2;
+        --color-accent-hover: #0e7490;
+        --color-accent-soft: #0891b214;
+        --color-purple: #7c3aed;
+        --color-purple-soft: #7c3aed14;
+        --color-info: #2563eb;
+        --color-warning: #d97706;
+        --color-error: #dc2626;
+        --color-success: #059669;
+        --color-code-bg: #f7f7f8;
+        --color-kbd: #f4f4f5;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        background: var(--color-bg);
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        font-family: var(--font-sans);
+        background: var(--color-bg);
+        color: var(--color-text);
+        -webkit-font-smoothing: antialiased;
+        line-height: 1.65;
+        font-size: 15px;
+        transition: background 0.2s var(--ease), color 0.2s var(--ease);
+        display: flex;
+        flex-direction: column;
+        min-height: 100dvh;
+      }
+
+      a {
+        color: var(--color-accent);
+        text-decoration: none;
+      }
+
+      a:hover {
+        color: var(--color-accent-hover);
+      }
+
+      ::selection {
+        background: var(--color-accent-soft);
+      }
+
+      .skip-link {
+        position: absolute;
+        top: -40px;
+        left: 0;
+        background: var(--color-accent);
+        color: var(--color-bg);
+        padding: 8px;
+        border-radius: var(--radius-md);
+        z-index: 100;
+      }
+
+      .skip-link:focus {
+        top: 10px;
+      }
+
+      .layout {
+        display: grid;
+        grid-template-columns: var(--sidebar-w) 1fr;
+        max-width: 1480px;
+        margin: 0 auto;
+        flex: 1;
+        width: 100%;
+        min-height: 0;
+      }
+
+      .content-wrap {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) var(--toc-w);
+        gap: var(--space-xl);
+      }
+
+      .scrim {
+        display: none;
+      }
+
+      /* Breakpoint 1100px: hide TOC */
+      @media (max-width: 1100px) {
+        .content-wrap {
+          grid-template-columns: minmax(0, 1fr);
+        }
+      }
+
+      /* Mobile: sidebar drawer */
+      @media (max-width: 860px) {
+        .layout {
+          grid-template-columns: 1fr;
+        }
+        .sidebar {
+          position: fixed;
+          top: var(--topbar-h);
+          left: 0;
+          width: var(--sidebar-w);
+          height: calc(100dvh - var(--topbar-h));
+          background: var(--color-bg);
+          border: none;
+          transform: translateX(-100%);
+          transition: transform 0.2s var(--ease);
+          z-index: 40;
+        }
+        .sidebar.open {
+          transform: translateX(0);
+        }
+        .scrim {
+          position: fixed;
+          inset: 0;
+          top: var(--topbar-h);
+          background: rgba(0, 0, 0, 0.5);
+          display: none;
+          z-index: 35;
+        }
+        .scrim.open {
+          display: block;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <a href="#docs-main" class="skip-link">Skip to content</a>
+
+    <Header lang={lang} docsMode docSlug={slug} />
+
+    <div class="layout">
+      <DocsSidebar lang={lang} slug={slug} />
+      <div class="scrim"></div>
+
+      <div class="content-wrap">
+        <main id="docs-main">
+          <slot />
+        </main>
+
+        {tocEntries.length > 0 && <DocsToc entries={tocEntries} lang={lang} />}
+      </div>
+    </div>
+
+    <Footer lang={lang} />
+
+    <DocsCopyIsland client:visible lang={lang} />
+
+    <script>
+      // Mobile drawer toggle
+      const menuToggle = document.querySelector('[data-menu-toggle]') as HTMLButtonElement | null
+      const sidebar = document.querySelector('.sidebar') as HTMLElement | null
+      const scrim = document.querySelector('.scrim') as HTMLElement | null
+
+      if (menuToggle && sidebar && scrim) {
+        menuToggle.addEventListener('click', () => {
+          sidebar.classList.toggle('open')
+          scrim.classList.toggle('open')
+          menuToggle.setAttribute('aria-expanded', sidebar.classList.contains('open') ? 'true' : 'false')
+        })
+
+        scrim.addEventListener('click', () => {
+          sidebar.classList.remove('open')
+          scrim.classList.remove('open')
+          menuToggle.setAttribute('aria-expanded', 'false')
+        })
+
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape' && sidebar.classList.contains('open')) {
+            sidebar.classList.remove('open')
+            scrim.classList.remove('open')
+            menuToggle.setAttribute('aria-expanded', 'false')
+            menuToggle.focus()
+          }
+        })
+      }
+
+      // TOC scrollspy
+      const tocLinks = document.querySelectorAll('.toc a[href^="#"]') as NodeListOf<HTMLAnchorElement>
+      if (tocLinks.length > 0) {
+        const headingIds = Array.from(tocLinks).map(a => a.getAttribute('href')?.slice(1)).filter(Boolean) as string[]
+        const headings = headingIds.map(id => document.getElementById(id)).filter(Boolean) as HTMLElement[]
+
+        let lastActive: HTMLElement | null = null
+        const updateActive = () => {
+          const topbarH = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--topbar-h'))
+          const threshold = topbarH + 24
+
+          let active: HTMLElement | null = null
+          for (const heading of headings) {
+            const rect = heading.getBoundingClientRect()
+            if (rect.top <= threshold) {
+              active = heading
+            }
+          }
+
+          if (active !== lastActive) {
+            tocLinks.forEach(link => link.classList.remove('active'))
+            if (active) {
+              const id = active.id
+              const link = document.querySelector(`.toc a[href="#${id}"]`) as HTMLElement | null
+              if (link) link.classList.add('active')
+            }
+            lastActive = active
+          }
+        }
+
+        let ticking = false
+        window.addEventListener('scroll', () => {
+          if (!ticking) {
+            requestAnimationFrame(updateActive)
+            ticking = true
+            setTimeout(() => { ticking = false }, 100)
+          }
+        }, { passive: true })
+        updateActive()
+      }
+
+      // Code tab switching
+      const codeBlocks = document.querySelectorAll('[data-cb]') as NodeListOf<HTMLElement>
+      codeBlocks.forEach(block => {
+        const tabs = block.querySelectorAll('.code-tab') as NodeListOf<HTMLButtonElement>
+        const panes = block.querySelectorAll('.code-pane') as NodeListOf<HTMLElement>
+
+        tabs.forEach((tab, idx) => {
+          tab.addEventListener('click', () => {
+            tabs.forEach(t => t.classList.remove('on'))
+            panes.forEach(p => p.classList.remove('on'))
+            tab.classList.add('on')
+            panes[idx]?.classList.add('on')
+          })
+        })
+      })
+    </script>
+  </body>
+</html>

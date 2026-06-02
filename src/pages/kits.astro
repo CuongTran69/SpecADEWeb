@@ -1,0 +1,31 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro'
+import SubpageHeader from '~/components/SubpageHeader.astro'
+import OpenSpecFriendlyKit from '~/components/kits/OpenSpecFriendlyKit.astro'
+import { t } from '~/i18n/strings'
+import { pathFor } from '~/i18n/utils'
+
+const lang = 'en' as const
+const strings = t(lang)
+---
+
+<BaseLayout lang={lang}>
+  <div class="kits-page">
+    <SubpageHeader
+      lang={lang}
+      title={strings.kitsPage.title}
+      subtitle={strings.kitsPage.subtitle}
+      homeHref={pathFor(lang, '/')}
+      backLabel={strings.kitsPage.backToHome}
+    />
+    <OpenSpecFriendlyKit lang={lang} />
+  </div>
+</BaseLayout>
+
+<style>
+  .kits-page {
+    background:
+      radial-gradient(ellipse 100% 40% at 50% 0%, var(--color-accent-soft) 0%, transparent 55%),
+      var(--color-bg);
+  }
+</style>

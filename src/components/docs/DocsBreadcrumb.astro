@@ -1,0 +1,37 @@
+---
+interface Props {
+  groupTitle: string
+  pageTitle: string
+}
+
+const { groupTitle, pageTitle } = Astro.props
+---
+
+<div class="breadcrumb">
+  <span>{groupTitle}</span>
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <polyline points="9 18 15 12 9 6"/>
+  </svg>
+  <span class="cur">{pageTitle}</span>
+</div>
+
+<style>
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-md);
+    font-family: var(--font-mono);
+  }
+
+  .breadcrumb svg {
+    width: 13px;
+    height: 13px;
+  }
+
+  .breadcrumb .cur {
+    color: var(--color-text-secondary);
+  }
+</style>

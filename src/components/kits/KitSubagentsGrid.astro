@@ -1,0 +1,183 @@
+---
+import type { Lang } from '~/i18n/strings'
+import {
+  agentColorBar,
+  getKitSubagents,
+  modelChipClass,
+  subagentSlug,
+} from '~/data/kit-manifest'
+import { renderAgentBody } from '~/lib/render-agent-md'
+
+interface Props {
+  lang: Lang
+}
+
+const { lang } = Astro.props
+const subagents = getKitSubagents().map((agent) => ({
+  ...agent,
+  slug: subagentSlug(agent.name),
+  bodyHtml: renderAgentBody(agent.bodyMarkdown),
+}))
+
+const searchPlaceholder =
+  lang === 'vi' ? 'Tìm kiếm subagent...' : 'Search subagents...'
+
+const labels = {
+  input: lang === 'vi' ? 'Input' : 'Input',
+  output: lang === 'vi' ? 'Output' : 'Output',
+  invokedBy: lang === 'vi' ? 'Được gọi từ' : 'Invoked from',
+  execution: lang === 'vi' ? 'Execution rules' : 'Execution rules',
+  highlights: lang === 'vi' ? 'Điểm chính' : 'Key sections',
+  fullSpec: lang === 'vi' ? 'Toàn bộ prompt subagent' : 'Full subagent prompt',
+  expand: lang === 'vi' ? 'Xem chi tiết' : 'View details',
+}
+---
+
+<div class="kit-agents-panel" data-kit-subagents>
+  <div class="kit-agents-toolbar">
+    <label class="kit-agents-search">
+      <span class="sr-only">{searchPlaceholder}</span>
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <circle cx="11" cy="11" r="8"></circle>
+        <path d="m21 21-4.3-4.3"></path>
+      </svg>
+      <input
+        type="search"
+        name="subagent-search"
+        placeholder={searchPlaceholder}
+        autocomplete="off"
+        data-subagent-search
+      />
+    </label>
+  </div>
+
+  <div class="kit-agent-list">
+    {subagents.map((agent) => (
+      <details
+        class="kit-agent-detail"
+        id={agent.slug}
+        data-subagent-card
+        data-search={[
+          agent.name,
+          agent.description,
+          agent.model,
+          agent.role,
+          agent.input,
+          agent.output,
+          agent.invokedBy.join(' '),
+          agent.bodyMarkdown,
+        ].join(' ').toLowerCase()}
+      >
+        <summary class="kit-agent-summary">
+          <div
+            class="kit-agent-color-bar"
+            style={`background-color: ${agentColorBar(agent.color)}`}
+          />
+          <div class="kit-agent-summary-body">
+            <div class="kit-agent-summary-top">
+              <h4 class="kit-agent-name">{agent.name}</h4>
+              <span class:list={['kit-model-chip', modelChipClass(agent.model)]}>
+                {agent.model}
+              </span>
+            </div>
+            <p class="kit-agent-desc">{agent.description}</p>
+            {agent.role && <p class="kit-agent-role">{agent.role}</p>}
+          </div>
+          <span class="kit-agent-expand-hint">{labels.expand}</span>
+        </summary>
+
+        <div class="kit-agent-detail-body">
+          <div class="kit-agent-facts">
+            {agent.input && (
+              <div class="kit-agent-fact">
+                <span class="kit-agent-fact-label">{labels.input}</span>
+                <div class="kit-agent-fact-value" set:html={renderAgentBody(agent.input)} />
+              </div>
+            )}
+            {agent.output && (
+              <div class="kit-agent-fact">
+                <span class="kit-agent-fact-label">{labels.output}</span>
+                <div class="kit-agent-fact-value" set:html={renderAgentBody(agent.output)} />
+              </div>
+            )}
+            {agent.invokedBy.length > 0 && (
+              <div class="kit-agent-fact">
+                <span class="kit-agent-fact-label">{labels.invokedBy}</span>
+                <ul class="kit-agent-invoked">
+                  {agent.invokedBy.map((item) => (
+                    <li><code>{item}</code></li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+
+          {agent.gateRules?.length > 0 && (
+            <div class="kit-agent-gate">
+              <span class="kit-agent-fact-label">{labels.execution}</span>
+              <ul class="kit-agent-ul">
+                {agent.gateRules.map((rule) => (
+                  <li>{rule}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {agent.highlights?.length > 0 && (
+            <div class="kit-agent-highlights">
+              <span class="kit-agent-fact-label">{labels.highlights}</span>
+              <div class="kit-agent-highlight-grid">
+                {agent.highlights.map((section) => (
+                  <div class="kit-agent-highlight-card">
+                    <h5 class="kit-agent-highlight-title">{section.title}</h5>
+                    <ul class="kit-agent-ul">
+                      {section.bullets.map((bullet) => (
+                        <li set:html={bullet.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>').replace(/`([^`]+)`/g, '<code>$1</code>')} />
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <div class="kit-agent-full">
+            <span class="kit-agent-fact-label">{labels.fullSpec}</span>
+            <div class="kit-agent-md" set:html={agent.bodyHtml} />
+          </div>
+        </div>
+      </details>
+    ))}
+  </div>
+
+  <p class="kit-agent-footnote">
+    {
+      lang === 'vi'
+        ? 'Nội dung đồng bộ từ ~/.claude/agents/osf-*.md — orchestrator gọi qua Agent tool, không phải slash command.'
+        : 'Content synced from ~/.claude/agents/osf-*.md — invoked by the orchestrator via the Agent tool, not as slash commands.'
+    }
+  </p>
+</div>
+
+<script>
+  function initSubagentSearch(root: ParentNode = document) {
+    root.querySelectorAll<HTMLElement>('[data-kit-subagents]').forEach((panel) => {
+      const input = panel.querySelector<HTMLInputElement>('[data-subagent-search]')
+      const cards = panel.querySelectorAll<HTMLElement>('[data-subagent-card]')
+      if (!input || !cards.length) return
+
+      const filter = () => {
+        const q = input.value.trim().toLowerCase()
+        cards.forEach((card) => {
+          const hay = card.dataset.search ?? ''
+          card.hidden = q.length > 0 && !hay.includes(q)
+        })
+      }
+
+      input.addEventListener('input', filter)
+    })
+  }
+
+  initSubagentSearch()
+  document.addEventListener('astro:after-swap', () => initSubagentSearch())
+</script>

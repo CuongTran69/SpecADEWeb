@@ -1,0 +1,40 @@
+---
+import type { Lang } from '~/i18n/strings'
+import changelogRaw from '../../data/openspec-friendly-changelog.md?raw'
+import { changelogSectionId, parseChangelogMarkdown } from '~/lib/render-changelog'
+
+interface Props {
+  lang: Lang
+}
+
+const { lang } = Astro.props
+const entries = parseChangelogMarkdown(changelogRaw)
+const sectionId = changelogSectionId(lang)
+const title = lang === 'vi' ? 'Nhật ký thay đổi' : 'Changelog'
+const intro =
+  lang === 'vi'
+    ? 'Lịch sử cập nhật bộ kit OpenSpec Friendly — mục mới nhất mở sẵn.'
+    : 'OpenSpec Friendly Kit release history — newest entry expanded by default.'
+const countLabel =
+  lang === 'vi' ? `${entries.length} mục` : `${entries.length} entries`
+---
+
+<section id={sectionId} class="kit-section kit-changelog">
+  <div class="kit-changelog-head">
+    <h2 class="kit-h2">{title}</h2>
+    <span class="kit-changelog-count">{countLabel}</span>
+  </div>
+  <p class="kit-p">{intro}</p>
+
+  <div class="cl-list">
+    {entries.map((entry, index) => (
+      <details class="cl-entry" open={index === 0}>
+        <summary class="cl-summary">
+          <time class="cl-date" datetime={entry.date}>{entry.date}</time>
+          <span class="cl-title">{entry.title}</span>
+        </summary>
+        <div class="cl-body" set:html={entry.html} />
+      </details>
+    ))}
+  </div>
+</section>

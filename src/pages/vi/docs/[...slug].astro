@@ -1,0 +1,114 @@
+---
+import type { GetStaticPaths } from 'astro'
+import type { DocLang } from '~/i18n/docs'
+import { DOCS_PAGES, DOCS_NAV, DOCS_ORDER, headingId } from '~/i18n/docs'
+import { pathFor } from '~/i18n/utils'
+import DocsLayout from '~/layouts/DocsLayout.astro'
+import DocsBreadcrumb from '~/components/docs/DocsBreadcrumb.astro'
+import DocsBlock from '~/components/docs/DocsBlock.astro'
+import DocsPageNav from '~/components/docs/DocsPageNav.astro'
+import DocsSearch from '~/components/docs/DocsSearch.vue'
+
+const lang: DocLang = 'vi'
+
+export const getStaticPaths: GetStaticPaths = () => {
+  const slugs = Object.keys(DOCS_PAGES)
+  return [
+    // Root /vi/docs/ → introduction
+    { params: { slug: undefined } },
+    // All slugs
+    ...slugs.map(slug => ({ params: { slug } }))
+  ]
+}
+
+const { slug = 'introduction' } = Astro.params
+const page = DOCS_PAGES[slug]
+
+if (!page) {
+  return Astro.redirect('/404')
+}
+
+// Compute nav group for breadcrumb
+const groupTitle = DOCS_NAV.find(g => g.items.includes(slug))?.title.vi || ''
+
+// Compute prev/next
+const currentIndex = DOCS_ORDER.indexOf(slug)
+const prevSlug = currentIndex > 0 ? DOCS_ORDER[currentIndex - 1] : undefined
+const nextSlug = currentIndex < DOCS_ORDER.length - 1 ? DOCS_ORDER[currentIndex + 1] : undefined
+const prevTitle = prevSlug ? DOCS_PAGES[prevSlug].title.vi : undefined
+const nextTitle = nextSlug ? DOCS_PAGES[nextSlug].title.vi : undefined
+
+// Build TOC entries
+const tocEntries = page.blocks
+  .filter(b => b.t === 'h2' || b.t === 'h3')
+  .map(b => {
+    const text = b.t === 'h2' || b.t === 'h3' && 'x' in b
+      ? (typeof b.x === 'string' ? b.x : b.x.vi)
+      : ''
+    const id = headingId(typeof b.x === 'string' ? b.x : b.x.en)
+    return {
+      id,
+      text,
+      lvl: b.t === 'h2' ? (2 as const) : (3 as const)
+    }
+  })
+
+const pageTitle = `${page.title.vi} — Spec ADE`
+const slugLinker = (s: string) => pathFor('vi', `/docs/${s === 'introduction' ? '' : s + '/'}`)
+---
+
+<DocsLayout
+  lang={lang}
+  slug={slug}
+  pageTitle={pageTitle}
+  pageDescription={pageTitle}
+  tocEntries={tocEntries}
+>
+  <div class="docs-container">
+    <DocsBreadcrumb groupTitle={groupTitle} pageTitle={page.title.vi} />
+
+    {page.blocks[0]?.t !== 'hero' && (
+      <>
+        <div class="doc-eyebrow">{page.eyebrow.vi}</div>
+        <h1>{page.title.vi}</h1>
+      </>
+    )}
+
+    {page.blocks.map(block => (
+      <DocsBlock block={block} lang={lang} slugLinker={slugLinker} />
+    ))}
+
+    <DocsPageNav
+      prevSlug={prevSlug}
+      nextSlug={nextSlug}
+      prevTitle={prevTitle}
+      nextTitle={nextTitle}
+      lang={lang}
+    />
+  </div>
+
+  <DocsSearch lang={lang} currentPath={Astro.url.pathname} client:idle />
+</DocsLayout>
+
+<style>
+  .docs-container {
+    padding: var(--space-xl) var(--space-xl) 80px;
+    max-width: calc(var(--content-max) + var(--space-xl) * 2);
+  }
+
+  .doc-eyebrow {
+    font: 600 12px / 1 var(--font-mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    margin-bottom: var(--space-sm);
+  }
+
+  h1 {
+    font-size: 34px;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    font-weight: 700;
+    margin: 0 0 var(--space-sm);
+  }
+</style>

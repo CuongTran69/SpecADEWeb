@@ -1,0 +1,173 @@
+---
+import type { CodeTab, DocLang } from '~/i18n/docs'
+import { renderHighlight } from '~/lib/docs-render'
+
+interface Props {
+  tabs: CodeTab[]
+  lang: DocLang
+}
+
+const { tabs, lang } = Astro.props
+const id = `cb-${Math.random().toString(36).slice(2, 9)}`
+const isSingle = tabs.length === 1
+const tab0 = tabs[0]
+---
+
+<div class="codeblock" data-cb={id}>
+  <div class="code-head">
+    {isSingle && tab0.fname && <div class="code-fname">{tab0.fname}</div>}
+    {!isSingle && (
+      <div class="code-tabs">
+        {tabs.map((t, idx) => (
+          <button
+            class={`code-tab ${idx === 0 ? 'on' : ''}`}
+            type="button"
+            data-tab={idx}
+          >
+            {typeof t.label === 'string' ? t.label : t.label[lang] ?? t.label.vi ?? t.label.en}
+          </button>
+        ))}
+      </div>
+    )}
+    {isSingle && !tab0.fname && <div class="code-lang">{tab0.lang}</div>}
+
+    <button class="code-copy" data-clipboard type="button" aria-label={lang === 'vi' ? 'Sao chép' : 'Copy'}>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="9" y="9" width="13" height="13" rx="2"/>
+        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+      </svg>
+      <span>{lang === 'vi' ? 'Sao chép' : 'Copy'}</span>
+    </button>
+  </div>
+
+  {tabs.map((tab, idx) => (
+    <pre class={`code-pane ${idx === 0 ? 'on' : ''}`}>
+      <code set:html={renderHighlight(tab.code, tab.lang)}></code>
+    </pre>
+  ))}
+</div>
+
+<style>
+  .codeblock {
+    margin: var(--space-md) 0;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background: var(--color-code-bg);
+    max-width: var(--content-max);
+  }
+
+  .code-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-surface);
+  }
+
+  .code-tabs {
+    display: flex;
+    gap: 2px;
+  }
+
+  .code-tab {
+    font: 500 12px / 1 var(--font-mono);
+    padding: 6px 10px;
+    border-radius: var(--radius-xs);
+    cursor: pointer;
+    color: var(--color-text-muted);
+    background: transparent;
+    border: 0;
+    transition: all 0.12s var(--ease);
+  }
+
+  .code-tab:hover {
+    color: var(--color-text-secondary);
+  }
+
+  .code-tab.on {
+    color: var(--color-text);
+    background: var(--color-raised);
+  }
+
+  .code-fname,
+  .code-lang {
+    font: 500 12px / 1 var(--font-mono);
+    color: var(--color-text-secondary);
+  }
+
+  .code-copy {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font: 500 12px / 1 var(--font-mono);
+    cursor: pointer;
+    color: var(--color-text-muted);
+    background: transparent;
+    border: 1px solid var(--color-border);
+    padding: 5px 8px;
+    border-radius: var(--radius-xs);
+    transition: all 0.12s var(--ease);
+  }
+
+  .code-copy:hover {
+    color: var(--color-text);
+    border-color: var(--color-border-strong);
+  }
+
+  .code-copy.done {
+    color: var(--color-success);
+    border-color: color-mix(in srgb, var(--color-success) 40%, var(--color-border));
+  }
+
+  .code-copy svg {
+    width: 13px;
+    height: 13px;
+  }
+
+  .code-pane {
+    margin: 0;
+    padding: 14px 16px;
+    overflow-x: auto;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 1.7;
+    display: none;
+    scrollbar-width: thin;
+  }
+
+  .code-pane.on {
+    display: block;
+  }
+
+  .code-pane code {
+    font-family: inherit;
+    white-space: pre;
+  }
+
+  /* Syntax tokens */
+  :global(.tok-c) {
+    color: var(--color-text-muted);
+    font-style: italic;
+  }
+  :global(.tok-k) {
+    color: var(--color-purple);
+  }
+  :global(.tok-s) {
+    color: var(--color-success);
+  }
+  :global(.tok-f) {
+    color: var(--color-accent);
+  }
+  :global(.tok-n) {
+    color: var(--color-warning);
+  }
+  :global(.tok-cmd) {
+    color: var(--color-accent);
+  }
+  :global(.tok-flag) {
+    color: var(--color-text-secondary);
+  }
+</style>

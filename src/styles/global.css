@@ -62,6 +62,7 @@
 
   --color-claude: #c084fc;
   --color-auggie: #fbbf24;
+  --color-code-bg: #0c0c0f;
 }
 
 [data-theme="light"] {
@@ -94,6 +95,7 @@
 
   --color-claude: #9333ea;
   --color-auggie: #d97706;
+  --color-code-bg: #f4f4f5;
 }
 
 /* =====================================================================

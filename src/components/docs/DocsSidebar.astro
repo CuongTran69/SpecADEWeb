@@ -1,0 +1,129 @@
+---
+import type { DocLang } from '~/i18n/docs'
+import { DOCS_NAV, DOCS_PAGES, tx } from '~/i18n/docs'
+import { pathFor } from '~/i18n/utils'
+import DocsIcon from '~/components/docs/DocsIcon.astro'
+import type { DocLang as Lang } from '~/i18n/docs'
+
+interface Props {
+  lang: Lang
+  slug: string
+}
+
+const { lang, slug } = Astro.props
+---
+
+<aside class="sidebar">
+  {DOCS_NAV.map((group) => (
+    <div class="nav-group">
+      <div class="nav-group-title">
+        <DocsIcon name={group.icon} size={14} />
+        {tx(group.title, lang)}
+      </div>
+      <nav>
+        {group.items.map((itemSlug) => (
+          <a
+            href={pathFor(lang, `/docs/${itemSlug === 'introduction' ? '' : itemSlug + '/'}`)}
+            class={`nav-link ${itemSlug === slug ? 'active' : ''}`}
+          >
+            {tx(DOCS_PAGES[itemSlug].title, lang)}
+          </a>
+        ))}
+      </nav>
+    </div>
+  ))}
+</aside>
+
+<style>
+  .sidebar {
+    position: sticky;
+    top: var(--topbar-h);
+    align-self: start;
+    height: calc(100vh - var(--topbar-h));
+    overflow-y: auto;
+    padding: var(--space-lg) var(--space-md) var(--space-xl);
+    border-right: 1px solid var(--color-border);
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-border-strong) transparent;
+  }
+
+  .sidebar::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .sidebar::-webkit-scrollbar-thumb {
+    background: var(--color-border-strong);
+    border-radius: 4px;
+  }
+
+  .nav-group {
+    margin-bottom: var(--space-lg);
+  }
+
+  .nav-group-title {
+    font: 600 11px / 1 var(--font-mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    padding: 0 10px;
+    margin-bottom: var(--space-sm);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .nav-group-title svg {
+    width: 14px;
+    height: 14px;
+    color: var(--color-accent);
+  }
+
+  .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 7px 10px;
+    border-radius: var(--radius-md);
+    color: var(--color-text-secondary);
+    font-size: 13.5px;
+    cursor: pointer;
+    transition: all 0.12s var(--ease);
+    border: 1px solid transparent;
+  }
+
+  .nav-link:hover {
+    background: var(--color-surface);
+    color: var(--color-text);
+  }
+
+  .nav-link.active {
+    background: var(--color-accent-soft);
+    color: var(--color-accent);
+    font-weight: 500;
+  }
+
+  nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  @media (max-width: 860px) {
+    .sidebar {
+      position: fixed;
+      top: var(--topbar-h);
+      left: 0;
+      width: var(--sidebar-w);
+      height: calc(100vh - var(--topbar-h));
+      background: var(--color-bg);
+      border: none;
+      transform: translateX(-100%);
+      transition: transform 0.2s var(--ease);
+      z-index: 40;
+    }
+
+    .sidebar.open {
+      transform: translateX(0);
+    }
+  }
+</style>

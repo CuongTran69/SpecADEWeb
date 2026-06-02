@@ -1,0 +1,145 @@
+---
+const label = 'Switch to light mode'
+---
+
+<button
+  type="button"
+  class="theme-toggle"
+  data-theme-toggle
+  aria-label={label}
+  title={label}
+  aria-pressed="false"
+  data-testid="theme-toggle"
+  data-hydrated="true"
+>
+  <svg
+    class="theme-icon theme-icon-sun"
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="1.75"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
+    <circle cx="12" cy="12" r="4"></circle>
+    <path d="M12 2v2"></path>
+    <path d="M12 20v2"></path>
+    <path d="m4.93 4.93 1.41 1.41"></path>
+    <path d="m17.66 17.66 1.41 1.41"></path>
+    <path d="M2 12h2"></path>
+    <path d="M20 12h2"></path>
+    <path d="m6.34 17.66-1.41 1.41"></path>
+    <path d="m19.07 4.93-1.41 1.41"></path>
+  </svg>
+  <svg
+    class="theme-icon theme-icon-moon"
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="1.75"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+    hidden
+  >
+    <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+  </svg>
+</button>
+
+<script>
+  const STORAGE_KEY = 'spec-ade-web:theme'
+
+  type Theme = 'dark' | 'light'
+
+  function getTheme(): Theme {
+    return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark'
+  }
+
+  function setTheme(theme: Theme) {
+    document.documentElement.setAttribute('data-theme', theme)
+    try {
+      localStorage.setItem(STORAGE_KEY, theme)
+    } catch {
+      /* ignore quota / privacy mode */
+    }
+    syncThemeToggleButtons()
+  }
+
+  function syncThemeToggleButtons(root: ParentNode = document) {
+    root.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]').forEach((btn) => {
+      const isDark = getTheme() === 'dark'
+      const sun = btn.querySelector('.theme-icon-sun')
+      const moon = btn.querySelector('.theme-icon-moon')
+      sun?.toggleAttribute('hidden', !isDark)
+      moon?.toggleAttribute('hidden', isDark)
+      const label = isDark ? 'Switch to light mode' : 'Switch to dark mode'
+      btn.setAttribute('aria-label', label)
+      btn.setAttribute('title', label)
+      btn.setAttribute('aria-pressed', isDark ? 'false' : 'true')
+      btn.dataset.hydrated = 'true'
+    })
+  }
+
+  function initThemeToggle(root: ParentNode = document) {
+    root.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]').forEach((btn) => {
+      if (btn.dataset.themeBound === '1') return
+      btn.dataset.themeBound = '1'
+      btn.addEventListener('click', () => {
+        setTheme(getTheme() === 'dark' ? 'light' : 'dark')
+      })
+    })
+    syncThemeToggleButtons(root)
+  }
+
+  initThemeToggle()
+  document.addEventListener('astro:after-swap', () => initThemeToggle())
+</script>
+
+<style>
+  .theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-md);
+    background: transparent;
+    border: 1px solid var(--color-border);
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    padding: 0;
+    position: relative;
+    z-index: 1;
+    flex-shrink: 0;
+    transition:
+      background 200ms var(--ease-out-soft),
+      color 200ms var(--ease-out-soft),
+      border-color 200ms var(--ease-out-soft);
+  }
+
+  .theme-toggle:hover {
+    color: var(--color-text);
+    background: var(--color-raised);
+    border-color: var(--color-border-strong);
+  }
+
+  .theme-toggle:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  .theme-icon {
+    display: block;
+  }
+
+  .theme-icon[hidden] {
+    display: none;
+  }
+</style>

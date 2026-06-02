@@ -117,11 +117,21 @@ To add a third locale:
 ```bash
 npm install
 npm run dev              # Astro dev server on http://localhost:4321/
-npm run build            # Production build → docs/
+npm run build            # Production build → docs/ (runs sync:kit-manifest first)
 npm run preview          # Preview the production build
 ```
 
 > Astro 6 requires **Node 22+**. Verify your toolchain before installing.
+
+### Kits page (`/kits`)
+
+The OpenSpec Friendly Kit docs page lists skills and subagents from `src/data/kit-manifest.json`. That file is generated from your local Claude kit install:
+
+```bash
+npm run sync:kit-manifest   # Read ~/.claude/agents + ~/.claude/skills → kit-manifest.json
+```
+
+Run this after changing local kit files, then commit `src/data/kit-manifest.json` so CI builds stay in sync. See [docs/sync-kit-manifest.md](docs/sync-kit-manifest.md).
 
 ## Testing
 

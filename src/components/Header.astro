@@ -2,43 +2,67 @@
 import type { Lang } from '~/i18n/strings'
 import { t } from '~/i18n/strings'
 import { altLang, pathFor, swapLangPath } from '~/i18n/utils'
-import ThemeToggle from '~/components/islands/ThemeToggle.vue'
+import ThemeToggle from '~/components/ThemeToggle.astro'
 import BrandMark from '~/components/BrandMark.astro'
 
 interface Props {
   lang: Lang
+  docsMode?: boolean
+  docSlug?: string
 }
 
-const { lang } = Astro.props
+const { lang, docsMode = false, docSlug = 'introduction' } = Astro.props
 const strings = t(lang)
 const otherLang = altLang(lang)
 const currentPath = Astro.url.pathname
-const otherPath = swapLangPath(currentPath, otherLang)
+const docsRelPath = `/docs/${docSlug === 'introduction' ? '' : `${docSlug}/`}`
+const otherPath = docsMode
+  ? swapLangPath(docsRelPath, otherLang)
+  : swapLangPath(currentPath, otherLang)
 
 const homePath = pathFor(lang, '/')
+const brandHref = docsMode ? pathFor(lang, '/docs/') : homePath
 ---
 
 <header class="site-header">
   <div class="container-wide header-inner">
-    <a href={homePath} class="brand" aria-label="Spec ADE">
+    <a href={brandHref} class="brand" aria-label="Spec ADE">
       <span class="brand-mark" aria-hidden="true">
         <BrandMark size={22} />
       </span>
       <span class="brand-text">Spec <span class="brand-ade">ADE</span></span>
+      {docsMode && <span class="docs-badge">docs</span>}
     </a>
 
     <nav class="nav-links" aria-label="Primary">
       <a href={pathFor(lang, '/features')} class="nav-link">{strings.nav.features}</a>
+      <a href={pathFor(lang, '/docs')} class:list={['nav-link', { 'nav-link--active': docsMode }]}>{strings.nav.docs}</a>
+      <a href={pathFor(lang, '/kits')} class="nav-link">{strings.nav.kits}</a>
       <a href={pathFor(lang, '/#pricing')} class="nav-link">{strings.nav.pricing}</a>
       <a href={pathFor(lang, '/install')} class="nav-link">{strings.nav.getStarted}</a>
       <a href={pathFor(lang, '/faq')} class="nav-link">{strings.nav.faq}</a>
     </nav>
 
     <div class="header-actions">
+      {docsMode && (
+        <button
+          type="button"
+          class="btn btn-ghost docs-search-btn"
+          aria-label="Search documentation"
+          data-search-trigger
+          title="Press ⌘K to search"
+        >
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="8"></circle>
+            <path d="m21 21-4.35-4.35"></path>
+          </svg>
+          <span class="docs-search-kbd">⌘K</span>
+        </button>
+      )}
       <a href={otherPath} class="btn btn-ghost lang-link" hreflang={otherLang} data-testid="lang-switch">
         {strings.nav.switchTo}
       </a>
-      <ThemeToggle client:load />
+      <ThemeToggle />
       <a
         href={pathFor(lang, '/install')}
         class="btn btn-primary header-cta"
@@ -49,6 +73,20 @@ const homePath = pathFor(lang, '/')
           <path d="M3 8h10M9 4l4 4-4 4"/>
         </svg>
       </a>
+      {docsMode && (
+        <button
+          type="button"
+          class="docs-sidebar-toggle"
+          aria-label="Toggle docs menu"
+          aria-expanded="false"
+          data-menu-toggle
+        >
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+          </svg>
+        </button>
+      )}
       <button
         type="button"
         class="nav-toggle"
@@ -70,6 +108,8 @@ const homePath = pathFor(lang, '/')
   <div id="mobile-nav" class="mobile-nav" hidden data-testid="mobile-nav">
     <nav class="mobile-nav-links" aria-label="Mobile primary">
       <a href={pathFor(lang, '/features')} data-testid="mobile-nav-link-features">{strings.nav.features}</a>
+      <a href={pathFor(lang, '/docs')} data-testid="mobile-nav-link-docs">{strings.nav.docs}</a>
+      <a href={pathFor(lang, '/kits')} data-testid="mobile-nav-link-kits">{strings.nav.kits}</a>
       <a href={pathFor(lang, '/#pricing')} data-testid="mobile-nav-link-pricing">{strings.nav.pricing}</a>
       <a href={pathFor(lang, '/install')} data-testid="mobile-nav-link-install">{strings.nav.getStarted}</a>
       <a href={pathFor(lang, '/faq')} data-testid="mobile-nav-link-faq">{strings.nav.faq}</a>
@@ -245,6 +285,54 @@ const homePath = pathFor(lang, '/')
 
   .brand-ade { color: var(--color-accent); }
 
+  .docs-badge {
+    font: 500 11px / 1 var(--font-mono);
+    color: var(--color-text-muted);
+    border: 1px solid var(--color-border-strong);
+    padding: 3px 6px;
+    border-radius: var(--radius-xs);
+    margin-left: 2px;
+  }
+
+  .docs-search-btn {
+    gap: 8px;
+    padding-inline: 10px;
+  }
+
+  .docs-search-kbd {
+    font: 500 11px / 1 var(--font-mono);
+    color: var(--color-text-muted);
+    border: 1px solid var(--color-border-strong);
+    padding: 2px 5px;
+    border-radius: var(--radius-xs);
+  }
+
+  .docs-sidebar-toggle {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--color-text-secondary);
+    border: 1px solid var(--color-border);
+    cursor: pointer;
+    transition: color 150ms var(--ease-out-soft), background 150ms var(--ease-out-soft);
+    flex-shrink: 0;
+    padding: 0;
+  }
+
+  .docs-sidebar-toggle:hover {
+    color: var(--color-text);
+    background: var(--color-raised);
+  }
+
+  .nav-link--active {
+    color: var(--color-text);
+    background: var(--color-accent-soft);
+  }
+
   .nav-links {
     display: none;
     gap: 2px;
@@ -271,6 +359,9 @@ const homePath = pathFor(lang, '/')
     display: inline-flex;
     align-items: center;
     gap: 6px;
+    position: relative;
+    z-index: 2;
+    flex-shrink: 0;
   }
 
   .lang-link {
@@ -360,6 +451,12 @@ const homePath = pathFor(lang, '/')
     border-top: 1px solid var(--color-border);
     padding-top: 12px !important;
     color: var(--color-text-muted) !important;
+  }
+
+  @media (max-width: 860px) {
+    .docs-sidebar-toggle { display: inline-flex; }
+    .docs-search-kbd { display: none; }
+    .docs-search-btn { padding-inline: 8px; }
   }
 
   @media (max-width: 767px) { .nav-toggle { display: inline-flex; } }

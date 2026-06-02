@@ -1,0 +1,88 @@
+---
+import type { Lang } from '~/i18n/strings'
+import CopyBlock from '~/components/CopyBlock.astro'
+import KitSkillsGrid from '~/components/kits/KitSkillsGrid.astro'
+import KitSubagentsGrid from '~/components/kits/KitSubagentsGrid.astro'
+import { kitTx, type KitSection } from '~/data/openspec-friendly-content'
+
+interface Props {
+  lang: Lang
+  section: KitSection
+  groupTitle: string
+  copyStep?: number
+}
+
+const { lang, section, groupTitle, copyStep } = Astro.props
+
+function inlineCode(text: string): string {
+  return text.replace(/`([^`]+)`/g, '<code>$1</code>')
+}
+
+function preLabel(): string {
+  if (groupTitle.toLowerCase().includes('workflow') || groupTitle.includes('Workflow')) {
+    return lang === 'vi' ? 'Sơ đồ luồng' : 'Flow diagram'
+  }
+  if (groupTitle.toLowerCase().includes('example') || groupTitle.includes('Ví dụ')) {
+    return lang === 'vi' ? 'Hội thoại mẫu' : 'Sample dialogue'
+  }
+  return lang === 'vi' ? 'Mã / output' : 'Code / output'
+}
+---
+
+{section.type === 'p' && <p class="kit-p" set:html={kitTx(lang, section.html)} />}
+
+{section.type === 'callout' && (
+  <div class="kit-callout">
+    <p set:html={kitTx(lang, section.html)} />
+  </div>
+)}
+
+{section.type === 'h3' && <h3 class="kit-h3">{kitTx(lang, section.text)}</h3>}
+
+{section.type === 'ul' && (
+  <ul class="kit-ul">
+    {section.items.map((item) => (
+      <li set:html={inlineCode(kitTx(lang, item))} />
+    ))}
+  </ul>
+)}
+
+{section.type === 'pre' && (
+  <div class="kit-pre-wrap">
+    <div class="kit-pre-label">{preLabel()}</div>
+    <pre class="kit-pre"><code>{kitTx(lang, section.code)}</code></pre>
+  </div>
+)}
+
+{section.type === 'copy' && (
+  <div class="kit-copy-wrap">
+    {copyStep != null && <span class="kit-copy-step">{copyStep}</span>}
+    <div class="kit-copy-label">{kitTx(lang, section.label)}</div>
+    {section.hint && <p class="kit-copy-hint">{kitTx(lang, section.hint)}</p>}
+    <CopyBlock code={section.command} />
+  </div>
+)}
+
+{section.type === 'table' && (
+  <div class="tablewrap">
+    <table>
+      <thead>
+        <tr>
+          {section.cols[lang].map((col) => <th set:html={inlineCode(col)} />)}
+        </tr>
+      </thead>
+      <tbody>
+        {section.rows.map((row) => (
+          <tr>
+            <td set:html={inlineCode(kitTx(lang, row.col1))} />
+            <td set:html={inlineCode(kitTx(lang, row.col2))} />
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+)}
+
+{section.type === 'skills-grid' && <KitSkillsGrid lang={lang} />}
+
+{section.type === 'subagents-grid' && <KitSubagentsGrid lang={lang} />}

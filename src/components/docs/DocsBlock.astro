@@ -1,0 +1,593 @@
+---
+import type { Block, BiOrStr, CodeTab, DocLang } from '~/i18n/docs'
+import { tx, CALLOUT_ICON } from '~/i18n/docs'
+import { renderInline } from '~/lib/docs-render'
+import DocsCodeBlock from '~/components/docs/DocsCodeBlock.astro'
+import DocsIcon from '~/components/docs/DocsIcon.astro'
+import DocsInstallCommand from '~/components/docs/DocsInstallCommand.astro'
+
+interface Props {
+  block: Block
+  lang: DocLang
+  slugLinker: (slug: string) => string
+}
+
+const { block, lang, slugLinker } = Astro.props
+
+// Helper to render bilingual content with inline markdown
+const renderContent = (content: BiOrStr | undefined) =>
+  renderInline(content, lang, slugLinker)
+
+// Helper to render heading IDs
+const headingId = (textEn: string): string => {
+  return (
+    textEn
+      .toLowerCase()
+      .replace(/[^\wÀ-ɏḀ-ỿ]+/g, '-')
+      .replace(/(^-|-$)/g, '')
+      .slice(0, 48) || 'section'
+  )
+}
+---
+
+{block.t === 'hero' && (
+  <div class="hero">
+    <div class="hero-in">
+      {block.eyebrow && <div class="doc-eyebrow" set:html={renderContent(block.eyebrow)}></div>}
+      <h1 set:html={renderContent(block.h)}></h1>
+      {block.x && <p class="lede" set:html={renderContent(block.x)}></p>}
+      {block.meta && (
+        <div class="hero-meta">
+          {block.meta.map((m) => (
+            <span class={`pill ${m.k || ''}`}>
+              {renderContent(m.x)}
+            </span>
+          ))}
+        </div>
+      )}
+    </div>
+  </div>
+)}
+
+{block.t === 'h2' && (
+  <h2 id={headingId(typeof block.x === 'string' ? block.x : block.x.en)} set:html={renderContent(block.x)}></h2>
+)}
+
+{block.t === 'h3' && (
+  <h3 id={headingId(typeof block.x === 'string' ? block.x : block.x.en)} set:html={renderContent(block.x)}></h3>
+)}
+
+{block.t === 'p' && (
+  <p class={block.muted ? 'muted' : ''} set:html={renderContent(block.x)}></p>
+)}
+
+{block.t === 'lede' && (
+  <p class="lede" set:html={renderContent(block.x)}></p>
+)}
+
+{block.t === 'hr' && <hr />}
+
+{block.t === 'ul' && (
+  <ul>
+    {block.items.map((item) => (
+      <li set:html={renderContent(item)}></li>
+    ))}
+  </ul>
+)}
+
+{block.t === 'ol' && (
+  <ol>
+    {block.items.map((item) => (
+      <li set:html={renderContent(item)}></li>
+    ))}
+  </ol>
+)}
+
+{block.t === 'callout' && (
+  <div class={`callout ${block.kind}`}>
+    <div class="ico" aria-hidden="true">
+      <DocsIcon name={CALLOUT_ICON[block.kind]} size={18} />
+    </div>
+    <div class="ct">
+      {block.title && <strong set:html={renderContent(block.title)}></strong>}
+      <p set:html={renderContent(block.x)}></p>
+    </div>
+  </div>
+)}
+
+{block.t === 'code' && (
+  <DocsCodeBlock tabs={[{ label: block.label || block.fname || block.lang, lang: block.lang, code: block.code }]} lang={lang} />
+)}
+
+{block.t === 'installcmd' && (
+  <DocsInstallCommand lang={lang} code={block.code} />
+)}
+
+{block.t === 'codetabs' && (
+  <DocsCodeBlock tabs={block.tabs} lang={lang} />
+)}
+
+{block.t === 'steps' && (
+  <div class="steps">
+    {block.items.map((step) => (
+      <div class="step">
+        <h3 set:html={renderContent(step.h)}></h3>
+        {step.p && <p set:html={renderContent(step.p)}></p>}
+        {step.code && step.lang && (
+          <DocsCodeBlock
+            tabs={[{ label: step.lang, lang: step.lang, code: step.code }]}
+            lang={lang}
+          />
+        )}
+      </div>
+    ))}
+  </div>
+)}
+
+{block.t === 'cards' && (
+  <div class="card-grid">
+    {block.items.map((card) => (
+      <a href={card.href} class="card">
+        <div class="ci" aria-hidden="true">
+          <DocsIcon name={card.icon} size={18} />
+        </div>
+        <h4 set:html={renderContent(card.h)}></h4>
+        <p set:html={renderContent(card.p)}></p>
+      </a>
+    ))}
+  </div>
+)}
+
+{block.t === 'features' && (
+  <div class="features-grid">
+    {block.items.map((feature) => (
+      <div class="feature-item">
+        <div class="feature-icon" aria-hidden="true">
+          <DocsIcon name={feature.icon} size={16} />
+        </div>
+        <h4 set:html={renderContent(feature.h)}></h4>
+        <p set:html={renderContent(feature.p)}></p>
+      </div>
+    ))}
+  </div>
+)}
+
+{block.t === 'table' && (
+  <div class="tablewrap">
+    <table>
+      <thead>
+        <tr>
+          {block.cols.map((col) => (
+            <th set:html={renderContent(col)}></th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {block.rows.map((row) => (
+          <tr>
+            {row.map((cell) => (
+              <td set:html={renderContent(cell)}></td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+)}
+
+<style>
+  .hero {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    margin: 0 0 var(--space-xl);
+    background: radial-gradient(
+        120% 140% at 100% 0%,
+        var(--color-accent-soft) 0%,
+        transparent 55%
+      ),
+      radial-gradient(120% 140% at 0% 100%, var(--color-purple-soft) 0%, transparent 50%),
+      var(--color-surface);
+    max-width: var(--content-max);
+  }
+
+  .hero-in {
+    padding: var(--space-xl);
+  }
+
+  .hero h1 {
+    margin: 0 0 8px;
+    font-size: 34px;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    font-weight: 700;
+  }
+
+  .hero .lede {
+    margin: 0;
+  }
+
+  .hero-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: var(--space-md);
+  }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font: 600 11px / 1 var(--font-mono);
+    padding: 4px 8px;
+    border-radius: 100px;
+    border: 1px solid var(--color-border-strong);
+    color: var(--color-text-secondary);
+  }
+
+  .pill.ok {
+    color: var(--color-success);
+    border-color: color-mix(in srgb, var(--color-success) 40%, transparent);
+    background: color-mix(in srgb, var(--color-success) 10%, transparent);
+  }
+
+  .pill.acc {
+    color: var(--color-accent);
+    border-color: color-mix(in srgb, var(--color-accent) 40%, transparent);
+    background: var(--color-accent-soft);
+  }
+
+  .pill.pur {
+    color: var(--color-purple);
+    border-color: color-mix(in srgb, var(--color-purple) 40%, transparent);
+    background: var(--color-purple-soft);
+  }
+
+  .doc-eyebrow {
+    font: 600 12px / 1 var(--font-mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    margin-bottom: var(--space-sm);
+  }
+
+  h1 {
+    font-size: 34px;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    font-weight: 700;
+    margin: 0 0 var(--space-sm);
+  }
+
+  h2 {
+    font-size: 22px;
+    letter-spacing: -0.01em;
+    font-weight: 600;
+    margin: var(--space-xl) 0 var(--space-sm);
+    padding-top: var(--space-sm);
+    scroll-margin-top: calc(var(--topbar-h) + 16px);
+  }
+
+  h3 {
+    font-size: 16.5px;
+    font-weight: 600;
+    margin: var(--space-lg) 0 var(--space-xs);
+    scroll-margin-top: calc(var(--topbar-h) + 16px);
+  }
+
+  h4 {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 0 0 4px;
+    color: var(--color-text);
+  }
+
+  .lede {
+    font-size: 18px;
+    line-height: 1.6;
+    color: var(--color-text-secondary);
+    margin: 0 0 var(--space-xl);
+    max-width: var(--content-max);
+  }
+
+  p {
+    margin: 0 0 var(--space-md);
+    max-width: var(--content-max);
+    color: var(--color-text);
+    text-wrap: pretty;
+  }
+
+  p.muted {
+    color: var(--color-text-secondary);
+  }
+
+  ul,
+  ol {
+    margin: 0 0 var(--space-md);
+    padding-left: 22px;
+    max-width: var(--content-max);
+    color: var(--color-text);
+  }
+
+  li {
+    margin-bottom: 6px;
+  }
+
+  li.muted {
+    color: var(--color-text-secondary);
+  }
+
+  li::marker {
+    color: var(--color-text-muted);
+  }
+
+  strong {
+    font-weight: 600;
+    color: var(--color-text);
+  }
+
+  hr {
+    border: 0;
+    border-top: 1px solid var(--color-border);
+    margin: var(--space-xl) 0;
+  }
+
+  :global(.icode) {
+    font-family: var(--font-mono);
+    font-size: 0.86em;
+    background: var(--color-raised);
+    border: 1px solid var(--color-border);
+    padding: 1px 6px;
+    border-radius: var(--radius-xs);
+    color: var(--color-text);
+  }
+
+  :global(kbd) {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    background: var(--color-kbd);
+    border: 1px solid var(--color-border-strong);
+    border-bottom-width: 2px;
+    padding: 2px 6px;
+    border-radius: var(--radius-xs);
+    color: var(--color-text-secondary);
+    white-space: nowrap;
+  }
+
+  .callout {
+    display: flex;
+    gap: 12px;
+    padding: 14px 16px;
+    border-radius: var(--radius-md);
+    margin: var(--space-md) 0;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    max-width: var(--content-max);
+    line-height: 1.6;
+  }
+
+  .callout .ico {
+    flex: none;
+    width: 18px;
+    height: 18px;
+    margin-top: 1px;
+  }
+
+  .callout .ico svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .callout .ct {
+    font-size: 14px;
+  }
+
+  .callout .ct strong {
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  .callout p {
+    margin: 0;
+    max-width: none;
+  }
+
+  .callout.note {
+    border-color: color-mix(in srgb, var(--color-info) 35%, var(--color-border));
+    background: color-mix(in srgb, var(--color-info) 7%, var(--color-surface));
+  }
+
+  .callout.note .ico {
+    color: var(--color-info);
+  }
+
+  .callout.tip {
+    border-color: color-mix(in srgb, var(--color-success) 35%, var(--color-border));
+    background: color-mix(in srgb, var(--color-success) 7%, var(--color-surface));
+  }
+
+  .callout.tip .ico {
+    color: var(--color-success);
+  }
+
+  .callout.warning {
+    border-color: color-mix(in srgb, var(--color-warning) 40%, var(--color-border));
+    background: color-mix(in srgb, var(--color-warning) 8%, var(--color-surface));
+  }
+
+  .callout.warning .ico {
+    color: var(--color-warning);
+  }
+
+  .steps {
+    counter-reset: step;
+    margin: var(--space-md) 0;
+    max-width: var(--content-max);
+  }
+
+  .step {
+    position: relative;
+    padding: 0 0 var(--space-lg) 38px;
+    border-left: 1px solid var(--color-border);
+    margin-left: 13px;
+  }
+
+  .step:last-child {
+    border-left-color: transparent;
+    padding-bottom: 0;
+  }
+
+  .step::before {
+    counter-increment: step;
+    content: counter(step);
+    position: absolute;
+    left: -13px;
+    top: -2px;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border-strong);
+    display: grid;
+    place-items: center;
+    font: 600 12px / 1 var(--font-mono);
+    color: var(--color-accent);
+  }
+
+  .step h3 {
+    margin: 0 0 4px;
+    font-size: 15.5px;
+  }
+
+  .step p {
+    margin: 0 0 8px;
+  }
+
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: var(--space-md);
+    margin: var(--space-md) 0;
+    max-width: var(--content-max);
+  }
+
+  .card {
+    display: block;
+    padding: 16px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    cursor: pointer;
+    transition: border-color 0.15s var(--ease), transform 0.15s var(--ease);
+  }
+
+  .card:hover {
+    border-color: var(--color-accent);
+    transform: translateY(-2px);
+  }
+
+  .card .ci {
+    width: 34px;
+    height: 34px;
+    border-radius: var(--radius-sm);
+    display: grid;
+    place-items: center;
+    background: var(--color-accent-soft);
+    color: var(--color-accent);
+    margin-bottom: 10px;
+  }
+
+  .card .ci svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .card p {
+    margin: 0;
+    font-size: 13px;
+    color: var(--color-text-secondary);
+    max-width: none;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--space-lg);
+    margin: var(--space-md) 0;
+    max-width: var(--content-max);
+  }
+
+  .feature-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .feature-icon {
+    width: 32px;
+    height: 32px;
+    display: grid;
+    place-items: center;
+    background: var(--color-accent-soft);
+    color: var(--color-accent);
+    border-radius: var(--radius-md);
+  }
+
+  .feature-icon svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .feature-item h4 {
+    margin: 0;
+  }
+
+  .feature-item p {
+    margin: 0;
+    font-size: 14px;
+    color: var(--color-text-secondary);
+  }
+
+  .tablewrap {
+    margin: var(--space-md) 0;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    max-width: var(--content-max);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+  }
+
+  th {
+    text-align: left;
+    font: 600 12px / 1.2 var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-text-muted);
+    padding: 10px 14px;
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-text);
+    vertical-align: top;
+  }
+
+  tr:last-child td {
+    border-bottom: 0;
+  }
+
+  td :global(code),
+  th :global(code) {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    color: var(--color-accent);
+  }
+</style>

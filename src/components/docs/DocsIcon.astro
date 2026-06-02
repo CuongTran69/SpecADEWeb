@@ -1,0 +1,24 @@
+---
+import { DOCS_ICONS } from '~/i18n/docs'
+
+interface Props {
+  name: string
+  strokeWidth?: number
+  size?: number
+}
+
+const { name, strokeWidth = 2, size = 24 } = Astro.props
+const paths = DOCS_ICONS[name] ?? ''
+---
+
+<svg
+  viewBox="0 0 24 24"
+  width={size}
+  height={size}
+  fill="none"
+  stroke="currentColor"
+  stroke-width={strokeWidth}
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  set:html={paths}
+/>

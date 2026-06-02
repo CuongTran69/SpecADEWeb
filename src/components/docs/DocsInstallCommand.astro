@@ -1,0 +1,72 @@
+---
+import type { DocLang } from '~/i18n/docs'
+import { t } from '~/i18n/strings'
+import CopyBlock from '~/components/CopyBlock.astro'
+
+interface Props {
+  lang: DocLang
+  code?: string
+}
+
+const { lang, code = 'npx -y @spec-ade/cli@latest' } = Astro.props
+const strings = t(lang)
+---
+
+<div class="docs-install">
+  <div class="docs-install-header">
+    <span class="docs-install-label">{strings.hero.installPrompt}</span>
+    <a
+      href="https://www.npmjs.com/package/@spec-ade/cli"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="docs-install-badge chip"
+    >
+      {strings.hero.installComingSoon}
+    </a>
+  </div>
+  <CopyBlock code={code} />
+</div>
+
+<style>
+  .docs-install {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: var(--space-md) 0;
+    max-width: var(--content-max);
+  }
+
+  .docs-install-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .docs-install-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-text-muted);
+  }
+
+  .docs-install-badge {
+    background: color-mix(in oklab, var(--color-success) 10%, transparent);
+    color: var(--color-success);
+    border-color: color-mix(in oklab, var(--color-success) 25%, transparent);
+    font-size: 10px;
+    text-decoration: none;
+    transition:
+      background 150ms var(--ease),
+      border-color 150ms var(--ease),
+      transform 150ms var(--ease);
+  }
+
+  .docs-install-badge:hover {
+    background: color-mix(in oklab, var(--color-success) 18%, transparent);
+    border-color: color-mix(in oklab, var(--color-success) 40%, transparent);
+    transform: translateY(-0.5px);
+    color: var(--color-success);
+  }
+</style>
