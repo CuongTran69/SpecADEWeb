@@ -127,8 +127,8 @@ export const DOCS_PAGES: Record<string, DocPage> = {
     blocks: [
       { t: 'hero', eyebrow: { vi: 'Spec ADE', en: 'Spec ADE' },
         h: { vi: 'AI-Native Coding Workspace', en: 'AI-Native Coding Workspace' },
-        x: { vi: 'Spec ADE là workspace lập trình toàn diện cho các trợ lý AI — chat streaming, terminal nhúng, cây file, quản lý project/session và một hệ thống pane linh hoạt theo phong cách IDE.',
-          en: 'Spec ADE is a full-stack coding workspace for AI assistants — streaming chat, an embedded terminal, a file tree, project/session management, and a flexible IDE-style pane system.' },
+        x: { vi: 'Spec ADE (Agentic Development Environment) là workspace lập trình local, toàn diện, xây riêng cho các agent AI — chat streaming, terminal nhúng, cây file và công cụ Git/Database tích hợp trong một cửa sổ kiểu IDE. Bạn mô tả mục tiêu; các agent phối hợp chạy song song để viết code, chạy test và hoàn thành.',
+          en: 'Spec ADE (Agentic Development Environment) is a local, full-stack coding workspace built for AI agents — streaming chat, an embedded terminal, a file tree, and integrated Git/Database tools in one IDE-style window. You describe your goal; the agents collaborate in parallel to write code, run tests, and ship it.' },
         meta: [{ k: 'acc', x: { vi: 'Auggie CLI', en: 'Auggie CLI' } }, { k: 'pur', x: { vi: 'Claude Code', en: 'Claude Code' } }, { k: '', x: { vi: 'ACP agents', en: 'ACP agents' } }] },
       { t: 'p', x: { vi: 'Spec ADE gom trợ lý AI, terminal, trình soạn thảo và công cụ Git/Database vào một cửa sổ duy nhất. Bạn trò chuyện với agent, chạy lệnh, sửa file và xem thay đổi Git mà không cần rời khỏi ứng dụng. Giao diện bám sát thói quen của người dùng JetBrains: mật độ cao, phím tắt quen thuộc, hỗ trợ dark/light mode.',
         en: 'Spec ADE brings the AI assistant, terminal, editor, and Git/Database tooling into a single window. You chat with an agent, run commands, edit files, and review Git changes without leaving the app. The interface follows JetBrains habits: dense, keyboard-driven, with dark/light mode.' } },

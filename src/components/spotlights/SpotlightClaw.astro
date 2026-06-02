@@ -52,6 +52,7 @@ const l = {
   simEmpty: isVi ? 'Nhấn nút phía dưới để gửi lệnh điều khiển từ xa' : 'Click the button below to send a remote command',
   btnSendCommand: isVi ? 'Gửi lệnh (/run review)' : 'Send command (/run review)',
   btnReset: isVi ? 'Đặt lại' : 'Reset',
+  btnStartSim: isVi ? 'Bắt đầu giả lập' : 'Start Simulation',
   
   // Benefits List
   b1Title: isVi ? 'Chạy nền tự trị' : 'Autonomous Background Run',
@@ -228,6 +229,18 @@ const l = {
             </div>
           </div>
         </div>
+
+        <!-- Tour action buttons -->
+        <div class="claw-tour-actions">
+          <button type="button" class="claw-tour-btn claw-tour-btn--start" id="claw-tour-start">
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right:6px;"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            {l.btnStartSim}
+          </button>
+          <button type="button" class="claw-tour-btn claw-tour-btn--reset" id="claw-tour-reset" style="display:none;">
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+            {l.btnReset}
+          </button>
+        </div>
       </div>
 
       <!-- Right Column: Detail Copy Lists -->
@@ -292,7 +305,15 @@ const l = {
     tabs.forEach(tab => {
       tab.addEventListener('click', () => {
         const tabId = tab.getAttribute('data-tab');
-        if (tabId) switchTab(tabId);
+        if (tabId) {
+          // If tour is running, cancel remaining tour steps but keep current user choice
+          if (tourRunning) {
+            tourTimeouts.forEach(id => clearTimeout(id));
+            tourTimeouts = [];
+            tourRunning = false;
+          }
+          switchTab(tabId);
+        }
       });
     });
 
@@ -312,7 +333,9 @@ const l = {
     const chatidInput = container.querySelector('#claw-chatid-input') as HTMLInputElement | null;
     const isVi = container.getAttribute('data-vi') === 'true';
 
-    testTokenBtn?.addEventListener('click', () => {
+    // Shared flash effect for Test Token — used by manual click AND auto-tour
+    function flashTestToken() {
+      if (!testTokenBtn) return;
       const originalText = testTokenBtn.textContent;
       testTokenBtn.textContent = isVi ? '✓ Kết nối' : '✓ Connected';
       testTokenBtn.classList.add('btn-success-green');
@@ -326,6 +349,10 @@ const l = {
           chatidInput.classList.remove('saved-pulse');
         }
       }, 1500);
+    }
+
+    testTokenBtn?.addEventListener('click', () => {
+      flashTestToken();
     });
 
     const nextBtn = container.querySelector('#claw-save-btn');
@@ -453,6 +480,55 @@ const l = {
 
     sendBtn?.addEventListener('click', startSimulation);
     resetBtn?.addEventListener('click', clearSimulation);
+
+    // Auto-tour logic
+    const tourStartBtn = document.getElementById('claw-tour-start') as HTMLButtonElement | null;
+    const tourResetBtn = document.getElementById('claw-tour-reset') as HTMLButtonElement | null;
+    let tourTimeouts: number[] = [];
+    let tourRunning = false;
+
+    function clearTour() {
+      tourTimeouts.forEach(id => clearTimeout(id));
+      tourTimeouts = [];
+      tourRunning = false;
+      clearSimulation();
+      switchTab('farm');
+      if (tourStartBtn) tourStartBtn.style.display = 'inline-flex';
+      if (tourResetBtn) tourResetBtn.style.display = 'none';
+    }
+
+    function startTour() {
+      clearTour();
+      tourRunning = true;
+      if (tourStartBtn) tourStartBtn.style.display = 'none';
+      if (tourResetBtn) tourResetBtn.style.display = 'inline-flex';
+
+      // Step 1: show farm tab (already there after clearTour)
+      const id1 = window.setTimeout(() => {
+        if (!tourRunning) return;
+        switchTab('farm');
+      }, 0);
+      tourTimeouts.push(id1);
+
+      // Step 2: switch to config and flash test token
+      const id2 = window.setTimeout(() => {
+        if (!tourRunning) return;
+        switchTab('config');
+        flashTestToken();
+      }, 800);
+      tourTimeouts.push(id2);
+
+      // Step 3: switch to chat and start chat simulation
+      const id3 = window.setTimeout(() => {
+        if (!tourRunning) return;
+        switchTab('chat');
+        startSimulation();
+      }, 1800);
+      tourTimeouts.push(id3);
+    }
+
+    tourStartBtn?.addEventListener('click', startTour);
+    tourResetBtn?.addEventListener('click', clearTour);
   }
 
   initClawSpotlight();
@@ -548,7 +624,7 @@ const l = {
     font-size: 13px;
     display: flex;
     flex-direction: column;
-    height: 380px;
+    height: 440px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
     box-sizing: border-box;
   }
@@ -1127,6 +1203,49 @@ const l = {
   }
 
   .tg-chat-reset-btn:hover {
+    color: var(--color-text-secondary);
+    border-color: var(--color-text-muted);
+  }
+
+  /* Tour action buttons */
+  .claw-tour-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .claw-tour-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    font-family: var(--font-sans);
+    padding: 10px 28px;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 150ms var(--ease-out-soft);
+    line-height: 1;
+  }
+
+  .claw-tour-btn--start {
+    background: var(--color-accent);
+    border: none;
+    color: #080810;
+  }
+
+  .claw-tour-btn--start:hover {
+    opacity: 0.88;
+  }
+
+  .claw-tour-btn--reset {
+    background: transparent;
+    border: 1px solid var(--color-border-strong);
+    color: var(--color-text-muted);
+  }
+
+  .claw-tour-btn--reset:hover {
     color: var(--color-text-secondary);
     border-color: var(--color-text-muted);
   }

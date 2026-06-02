@@ -247,14 +247,10 @@ const closeModal = () => {
   z-index: 100;
   background: color-mix(in srgb, #000 55%, transparent);
   backdrop-filter: blur(3px);
-  display: none;
+  display: flex;
   align-items: flex-start;
   justify-content: center;
   padding-top: 12vh;
-}
-
-.modal-bg[v-if] {
-  display: flex;
 }
 
 .modal {

@@ -22,7 +22,7 @@ export const en = {
     titleAccent: 'AI coding agents',
     titleSuffix: '. Let them build it.',
     subtitle:
-      'Spec ADE (Agentic Development Environment) is a local, full-stack workspace built specifically for AI agents to write code, run tests, and edit databases. You describe your goal; the agents collaborate in parallel to ship it.',
+      'Spec ADE (Agentic Development Environment) is a local, full-stack coding workspace built for AI agents — streaming chat, an embedded terminal, a file tree, and integrated Git/Database tools in one IDE-style window. You describe your goal; the agents collaborate in parallel to write code, run tests, and ship it.',
     installPrompt: 'Install in one command',
     installComingSoon: 'available now · @spec-ade/cli on npm',
     primaryCta: 'Get Started',
@@ -491,7 +491,7 @@ export const vi: typeof en = {
     titleAccent: 'AI coding agent',
     titleSuffix: '. Hãy để AI tự lập trình.',
     subtitle:
-      'Spec ADE (Agentic Development Environment) là môi trường lập trình local, tích hợp trực tiếp các tác nhân AI để tự động viết code, chạy thử nghiệm và quản lý database. Bạn đưa ra mục tiêu; các agent sẽ tự động phối hợp chạy song song để hoàn thành.',
+      'Spec ADE (Agentic Development Environment) là workspace lập trình local, toàn diện, xây riêng cho các agent AI — chat streaming, terminal nhúng, cây file và công cụ Git/Database tích hợp trong một cửa sổ kiểu IDE. Bạn mô tả mục tiêu; các agent phối hợp chạy song song để viết code, chạy test và hoàn thành.',
     installPrompt: 'Cài đặt trong một lệnh',
     installComingSoon: 'đã phát hành · cài đặt qua npm',
     primaryCta: 'Bắt đầu ngay',
