@@ -9,7 +9,7 @@
  *
  * Docs: docs/sync-kit-manifest.md
  */
-import { readdir, readFile, writeFile } from 'node:fs/promises'
+import { access, readdir, readFile, writeFile } from 'node:fs/promises'
 import { homedir } from 'node:os'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -253,8 +253,20 @@ async function loadSubagents() {
   return subagents
 }
 
+async function kitSourceAvailable() {
+  try {
+    await access(AGENTS_DIR)
+    await access(join(SKILLS_DIR, 'feat', 'SKILL.md'))
+    const files = await readdir(AGENTS_DIR)
+    return files.some((f) => f.startsWith('osf-') && f.endsWith('.md'))
+  } catch {
+    return false
+  }
+}
+
 async function loadSkills() {
   const skills = []
+  let loadedCount = 0
   for (const entry of KIT_SKILLS) {
     const skillPath = join(SKILLS_DIR, entry.id, 'SKILL.md')
     let description = ''
@@ -276,6 +288,7 @@ async function loadSkills() {
       delegates = extractDelegates(body)
       loadsSkills = extractLoadedSkills(body, entry.id)
       highlights = extractSectionHighlights(bodyMarkdown)
+      loadedCount++
     } catch {
       console.warn(`Warning: missing skill ${entry.id} at ${skillPath}`)
     }
@@ -291,12 +304,14 @@ async function loadSkills() {
       bodyMarkdown,
     })
   }
+  if (loadedCount === 0) {
+    console.warn(`Warning: no skills loaded from ${SKILLS_DIR}`)
+    return null
+  }
   return skills
 }
 
 async function main() {
-  const [subagents, skills] = await Promise.all([loadSubagents(), loadSkills()])
-
   let existing = {}
   try {
     existing = JSON.parse(await readFile(outPath, 'utf8'))
@@ -304,10 +319,29 @@ async function main() {
     /* first run */
   }
 
+  const kitAvailable = await kitSourceAvailable()
+  if (!kitAvailable) {
+    if (existing.subagents?.length || existing.skills?.length) {
+      console.log(
+        `Kit source not found in ~/.claude — keeping committed ${outPath} (${existing.subagents?.length ?? 0} subagents, ${existing.skills?.length ?? 0} skills)`,
+      )
+      console.log(
+        'To refresh locally: bunx @dccxx/auggiegw@latest kit cmnh98bn200o5ro01gvq96wy1 && npm run sync:kit-manifest',
+      )
+      return
+    }
+    console.error(
+      `Error: no kit source in ~/.claude and no existing ${outPath}. Install the kit first, then run sync.`,
+    )
+    process.exit(1)
+  }
+
+  const [subagents, skills] = await Promise.all([loadSubagents(), loadSkills()])
+
   const manifest = {
     syncedAt: new Date().toISOString(),
     subagents: subagents ?? existing.subagents ?? [],
-    skills,
+    skills: skills ?? existing.skills ?? [],
   }
 
   await writeFile(outPath, `${JSON.stringify(manifest, null, 2)}\n`, 'utf8')
