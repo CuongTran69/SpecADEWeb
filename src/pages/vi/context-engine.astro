@@ -1,0 +1,21 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro'
+import SubpageHeader from '~/components/SubpageHeader.astro'
+import ContextEngine from '~/components/ContextEngine.astro'
+import { t } from '~/i18n/strings'
+import { pathFor } from '~/i18n/utils'
+
+const lang = 'vi' as const
+const strings = t(lang)
+---
+
+<BaseLayout lang={lang}>
+  <SubpageHeader
+    lang={lang}
+    title={strings.contextEnginePage.title}
+    subtitle={strings.contextEnginePage.subtitle}
+    homeHref={pathFor(lang, '/')}
+    backLabel={strings.contextEnginePage.backToHome}
+  />
+  <ContextEngine lang={lang} />
+</BaseLayout>
