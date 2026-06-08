@@ -28,7 +28,8 @@
       "Bash(curl -s https://0dc39609.specadeweb.pages.dev/ --max-time 15)",
       "Bash(curl -sI https://0dc39609.specadeweb.pages.dev/SpecADEWeb/ -o /dev/null -w \"Status: %{http_code}\\\\n\" --max-time 15)",
       "Bash(curl -sI https://0dc39609.specadeweb.pages.dev/docs/ -o /dev/null -w \"Status: %{http_code}\\\\n\" --max-time 15)",
-      "Bash(curl -sI https://0dc39609.specadeweb.pages.dev/favicon.svg -o /dev/null -w \"Status: %{http_code}\\\\n\" --max-time 15)"
+      "Bash(curl -sI https://0dc39609.specadeweb.pages.dev/favicon.svg -o /dev/null -w \"Status: %{http_code}\\\\n\" --max-time 15)",
+      "Bash(gitnexus analyze *)"
     ]
   }
 }
