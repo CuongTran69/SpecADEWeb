@@ -1,0 +1,642 @@
+---
+import type { Lang } from '~/i18n/strings'
+import { t } from '~/i18n/strings'
+import CopyBlock from '~/components/CopyBlock.astro'
+
+interface Props {
+  lang: Lang
+}
+
+const { lang } = Astro.props
+const strings = t(lang)
+const content = strings.contextEnginePage
+---
+
+<section class="ce-hero ce-section">
+  <div class="container-wide">
+    <div class="ce-hero-inner reveal">
+      <h2 class="ce-hero-heading">{content.hero.heading}</h2>
+      <p class="ce-hero-subtitle">{content.hero.subtitle}</p>
+      <div class="ce-hero-ctas">
+        <a href="https://github.com/nullmastermind/vibervn-context-engine" rel="noopener noreferrer" target="_blank" class="btn btn-primary">
+          {content.hero.primaryCta}
+          <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3 8h10M9 4l4 4-4 4"/>
+          </svg>
+        </a>
+        <a href="#how-it-works" class="btn btn-ghost">
+          {content.hero.secondaryCta}
+        </a>
+      </div>
+      <div class="ce-metrics">
+        {content.hero.metrics.map((metric) => (
+          <div class="ce-metric-card">
+            <div class="ce-metric-value">{metric.value}</div>
+            <div class="ce-metric-label">{metric.label}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="ce-features ce-section">
+  <div class="container-wide">
+    <header class="section-head reveal">
+      <h2 class="section-title">{content.features.heading}</h2>
+    </header>
+    <div class="ce-features-grid">
+      {content.features.items.map((feature) => (
+        <div class="ce-feature-card reveal">
+          <svg class="ce-feature-icon" viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M8 1v14M1 8h14M3.5 3.5l9 9M12.5 3.5l-9 9"/>
+          </svg>
+          <h3 class="ce-feature-title">{feature.title}</h3>
+          <p class="ce-feature-desc">{feature.desc}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<section class="ce-howitworks ce-section" id="how-it-works">
+  <div class="container-wide">
+    <header class="section-head reveal">
+      <h2 class="section-title">{content.howItWorks.heading}</h2>
+    </header>
+
+    <div class="ce-pipeline">
+      <div class="ce-phase reveal">
+        <h3 class="ce-phase-title">{content.howItWorks.indexPhase}</h3>
+        <div class="ce-steps">
+          {content.howItWorks.indexSteps.map((step, idx) => (
+            <div class="ce-step">
+              <div class="ce-step-number">{idx + 1}</div>
+              <div class="ce-step-label">{step}</div>
+              {idx < content.howItWorks.indexSteps.length - 1 && (
+                <div class="ce-step-arrow">
+                  <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                    <path d="M3 8h10M9 4l4 4-4 4"/>
+                  </svg>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div class="ce-arrow-vertical">
+        <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <path d="M8 3v10M4 9l4 4 4-4"/>
+        </svg>
+      </div>
+
+      <div class="ce-phase reveal">
+        <h3 class="ce-phase-title">{content.howItWorks.queryPhase}</h3>
+        <div class="ce-steps">
+          {content.howItWorks.querySteps.map((step, idx) => (
+            <div class="ce-step">
+              <div class="ce-step-number">{idx + 1}</div>
+              <div class="ce-step-label">{step}</div>
+              {idx < content.howItWorks.querySteps.length - 1 && (
+                <div class="ce-step-arrow">
+                  <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                    <path d="M3 8h10M9 4l4 4-4 4"/>
+                  </svg>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="ce-languages ce-section">
+  <div class="container-wide">
+    <header class="section-head reveal">
+      <h2 class="section-title">{content.languages.heading}</h2>
+    </header>
+
+    <div class="ce-languages-table-wrap">
+      <table class="ce-languages-table reveal">
+        <tbody>
+          {content.languages.items.map((lang) => (
+            <tr>
+              <td class="ce-lang-name">{lang.name}</td>
+              <td class="ce-lang-ext">{lang.ext}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+
+    <p class="ce-languages-note reveal">{content.languages.note}</p>
+  </div>
+</section>
+
+<section class="ce-install ce-section">
+  <div class="container-wide">
+    <header class="section-head reveal">
+      <h2 class="section-title">{content.install.heading}</h2>
+    </header>
+
+    <div class="ce-install-steps reveal">
+      <div class="ce-install-step">
+        <h3 class="ce-install-step-title">{content.install.npxLabel}</h3>
+        <CopyBlock code="npx vibervn-context-engine@latest" />
+      </div>
+
+      <div class="ce-install-step">
+        <h3 class="ce-install-step-title">{content.install.globalLabel}</h3>
+        <CopyBlock code="npm install -g vibervn-context-engine@latest" />
+        <p class="ce-install-then">then run:</p>
+        <CopyBlock code="vibervn-context-engine --port 6699" />
+      </div>
+
+      <div class="ce-install-step">
+        <h3 class="ce-install-step-title">{content.install.flagsLabel}</h3>
+        <CopyBlock code="npx vibervn-context-engine@latest --port 8080 --bind 0.0.0.0" />
+      </div>
+    </div>
+
+    <div class="ce-install-info reveal">
+      <div class="ce-install-info-block">
+        <h3 class="ce-info-heading">{content.install.portsLabel}</h3>
+        <p class="ce-info-text">{content.install.portNote}</p>
+      </div>
+
+      <div class="ce-install-info-block">
+        <h3 class="ce-info-heading">{content.install.platformsLabel}</h3>
+        <p class="ce-info-text">{content.install.platforms}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="ce-github ce-section ce-section--accent">
+  <div class="container-wide">
+    <div class="ce-github-inner reveal">
+      <h2 class="ce-github-heading">{content.github.heading}</h2>
+      <p class="ce-github-body">{content.github.body}</p>
+      <a href="https://github.com/nullmastermind/vibervn-context-engine" rel="noopener noreferrer" target="_blank" class="btn btn-primary">
+        {content.github.button}
+        <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 8h10M9 4l4 4-4 4"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .ce-section {
+    padding: clamp(56px, 8vw, 88px) 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .ce-section:last-child {
+    border-bottom: none;
+  }
+
+  .ce-section--accent {
+    background: var(--color-surface);
+  }
+
+  .container-wide {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 clamp(16px, 4vw, 32px);
+  }
+
+  /* Hero */
+  .ce-hero-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    max-width: 52rem;
+  }
+
+  .ce-hero-heading {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    color: var(--color-text);
+    line-height: 1.15;
+    margin: 0;
+  }
+
+  .ce-hero-subtitle {
+    font-size: clamp(1rem, 1.3vw, 1.0625rem);
+    line-height: 1.65;
+    color: var(--color-text-secondary);
+    margin: 0;
+  }
+
+  .ce-hero-ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    margin-top: 8px;
+  }
+
+  .ce-metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 16px;
+    margin-top: 16px;
+  }
+
+  .ce-metric-card {
+    padding: 16px;
+    background: var(--color-raised);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    text-align: center;
+  }
+
+  .ce-metric-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--color-accent);
+    line-height: 1.2;
+  }
+
+  .ce-metric-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: 6px;
+  }
+
+  /* Section Head */
+  .section-head {
+    margin-bottom: clamp(32px, 5vw, 48px);
+  }
+
+  .section-title {
+    font-size: clamp(1.75rem, 3vw, 2.25rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--color-text);
+    margin: 0;
+    line-height: 1.2;
+  }
+
+  /* Features */
+  .ce-features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+  }
+
+  .ce-feature-card {
+    padding: 20px;
+    background: var(--color-raised);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    transition: all 200ms var(--ease-out-soft);
+  }
+
+  .ce-feature-card:hover {
+    border-color: var(--color-accent);
+    box-shadow: 0 4px 12px color-mix(in oklab, var(--color-accent) 15%, transparent);
+  }
+
+  .ce-feature-icon {
+    width: 24px;
+    height: 24px;
+    color: var(--color-accent);
+    flex-shrink: 0;
+  }
+
+  .ce-feature-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-text);
+    margin: 0;
+  }
+
+  .ce-feature-desc {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--color-text-secondary);
+    margin: 0;
+  }
+
+  /* How It Works */
+  .ce-pipeline {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  .ce-phase {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .ce-phase-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--color-accent);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 0;
+  }
+
+  .ce-steps {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .ce-step {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 0 1 auto;
+  }
+
+  .ce-step-number {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-accent-soft);
+    color: var(--color-accent);
+    border: 1px solid color-mix(in oklab, var(--color-accent) 25%, transparent);
+    border-radius: var(--radius-sm);
+    font-size: 12px;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+
+  .ce-step-label {
+    font-size: 13px;
+    color: var(--color-text-secondary);
+    white-space: nowrap;
+  }
+
+  .ce-step-arrow {
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-border);
+    flex-shrink: 0;
+  }
+
+  .ce-arrow-vertical {
+    display: none;
+    justify-content: center;
+    color: var(--color-border);
+    height: 24px;
+  }
+
+  /* Languages */
+  .ce-languages-table-wrap {
+    overflow-x: auto;
+    margin-bottom: 16px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+    min-width: 0;
+  }
+
+  .ce-languages-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--color-raised);
+    min-width: 0;
+  }
+
+  .ce-languages-table tr {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .ce-languages-table tr:last-child {
+    border-bottom: none;
+  }
+
+  .ce-languages-table td {
+    padding: 12px 16px;
+    font-size: 14px;
+  }
+
+  .ce-lang-name {
+    color: var(--color-text);
+    font-weight: 500;
+  }
+
+  .ce-lang-ext {
+    color: var(--color-text-secondary);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    word-break: break-word;
+    white-space: normal;
+  }
+
+  .ce-languages-note {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+
+  /* Install */
+  .ce-install-steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+    margin-bottom: 32px;
+    min-width: 0;
+  }
+
+  .ce-install-step {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 0;
+  }
+
+  .ce-install-step-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-text);
+    margin: 0;
+  }
+
+  .ce-install-step :global(.copy-block) {
+    min-width: 0;
+  }
+
+  .ce-install-step :global(.copy-pre) {
+    min-width: 0;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  .ce-install-then {
+    font-size: 12px;
+    color: var(--color-text-muted);
+    margin: 8px 0 0;
+  }
+
+  .ce-install-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+  }
+
+  .ce-install-info-block {
+    padding: 16px;
+    background: var(--color-raised);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+  }
+
+  .ce-info-heading {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-text);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 0 0 8px;
+  }
+
+  .ce-info-text {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--color-text-secondary);
+    margin: 0;
+  }
+
+  /* GitHub CTA */
+  .ce-github-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 20px;
+    max-width: 48rem;
+    margin: 0 auto;
+  }
+
+  .ce-github-heading {
+    font-size: clamp(1.75rem, 3vw, 2.25rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--color-text);
+    line-height: 1.2;
+    margin: 0;
+  }
+
+  .ce-github-body {
+    font-size: clamp(1rem, 1.2vw, 1.0625rem);
+    line-height: 1.65;
+    color: var(--color-text-secondary);
+    margin: 0;
+  }
+
+  /* Reveal animation */
+  .reveal {
+    opacity: 0;
+    animation: revealIn 600ms ease-out forwards;
+  }
+
+  @keyframes revealIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Responsive */
+  @media (max-width: 1024px) {
+    .ce-metrics {
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    }
+
+    .ce-steps {
+      flex-wrap: wrap;
+    }
+
+    .ce-step-label {
+      white-space: normal;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .ce-section {
+      padding: clamp(40px, 5vw, 56px) 0;
+    }
+
+    .ce-metrics {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .ce-metric-card {
+      padding: 12px;
+    }
+
+    .ce-metric-value {
+      font-size: 20px;
+    }
+
+    .ce-features-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .ce-steps {
+      gap: 8px;
+    }
+
+    .ce-install-steps {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 375px) {
+    .ce-hero-ctas {
+      flex-direction: column;
+      width: 100%;
+    }
+
+    .ce-hero-ctas .btn {
+      width: 100%;
+    }
+
+    .ce-metrics {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .ce-metric-value {
+      font-size: 18px;
+    }
+
+    .ce-steps {
+      gap: 4px;
+    }
+
+    .ce-step-label {
+      display: none;
+    }
+  }
+</style>
