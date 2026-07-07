@@ -13,13 +13,13 @@ const isVi = lang === 'vi'
 
 // Localized strings for the interactive mockup
 const l = {
-  tabFarm: isVi ? 'Trại Agent (Farm)' : 'Agent Farm',
+  tabFarm: isVi ? 'Tác vụ theo lịch' : 'Scheduled Tasks',
   tabConfig: isVi ? 'Cấu hình Telegram' : 'Telegram Config',
   tabChat: isVi ? 'Điều khiển (Telegram)' : 'Remote Chat',
-  
-  // Farm panel
-  farmTitle: isVi ? 'QUẢN LÝ HEADLESS AGENT FARM' : 'HEADLESS AGENT FARM',
-  activeAgents: isVi ? '4 agent đang hoạt động' : '4 active agents',
+
+  // Tasks panel
+  farmTitle: isVi ? 'BỘ CHẠY TÁC VỤ THEO CRON' : 'CRON TASK RUNNER',
+  activeAgents: isVi ? '4 tác vụ đang hoạt động' : '4 active tasks',
   
   statusRunning: 'RUNNING',
   statusWaiting: 'WAITING',
@@ -38,7 +38,7 @@ const l = {
   editClaw: isVi ? 'CẤU HÌNH TELEGRAM BRIDGE' : 'TELEGRAM CONFIGURATION',
   stepIndicator: isVi ? 'Bước 5/6: Kênh Telegram' : 'Step 5/6: Telegram Bridge',
   enableTg: isVi ? 'Kích hoạt Telegram Bridge' : 'Enable Telegram bridge',
-  enableTgDesc: isVi ? 'Bật chatbot Telegram chuyên biệt khi Claw này khởi động.' : 'Start the per-claw Telegram bridge when the claw starts.',
+  enableTgDesc: isVi ? 'Bật cầu nối Telegram để nhận thông báo và kích hoạt tác vụ.' : 'Enable the Telegram bridge to get notifications and trigger tasks.',
   botToken: isVi ? 'Mã Token của Bot (Bot Token)' : 'Bot token',
   chatIds: isVi ? 'ID chat được phép truy cập (Allowed Chat IDs)' : 'Allowed chat IDs',
   testToken: isVi ? 'Kiểm tra kết nối' : 'Test token',
@@ -55,14 +55,14 @@ const l = {
   btnStartSim: isVi ? 'Bắt đầu giả lập' : 'Start Simulation',
   
   // Benefits List
-  b1Title: isVi ? 'Chạy nền tự trị' : 'Autonomous Background Run',
-  b1Desc: isVi ? 'Tác nhân tự hoạt động độc lập dưới nền theo lịch cron mà không cần mở trình duyệt.' : 'Agents run independently in the background on cron schedules without keeping a browser open.',
+  b1Title: isVi ? 'Chạy nền theo lịch' : 'Scheduled background runs',
+  b1Desc: isVi ? 'Lên lịch phiên agent chạy theo biểu thức cron dưới nền, không cần mở trình duyệt.' : 'Schedule agent sessions to run in the background on cron expressions — no browser needed.',
   b2Title: isVi ? 'Điều khiển qua Telegram' : 'Telegram Bot Bridge',
-  b2Desc: isVi ? 'Nhận thông báo, duyệt lệnh shell và ghi file trực tiếp từ ứng dụng nhắn tin trên điện thoại.' : 'Receive updates, approve shell commands, and edit code directly from your phone.',
-  b3Title: isVi ? 'Lập lịch tựa Cron' : 'Cron-like Scheduling',
-  b3Desc: isVi ? 'Lên lịch chạy định kỳ hoặc gọi qua Webhook REST để chạy các tác vụ tự động hàng ngày.' : 'Schedule periodic execution or trigger via REST Webhooks for daily automated tasks.',
-  b4Title: isVi ? 'Tương tự OpenClaw' : 'OpenClaw Parallel Architecture',
-  b4Desc: isVi ? 'Mô hình headless automation mạnh mẽ cho phép quản lý, theo dõi và nhân bản các agent farm.' : 'A powerful headless automation runner that lets you spawn, monitor, and manage background agent farms.',
+  b2Desc: isVi ? 'Nhận thông báo và kích hoạt tác vụ trực tiếp từ ứng dụng nhắn tin trên điện thoại.' : 'Get notifications and trigger tasks directly from your phone via Telegram.',
+  b3Title: isVi ? 'Sinh cron bằng AI' : 'AI cron generation',
+  b3Desc: isVi ? 'Mô tả lịch bằng ngôn ngữ tự nhiên, AI chuyển thành biểu thức cron chuẩn.' : 'Describe a schedule in plain language and let AI turn it into a valid cron expression.',
+  b4Title: isVi ? 'Chạy tay hoặc chạy tự động' : 'Manual or automated',
+  b4Desc: isVi ? 'Kích hoạt tác vụ ngay lập tức khi cần, hoặc để chúng tự chạy theo lịch đã đặt.' : 'Fire a task on demand when you need it, or let it run automatically on its schedule.',
 }
 ---
 

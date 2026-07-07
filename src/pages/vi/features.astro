@@ -3,9 +3,10 @@ import BaseLayout from '~/layouts/BaseLayout.astro'
 import FeaturesRecap from '~/components/FeaturesRecap.astro'
 import MultiAgent from '~/components/MultiAgent.astro'
 import GoalShowcase from '~/components/GoalShowcase.astro'
-import PortForwarding from '~/components/PortForwarding.astro'
 import SpotlightClaw from '~/components/spotlights/SpotlightClaw.astro'
 import SpotlightDb from '~/components/spotlights/SpotlightDb.astro'
+import SpotlightHttp from '~/components/spotlights/SpotlightHttp.astro'
+import SpotlightPort from '~/components/spotlights/SpotlightPort.astro'
 import SpotlightDesign from '~/components/spotlights/SpotlightDesign.astro'
 import SubpageHeader from '~/components/SubpageHeader.astro'
 import { t } from '~/i18n/strings'
@@ -24,9 +25,10 @@ const strings = t(lang)
   />
   <MultiAgent lang={lang} />
   <GoalShowcase lang={lang} />
-  <PortForwarding lang={lang} />
   <SpotlightClaw lang={lang} />
   <SpotlightDb lang={lang} />
+  <SpotlightHttp lang={lang} />
+  <SpotlightPort lang={lang} />
   <SpotlightDesign lang={lang} />
   <FeaturesRecap lang={lang} />
 </BaseLayout>

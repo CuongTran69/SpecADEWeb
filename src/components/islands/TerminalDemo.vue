@@ -19,7 +19,7 @@ const lines: Line[] = [
   { text: '  spec-ade --install-service', textClass: 'cmd' },
   { text: 'Backend on this platform: macOS launchd (LaunchAgent, per-user). Remove later with `spec-ade --uninstall-service`.', textClass: 'muted' },
   { text: '', textClass: 'agent' },
-  { text: '[claw] start_all_auto_start: 0 claws to auto-start', textClass: 'muted' },
+  { text: '[scheduled] job scheduler started · 0 tasks due', textClass: 'muted' },
   { text: '[git-watcher] Watching /Users/specADE/.git (git dir, recursive)', textClass: 'muted' },
   { text: '[file-watcher] Watching /Users/specADE (recursive)', textClass: 'muted' },
   { prefix: '$', prefixClass: 'prompt', text: '_', textClass: 'cursor' },

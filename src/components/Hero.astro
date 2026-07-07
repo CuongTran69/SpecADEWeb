@@ -35,7 +35,7 @@ const strings = t(lang)
 
       <p class="hero-subtitle">{strings.hero.subtitle}</p>
 
-      <div class="hero-install">
+      <div class="hero-install" id="install" data-install-block>
         <div class="hero-install-header">
           <span class="hero-install-label">{strings.hero.installPrompt}</span>
           <a
@@ -52,7 +52,7 @@ const strings = t(lang)
       </div>
 
       <div class="hero-cta">
-        <a href={pathFor(lang, '/install')} class="btn btn-primary hero-btn-primary" data-testid="hero-primary-cta">
+        <a href="#install" class="btn btn-primary hero-btn-primary" data-testid="hero-primary-cta" data-install-cta>
           {strings.hero.primaryCta}
           <Icon name="arrow-right" size={14} />
         </a>
@@ -259,4 +259,69 @@ const strings = t(lang)
   @media (min-width: 1024px) {
     .hero-visual { justify-content: flex-end; }
   }
+
+  /* Install-block highlight (triggered on #install navigation / CTA click) */
+  .hero-install {
+    border-radius: var(--radius-lg);
+    transition: box-shadow 300ms var(--ease-out-soft);
+  }
+
+  .hero-install.is-highlighted {
+    animation: installHighlight 1.8s var(--ease-out-soft);
+  }
+
+  @keyframes installHighlight {
+    0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-accent) 55%, transparent); }
+    30% { box-shadow: 0 0 0 6px color-mix(in srgb, var(--color-accent) 22%, transparent); }
+    100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-accent) 0%, transparent); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-install.is-highlighted { animation: none; }
+  }
 </style>
+
+<script>
+  function initInstallHighlight() {
+    const block = document.querySelector('[data-install-block]') as HTMLElement | null
+    if (!block) return
+
+    function flash() {
+      if (!block) return
+      block.classList.remove('is-highlighted')
+      // Force reflow so the animation restarts even on repeat triggers.
+      void block.offsetWidth
+      block.classList.add('is-highlighted')
+    }
+
+    function scrollAndFlash() {
+      if (!block) return
+      block.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      window.setTimeout(flash, 320)
+    }
+
+    // Clicks on any in-page install CTA (href="#install").
+    document.querySelectorAll('a[href$="#install"], [data-install-cta]').forEach((el) => {
+      el.addEventListener('click', (e) => {
+        const href = (el as HTMLAnchorElement).getAttribute('href') || ''
+        // Only intercept same-page anchors; let cross-page links navigate first.
+        if (href === '#install' || href.endsWith('/#install')) {
+          const samePage = !href.includes('/') || href === location.pathname + '#install'
+          if (href === '#install' || samePage) {
+            e.preventDefault()
+            history.replaceState(null, '', '#install')
+            scrollAndFlash()
+          }
+        }
+      })
+    })
+
+    // Landing directly on #install (e.g. from another page or a shared link).
+    if (location.hash === '#install') {
+      window.setTimeout(scrollAndFlash, 200)
+    }
+  }
+
+  initInstallHighlight()
+  document.addEventListener('astro:after-swap', initInstallHighlight)
+</script>

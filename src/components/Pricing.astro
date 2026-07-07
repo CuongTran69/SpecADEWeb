@@ -10,7 +10,7 @@ interface Props {
 const { lang } = Astro.props
 const strings = t(lang)
 const p = strings.pricing
-const ctaHref = pathFor(lang, '/install')
+const ctaHref = pathFor(lang, '/#install')
 ---
 
 <section class="pricing-section" id="pricing">

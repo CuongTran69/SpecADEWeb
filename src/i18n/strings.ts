@@ -4,7 +4,7 @@ export const en = {
   meta: {
     title: 'Spec ADE — AI-Native Coding Workspace',
     description:
-      'Full-stack GUI for AI coding assistants. Multi-CLI chat, recursive panes, hybrid Git, multi-driver database workspace, ACP agents, and the Claw headless agent farm — in a single binary.',
+      'Self-hosted GUI for AI coding assistants. Multi-CLI chat, recursive panes, hybrid Git, multi-driver database workspace, an HTTP client, ACP agents, and cron-scheduled tasks — served from a single binary in your browser.',
   },
   nav: {
     features: 'Features',
@@ -24,10 +24,10 @@ export const en = {
     titleAccent: 'AI coding agents',
     titleSuffix: '. Let them build it.',
     subtitle:
-      'Spec ADE (Agentic Development Environment) is a local, full-stack coding workspace built for AI agents — streaming chat, an embedded terminal, a file tree, and integrated Git/Database tools in one IDE-style window. You describe your goal; the agents collaborate in parallel to write code, run tests, and ship it.',
+      'Spec ADE (Agentic Development Environment) is a self-hosted GUI and IDE for AI-assisted development, served from a single Rust binary in your browser. Multi-CLI chat (Auggie, Claude, ACP agents), a real terminal, a CodeMirror editor with Vim mode, hybrid Git, a six-driver database workspace, a Postman-compatible HTTP client, port forwarding, and cron-scheduled tasks — all in one IDE-style window. You describe the goal; agents write the code, run the tests, and drive it to done.',
     installPrompt: 'Install in one command',
     installComingSoon: 'available now · @spec-ade/cli on npm',
-    primaryCta: 'Get Started',
+    primaryCta: 'Install now',
     secondaryCta: 'Learn more',
     runningOn: 'Runs on Windows, macOS, and Linux · Tauri desktop · PWA',
     trust: [
@@ -39,9 +39,9 @@ export const en = {
   },
   spotlight: {
     claw: {
-      chip: 'CLAW FARM',
-      hook: 'Autonomous agent farm (Claw) like OpenClaw, controlled via Telegram.',
-      body: 'A headless automation runner similar to OpenClaw. Create background agent farms, run them on cron schedules, or trigger them via REST. Connect a Telegram bridge to approve actions, run commands, and write code from anywhere.',
+      chip: 'SCHEDULED TASKS',
+      hook: 'Run AI tasks on a cron schedule — controlled via Telegram.',
+      body: 'A cron-based task runner built in. Schedule agent sessions to fire on any cron expression, or run them on demand. Generate cron expressions from plain language, and connect a Telegram bridge to trigger tasks and get notified when they finish.',
     },
     goal: {
       hook: 'Tell the AI when to stop, not when to continue.',
@@ -49,7 +49,7 @@ export const en = {
       viewDetailBtn: 'Explore Goal feature →',
       title: 'Send with Goal',
       shortcut: '⌘G',
-      criteriaDesc: 'Each row is one milestone. The goal-agent advances to the next when it judges the previous one done. Up to 50 rows.',
+      criteriaDesc: 'Each row is one milestone. The goal-agent advances to the next when it judges the previous one done.',
       loadPreset: 'Load preset',
       savePreset: 'Save as preset',
       addCriterion: 'Add criterion',
@@ -84,10 +84,17 @@ export const en = {
       hook: 'One file. No Docker. No Node. Same command on your laptop or your VPS.',
       body: 'The entire app — frontend, backend, embedded SPA — packs into one Rust binary. Install as a desktop app, a PWA, or a user-level service. macOS launchd, Linux systemd, Windows Task Scheduler — no admin required.',
     },
+    http: {
+      chip: 'HTTP CLIENT',
+      hook: 'A Postman-compatible HTTP client, in the same window as your code.',
+      body: 'Build collections, folders, and requests; switch environments and secret variables; stream responses over SSE with in-flight cancellation. Import from curl or a Postman Collection v2.1, export back out — no separate API tool needed.',
+      viewDetailBtn: 'Explore the HTTP client →',
+    },
     port: {
-      hook: 'Use Spec ADE from anywhere — even from your phone.',
-      body: 'Forward your Spec ADE workspace port through a Cloudflare Tunnel to get a public URL. Access your entire ADE environment remotely from any browser, secured with Access Key authentication.',
-      viewDetailBtn: 'Explore Port Forwarding →',
+      chip: 'PORT FORWARDING',
+      hook: 'Reach a local dev server or admin UI through the workspace itself.',
+      body: 'A built-in reverse proxy at `/fw/{port}` forwards HTTP and WebSocket traffic to any port on the machine running Spec ADE. Preview a dev server, open a database admin UI, or hit a local API through the same host your workspace already runs on — hop-by-hop headers handled correctly.',
+      viewDetailBtn: 'Explore port forwarding →',
     },
     design: {
       chip: 'OPEN DESIGN',
@@ -103,10 +110,10 @@ export const en = {
         heading: 'Editor & Workspace',
         bullets: [
           { label: 'Recursive splits', desc: 'Stack panes any direction, any depth' },
-          { label: '9 tab kinds', desc: 'Code, terminal, git log, database, monitor, in one tab bar' },
+          { label: '15 tab kinds', desc: 'Code, terminal, git log, monitor, search, skills, agents, and more — one tab bar' },
           { label: 'Layout presets', desc: 'Save your favorite arrangement, restore in one click' },
           { label: 'xterm Teleport', desc: 'Terminals stay alive when you switch projects' },
-          { label: 'CodeMirror 6 + Vim', desc: 'Full editor with Vim mode and minimap' },
+          { label: 'CodeMirror 6 + Vim', desc: 'Vim mode, minimap, rainbow brackets, indent guides, lint gutter, ⌘K view/edit' },
           { label: 'Markdown preview', desc: 'KaTeX math, Mermaid diagrams, GitHub alerts' },
           { label: 'Live file watcher', desc: 'Tree updates as files change on disk' },
           { label: 'Slash commands', desc: 'Discover and run AI commands by typing /' },
@@ -129,13 +136,26 @@ export const en = {
         heading: 'Terminal, System & Cross-Platform',
         bullets: [
           { label: 'PTY emulation', desc: 'Real shell, full UTF-8 safety, OSC sequences' },
-          { label: 'Port forwarding proxy', desc: 'Tunnel local services through the workspace' },
+          { label: 'ade shell helper', desc: 'Injected into bash/zsh/sh and PowerShell on startup' },
           { label: 'Process monitor', desc: 'Live CPU/RAM/disk/GPU, sortable, killable' },
           { label: 'Mobile-first PWA', desc: 'Touch targets, virtual keyboard handling' },
           { label: 'Tauri desktop', desc: 'Native installers for macOS, Windows, Linux' },
           { label: 'User-level service', desc: 'Auto-start on login, no admin needed' },
           { label: 'Boot ID restart', desc: 'Browser auto-reconnects when server restarts' },
           { label: 'OSC 5522 image paste', desc: 'Paste screenshots directly into AI chats' },
+        ],
+      },
+      {
+        heading: 'Data, AI & Automation',
+        bullets: [
+          { label: 'HTTP client', desc: 'Postman-compatible: collections, environments, SSE execution, curl import' },
+          { label: 'OpenSpec workflow', desc: 'Proposal/design/tasks bundles, task patching, archive' },
+          { label: 'Skills & agents manager', desc: 'Discover, edit, toggle skills and ACP agents' },
+          { label: 'Plans', desc: 'Lightweight plan.md + tasks.md, handed to a session as context' },
+          { label: 'Runner tasks', desc: 'Detects Makefile / npm / Justfile targets, spawns them as terminals' },
+          { label: 'Scheduled tasks', desc: 'Cron runner with AI cron generation and a Telegram bridge' },
+          { label: 'AI prompt enhance', desc: 'Rewrites a draft prompt to be more precise, streamed live' },
+          { label: 'Push notifications', desc: 'VAPID web push for task and session events' },
         ],
       },
     ],
@@ -145,7 +165,7 @@ export const en = {
     title: 'Understanding Spec ADE',
     pillar1Title: '1. What is Spec ADE?',
     pillar1Body:
-      'Spec ADE is a next-generation desktop workspace designed from the ground up for AI coding agents. Instead of inserting AI into a traditional text editor, it wraps multiple terminals, browsers, databases, and Git into a single binary that agents can control natively.',
+      'Spec ADE is a self-hosted GUI and IDE built from the ground up for AI coding agents. Instead of inserting AI into a traditional text editor, it serves a full workspace — terminal, file editor, Git, databases, and an HTTP client — from a single Rust binary with an embedded Vue SPA, opened right in your browser on your own machine or VPS.',
     pillar2Title: '2. What is it for?',
     pillar2Body:
       'It automates entire developer workflows—like implementing features, refactoring databases, fixing bugs, and running test suites. Rather than manually writing every line of code, you direct autonomous agent pools (like Claude Code, Auggie, or Codex) to execute complex engineering goals.',
@@ -170,16 +190,16 @@ export const en = {
     frontend: 'Frontend (Vue 3 + Quasar + Pinia)',
     storage: 'Storage',
     backendDesc:
-      'PTY manager, ACP threading model, hybrid Git engine, six-driver DB layer, Goal/Claw runners, license verification — all coordinated through a typed AppState.',
+      'PTY manager, ACP threading model, hybrid Git engine, six-driver DB layer, HTTP client, Goal runner, cron scheduled-task engine, license verification — all coordinated through a typed AppState.',
     frontendDesc:
-      'Fifty-plus Pinia stores in Composition API, recursive pane tree, xterm Teleport pool, CodeMirror 6 with Vim and minimap, and a context-aware shortcut store.',
+      'Fifty-plus Pinia stores in Composition API, recursive pane tree, xterm Teleport pool, CodeMirror 6 with Vim mode, minimap, and MergeView, and a context-aware shortcut store.',
     storageDesc:
       'Single `~/.config/spec-ade/settings.json` file. Passwords go to the OS keychain (with AES-GCM headless fallback). License keys come from the Ed25519-signing portal.',
     protocols: [
       { name: 'REST', desc: 'CRUD, git, settings, files, search' },
       { name: 'WebSocket', desc: 'PTY I/O, ACP relay, DB streaming' },
-      { name: 'SSE', desc: 'Git change events, watch streams' },
-      { name: 'Proxy', desc: '/fw/{port}/{*rest} forwards HTTP + WS' },
+      { name: 'SSE', desc: 'Git change events, watch streams, AI token streams' },
+      { name: 'Proxy', desc: '/fw/{port} forwards HTTP + WS to local services' },
     ],
     metrics: [
       { value: '17.9k', label: 'symbols' },
@@ -192,7 +212,7 @@ export const en = {
     items: [
       { name: 'Rust 2024', desc: 'Axum, tokio, portable-pty, git2 (vendored), sqlx' },
       { name: 'Vue 3 + Quasar v2', desc: 'Pinia (Composition API), Vite, TypeScript strict' },
-      { name: 'CodeMirror 6', desc: 'Vim, minimap, language servers, MergeView' },
+      { name: 'CodeMirror 6', desc: 'Vim mode, minimap, dynamic language loading, MergeView' },
       { name: 'Tauri', desc: 'Cross-platform desktop wrapper with sidecar pattern' },
       { name: 'WebSocket / SSE', desc: 'PTY I/O, ACP relay, DB streaming, git events' },
       { name: 'Ed25519', desc: 'License signing & verification via spec-ade-portal' },
@@ -211,7 +231,7 @@ export const en = {
       },
       {
         role: 'DevOps & SREs',
-        desc: 'PTY terminals with port forwarding, system metrics, GPU monitoring, background services, and a single-file deploy story.',
+        desc: 'PTY terminals, SSH-tunneled DB connections, system metrics, GPU monitoring, cron-scheduled tasks, background services, and a single-file deploy story.',
       },
       {
         role: 'Mobile-First Teams',
@@ -300,7 +320,7 @@ export const en = {
     recommendedBadge: '★ Recommended',
     autoOpenNote: 'After running, Spec ADE opens automatically in your browser.',
     vpsNote: 'On a VPS, the CLI prints the URL — open it from your local browser.',
-    nodejsRequired: 'Spec ADE requires Node.js 22 or later.',
+    nodejsRequired: 'Spec ADE requires Node.js 18 or later.',
     dontHaveNpx: "Don't have npm/npx installed?",
     installNode: 'Install Node.js',
     nodeMac: 'macOS',
@@ -330,8 +350,8 @@ export const en = {
       features: [
         'Full Workspace: Terminal, Git, DB, Editor',
         'Multi-Agent CLI Hub (Claude, Auggie, Codex...)',
-        'Claw Farm & Goal Runner orchestration',
-        'Open Design Layout & Port Forwarding tools',
+        'Scheduled Tasks & Goal Runner orchestration',
+        'Open Design layout & HTTP client tools',
         'Bring your own API keys (Claude, OpenAI...)',
         'Completely free during Public Beta',
       ],
@@ -371,7 +391,7 @@ export const en = {
     backToHome: '← Back to home',
     viewAllCta: 'View all features →',
     viewAllTitle: 'Explore all capabilities',
-    viewAllDesc: 'From recursive layouts, SSH tunnels, GPU monitors, to hybrid Git. See the complete checklist of built-in tools.',
+    viewAllDesc: 'From recursive layouts, SSH tunnels, GPU monitors, to hybrid Git and a Postman-compatible HTTP client. See the complete checklist of built-in tools.',
   },
   contextEnginePage: {
     title: 'Context Engine',
@@ -573,49 +593,13 @@ export const en = {
     benefitTitle4: 'Zero user prompts',
     benefitDesc4: 'Runs in the background without needing constant steering. Sit back and watch the green ticks light up.'
   },
-  portForwarding: {
-    chip: 'Remote Access',
-    title: 'Code from anywhere. Securely.',
-    subtitle: 'Forward your Spec ADE workspace port through a Cloudflare Tunnel. Access your full ADE environment — terminal, agents, file tree — from any browser, anywhere in the world. Protect it with Access Key authentication.',
-    visualTitle: 'Port Forwarding Simulation',
-    visualSub: 'Watch how Spec ADE exposes its workspace to the internet through Cloudflare Tunnel with Access Key protection.',
-    localPort: 'ADE Port',
-    label: 'Label',
-    proxyUrl: 'Proxy URL',
-    publicUrl: 'Public URL',
-    accessKey: 'Access Key',
-    forwardToggle: 'Forward ADE Port',
-    tunnelToggle: 'Cloudflare Tunnel',
-    securityToggle: 'Access Key Protection',
-    copyBtn: 'Copy',
-    copiedLabel: 'Copied!',
-    statusOffline: 'ADE Offline',
-    statusOfflineDesc: 'Enable port forwarding and Cloudflare Tunnel to access Spec ADE remotely.',
-    statusLocked: 'Secure Access Required',
-    statusLockedDesc: 'This ADE workspace is protected by Access Key. Enter the key to proceed.',
-    autofillBtn: 'Autofill Key',
-    unlockBtn: 'Unlock & Access ADE',
-    wrongKey: 'Invalid Access Key. Try again.',
-    activeDashboard: 'Spec ADE Workspace',
-    startSimulation: 'Start Simulation',
-    resetSimulation: 'Reset',
-    simSuccess: '✓ Simulation complete — Spec ADE is now accessible remotely!',
-    benefitTitle1: 'Work From Anywhere',
-    benefitDesc1: 'Access your full Spec ADE workspace — terminal, agents, code editor — from any device with a browser.',
-    benefitTitle2: 'Zero-config Tunnels',
-    benefitDesc2: 'Bypass NATs, firewalls, and complex DNS. Cloudflare Tunnels handle public exposure with one click.',
-    benefitTitle3: 'Access Key Protection',
-    benefitDesc3: 'Prevent unauthorized access. Only users with the cryptographically-generated Access Key can enter your workspace.',
-    benefitTitle4: 'Always-on Proxying',
-    benefitDesc4: 'Keep your ADE running on a remote server and access it from your laptop, tablet, or even your phone.'
-  }
 }
 
 export const vi: typeof en = {
   meta: {
     title: 'Spec ADE — Workspace lập trình AI-native',
     description:
-      'GUI full-stack cho AI coding assistants. Multi-CLI chat, recursive panes, Git hybrid, database 6 drivers, ACP agents, và Claw headless agent farm — trong một binary duy nhất.',
+      'GUI self-hosted cho AI coding assistants. Multi-CLI chat, recursive panes, Git hybrid, database 6 drivers, HTTP client, ACP agents, và scheduled tasks theo cron — phục vụ từ một binary duy nhất, mở trong trình duyệt.',
   },
   nav: {
     features: 'Tính năng',
@@ -635,10 +619,10 @@ export const vi: typeof en = {
     titleAccent: 'AI coding agent',
     titleSuffix: '. Hãy để AI tự lập trình.',
     subtitle:
-      'Spec ADE (Agentic Development Environment) là workspace lập trình local, toàn diện, xây riêng cho các agent AI — chat streaming, terminal nhúng, cây file và công cụ Git/Database tích hợp trong một cửa sổ kiểu IDE. Bạn mô tả mục tiêu; các agent phối hợp chạy song song để viết code, chạy test và hoàn thành.',
+      'Spec ADE (Agentic Development Environment) là GUI/IDE self-hosted cho lập trình cùng AI, phục vụ từ một binary Rust duy nhất, mở ngay trong trình duyệt. Chat đa CLI (Auggie, Claude, ACP agents), terminal thật, editor CodeMirror có Vim mode, Git hybrid, database workspace 6 driver, HTTP client tương thích Postman, port forwarding và scheduled tasks theo cron — tất cả trong một cửa sổ kiểu IDE. Bạn mô tả mục tiêu; agent viết code, chạy test và đưa tới hoàn thành.',
     installPrompt: 'Cài đặt trong một lệnh',
     installComingSoon: 'đã phát hành · cài đặt qua npm',
-    primaryCta: 'Bắt đầu ngay',
+    primaryCta: 'Cài đặt ngay',
     secondaryCta: 'Tìm hiểu thêm',
     runningOn: 'Chạy trên Windows, macOS, Linux · Tauri desktop · PWA',
     trust: [
@@ -650,9 +634,9 @@ export const vi: typeof en = {
   },
   spotlight: {
     claw: {
-      chip: 'CLAW FARM',
-      hook: 'Trại agent tự trị (Claw Farm) như OpenClaw, điều khiển qua Telegram.',
-      body: 'Bộ chạy tự động headless tương tự OpenClaw. Tạo các trại agent chạy nền, thiết lập lịch trình cron-job hoặc kích hoạt qua REST API. Kết nối Telegram để duyệt lệnh, nhận thông báo và code từ xa qua điện thoại.',
+      chip: 'SCHEDULED TASKS',
+      hook: 'Chạy tác vụ AI theo lịch cron — điều khiển qua Telegram.',
+      body: 'Bộ chạy tác vụ dựa trên cron tích hợp sẵn. Lên lịch các phiên agent chạy theo bất kỳ biểu thức cron nào, hoặc chạy tức thời. Sinh biểu thức cron từ ngôn ngữ tự nhiên, và kết nối Telegram để kích hoạt tác vụ cùng nhận thông báo khi hoàn tất.',
     },
     goal: {
       hook: 'Nói AI khi nào dừng, không phải khi nào tiếp tục.',
@@ -660,7 +644,7 @@ export const vi: typeof en = {
       viewDetailBtn: 'Khám phá tính năng Goal →',
       title: 'Gửi kèm Goal',
       shortcut: '⌘G',
-      criteriaDesc: 'Mỗi dòng là một cột mốc. Goal-agent sẽ chuyển sang mốc tiếp theo khi xác nhận mốc trước đó đã xong. Tối đa 50 dòng.',
+      criteriaDesc: 'Mỗi dòng là một cột mốc. Goal-agent sẽ chuyển sang mốc tiếp theo khi xác nhận mốc trước đó đã xong.',
       loadPreset: 'Tải preset',
       savePreset: 'Lưu thành preset',
       addCriterion: 'Thêm tiêu chí',
@@ -695,10 +679,17 @@ export const vi: typeof en = {
       hook: 'Một file. Không Docker. Không Node. Cùng lệnh trên laptop hay VPS.',
       body: 'Toàn bộ ứng dụng — frontend, backend, SPA embedded — đóng gói trong một Rust binary. Cài như desktop app, PWA, hoặc user-level service. macOS launchd, Linux systemd, Windows Task Scheduler — không cần admin.',
     },
+    http: {
+      chip: 'HTTP CLIENT',
+      hook: 'HTTP client tương thích Postman, ngay trong cửa sổ chứa code của bạn.',
+      body: 'Tạo collections, folders và requests; đổi environment và biến bí mật; stream response qua SSE kèm huỷ giữa chừng. Import từ curl hoặc Postman Collection v2.1, export ngược ra — không cần công cụ API riêng.',
+      viewDetailBtn: 'Khám phá HTTP client →',
+    },
     port: {
-      hook: 'Dùng Spec ADE ở mọi nơi — kể cả trên điện thoại.',
-      body: 'Chuyển tiếp port workspace Spec ADE qua Cloudflare Tunnel để có URL công khai. Truy cập toàn bộ ADE từ xa qua trình duyệt bất kỳ, bảo mật bằng mã Access Key.',
-      viewDetailBtn: 'Khám phá Port Forwarding →',
+      chip: 'PORT FORWARDING',
+      hook: 'Truy cập dev server hay admin UI local ngay qua workspace.',
+      body: 'Một reverse proxy tích hợp tại `/fw/{port}` chuyển tiếp lưu lượng HTTP và WebSocket tới bất kỳ cổng nào trên máy đang chạy Spec ADE. Xem trước dev server, mở admin UI database, hay gọi API local ngay trên cùng host mà workspace của bạn đang chạy — hop-by-hop headers được xử lý đúng chuẩn.',
+      viewDetailBtn: 'Khám phá port forwarding →',
     },
     design: {
       chip: 'OPEN DESIGN',
@@ -714,10 +705,10 @@ export const vi: typeof en = {
         heading: 'Editor & Workspace',
         bullets: [
           { label: 'Recursive splits', desc: 'Chia pane theo bất kỳ hướng nào, bất kỳ độ sâu nào' },
-          { label: '9 loại tab', desc: 'Code, terminal, git log, database, monitor, trong cùng một tab bar' },
+          { label: '15 loại tab', desc: 'Code, terminal, git log, monitor, search, skills, agents, và hơn thế — trong cùng một tab bar' },
           { label: 'Layout presets', desc: 'Lưu bố cục yêu thích, restore chỉ một click' },
           { label: 'xterm Teleport', desc: 'Terminal vẫn chạy khi bạn chuyển project' },
-          { label: 'CodeMirror 6 + Vim', desc: 'Editor đầy đủ với Vim mode và minimap' },
+          { label: 'CodeMirror 6 + Vim', desc: 'Vim mode, minimap, rainbow brackets, indent guides, lint gutter, ⌘K view/edit' },
           { label: 'Markdown preview', desc: 'KaTeX math, Mermaid diagrams, GitHub alerts' },
           { label: 'Live file watcher', desc: 'Tree tự update khi file thay đổi trên đĩa' },
           { label: 'Slash commands', desc: 'Khám phá và chạy AI commands bằng cách gõ /' },
@@ -740,13 +731,26 @@ export const vi: typeof en = {
         heading: 'Terminal, System & Cross-Platform',
         bullets: [
           { label: 'PTY emulation', desc: 'Shell thực, UTF-8 đầy đủ, OSC sequences' },
-          { label: 'Port forwarding proxy', desc: 'Tunnel local services qua workspace' },
+          { label: 'ade shell helper', desc: 'Tự inject vào bash/zsh/sh và PowerShell khi khởi động' },
           { label: 'Process monitor', desc: 'Live CPU/RAM/disk/GPU, sortable, killable' },
           { label: 'Mobile-first PWA', desc: 'Touch target, virtual keyboard handling' },
           { label: 'Tauri desktop', desc: 'Native installers cho macOS, Windows, Linux' },
           { label: 'User-level service', desc: 'Auto-start khi login, không cần admin' },
           { label: 'Boot ID restart', desc: 'Browser tự reconnect khi server restart' },
           { label: 'OSC 5522 image paste', desc: 'Paste ảnh trực tiếp vào AI chat' },
+        ],
+      },
+      {
+        heading: 'Data, AI & Automation',
+        bullets: [
+          { label: 'HTTP client', desc: 'Tương thích Postman: collections, environments, SSE execution, import curl' },
+          { label: 'OpenSpec workflow', desc: 'Bundle proposal/design/tasks, patch task, archive' },
+          { label: 'Skills & agents manager', desc: 'Khám phá, sửa, bật/tắt skills và ACP agents' },
+          { label: 'Plans', desc: 'plan.md + tasks.md nhẹ, đưa vào session làm context' },
+          { label: 'Runner tasks', desc: 'Nhận diện target Makefile / npm / Justfile, chạy như terminal' },
+          { label: 'Scheduled tasks', desc: 'Cron runner với AI cron generation và Telegram bridge' },
+          { label: 'AI prompt enhance', desc: 'Viết lại prompt nháp cho chính xác hơn, stream trực tiếp' },
+          { label: 'Push notifications', desc: 'VAPID web push cho sự kiện task và session' },
         ],
       },
     ],
@@ -756,7 +760,7 @@ export const vi: typeof en = {
     title: 'Tìm hiểu về Spec ADE',
     pillar1Title: '1. Spec ADE là gì?',
     pillar1Body:
-      'Spec ADE là môi trường làm việc thế hệ mới thiết kế dành riêng cho các tác nhân AI (AI agents). Thay vì nhúng AI vào các trình soạn thảo cũ kỹ, nó kết hợp trực tiếp terminal, trình duyệt, database và Git vào một tệp chạy (binary) duy nhất để các agent tự do điều khiển.',
+      'Spec ADE là một GUI/IDE self-hosted, thiết kế từ đầu dành riêng cho các tác nhân AI (AI agents). Thay vì nhúng AI vào trình soạn thảo cũ kỹ, nó phục vụ trọn bộ workspace — terminal, trình soạn thảo file, Git, database và HTTP client — từ một tệp chạy (binary) Rust duy nhất kèm SPA Vue nhúng sẵn, mở thẳng trong trình duyệt trên máy bạn hoặc VPS của bạn.',
     pillar2Title: '2. Để làm gì?',
     pillar2Body:
       'Tự động hóa hoàn toàn quy trình phát triển—từ lập trình tính năng mới, tái cấu trúc database, sửa lỗi, cho tới chạy test. Thay vì gõ từng dòng code, bạn đóng vai trò đạo diễn điều phối các agent (như Claude Code, Auggie, Codex) làm việc song song để đạt mục tiêu.',
@@ -781,16 +785,16 @@ export const vi: typeof en = {
     frontend: 'Frontend (Vue 3 + Quasar + Pinia)',
     storage: 'Storage',
     backendDesc:
-      'PTY manager, ACP threading model, Git engine hybrid, DB layer 6 drivers, Goal/Claw runners, license verification — đều phối hợp qua AppState typed.',
+      'PTY manager, ACP threading model, Git engine hybrid, DB layer 6 drivers, HTTP client, Goal runner, cron scheduled-task engine, license verification — đều phối hợp qua AppState typed.',
     frontendDesc:
-      'Hơn 50 Pinia stores Composition API, recursive pane tree, xterm Teleport pool, CodeMirror 6 với Vim và minimap, shortcut store context-aware.',
+      'Hơn 50 Pinia stores Composition API, recursive pane tree, xterm Teleport pool, CodeMirror 6 với Vim mode, minimap và MergeView, shortcut store context-aware.',
     storageDesc:
       'Một file `~/.config/spec-ade/settings.json` duy nhất. Password lưu OS keychain (AES-GCM fallback nếu headless). License keys ký Ed25519 từ portal.',
     protocols: [
       { name: 'REST', desc: 'CRUD, git, cài đặt, file, tìm kiếm' },
       { name: 'WebSocket', desc: 'PTY I/O, ACP relay, DB streaming' },
-      { name: 'SSE', desc: 'Sự kiện thay đổi Git, watch streams' },
-      { name: 'Proxy', desc: '/fw/{port}/{*rest} chuyển tiếp HTTP + WS' },
+      { name: 'SSE', desc: 'Sự kiện thay đổi Git, watch streams, AI token streams' },
+      { name: 'Proxy', desc: '/fw/{port} chuyển tiếp HTTP + WS tới local service' },
     ],
     metrics: [
       { value: '17.9k', label: 'symbols' },
@@ -803,7 +807,7 @@ export const vi: typeof en = {
     items: [
       { name: 'Rust 2024', desc: 'Axum, tokio, portable-pty, git2 (vendored), sqlx' },
       { name: 'Vue 3 + Quasar v2', desc: 'Pinia (Composition API), Vite, TypeScript strict' },
-      { name: 'CodeMirror 6', desc: 'Vim, minimap, language servers, MergeView' },
+      { name: 'CodeMirror 6', desc: 'Vim mode, minimap, dynamic language loading, MergeView' },
       { name: 'Tauri', desc: 'Desktop wrapper đa nền tảng với sidecar pattern' },
       { name: 'WebSocket / SSE', desc: 'PTY I/O, ACP relay, DB streaming, git events' },
       { name: 'Ed25519', desc: 'License signing & verification qua spec-ade-portal' },
@@ -822,7 +826,7 @@ export const vi: typeof en = {
       },
       {
         role: 'DevOps & SRE',
-        desc: 'PTY terminal với port forwarding, system metrics, GPU monitoring, background services, deploy 1 file duy nhất.',
+        desc: 'PTY terminal, kết nối DB qua SSH tunnel, system metrics, GPU monitoring, scheduled tasks theo cron, background services, deploy 1 file duy nhất.',
       },
       {
         role: 'Mobile-First Teams',
@@ -911,7 +915,7 @@ export const vi: typeof en = {
     recommendedBadge: '★ Khuyến nghị',
     autoOpenNote: 'Sau khi chạy, Spec ADE tự mở trên trình duyệt của bạn.',
     vpsNote: 'Trên VPS, CLI sẽ in URL — bạn mở từ browser local.',
-    nodejsRequired: 'Spec ADE cần Node.js 22 trở lên.',
+    nodejsRequired: 'Spec ADE cần Node.js 18 trở lên.',
     dontHaveNpx: 'Chưa cài npm/npx?',
     installNode: 'Cài Node.js',
     nodeMac: 'macOS',
@@ -941,8 +945,8 @@ export const vi: typeof en = {
       features: [
         'Workspace đầy đủ: Terminal, Git, DB, Editor',
         'Hub Multi-Agent CLI (Claude, Auggie, Codex...)',
-        'Quản lý Claw Farm & Goal Runner',
-        'Trình thiết kế Open Design & Port Forwarding',
+        'Quản lý Scheduled Tasks & Goal Runner',
+        'Trình thiết kế Open Design & HTTP client',
         'Kết nối API key cá nhân (Claude, OpenAI, Gemini...)',
         'Miễn phí sử dụng trong suốt giai đoạn Beta',
       ],
@@ -982,7 +986,7 @@ export const vi: typeof en = {
     backToHome: '← Về trang chủ',
     viewAllCta: 'Xem tất cả tính năng →',
     viewAllTitle: 'Khám phá tất cả tính năng',
-    viewAllDesc: 'Từ quản lý layout đệ quy, SSH tunnel, phân tích tiến trình GPU cho đến hybrid Git. Xem danh sách chi tiết các công cụ có sẵn.',
+    viewAllDesc: 'Từ quản lý layout đệ quy, SSH tunnel, phân tích tiến trình GPU cho đến hybrid Git và HTTP client tương thích Postman. Xem danh sách chi tiết các công cụ có sẵn.',
   },
   contextEnginePage: {
     title: 'Context Engine',
@@ -1183,42 +1187,6 @@ export const vi: typeof en = {
     benefitDesc3: 'Nếu biên dịch hoặc chạy test thất bại, agent đọc log lỗi và tự động chỉnh sửa lại code để sửa lỗi.',
     benefitTitle4: 'Không cần nhập prompt liên tục',
     benefitDesc4: 'Hoạt động độc lập dưới nền mà không cần điều hướng liên tục. Chỉ cần ngồi xem các dấu tick xanh sáng lên.'
-  },
-  portForwarding: {
-    chip: 'Truy cập từ xa',
-    title: 'Code ở bất kỳ đâu. Bảo mật.',
-    subtitle: 'Chuyển tiếp port workspace Spec ADE qua Cloudflare Tunnel. Truy cập toàn bộ ADE — terminal, agents, file tree — từ trình duyệt bất kỳ, ở bất kỳ đâu. Bảo vệ bằng mã Access Key.',
-    visualTitle: 'Mô phỏng Port Forwarding',
-    visualSub: 'Xem cách Spec ADE mở workspace ra internet qua Cloudflare Tunnel với bảo mật Access Key.',
-    localPort: 'Cổng ADE',
-    label: 'Nhãn',
-    proxyUrl: 'URL Proxy',
-    publicUrl: 'URL Công khai',
-    accessKey: 'Mã Access Key',
-    forwardToggle: 'Chuyển tiếp Cổng ADE',
-    tunnelToggle: 'Cloudflare Tunnel',
-    securityToggle: 'Bảo mật Access Key',
-    copyBtn: 'Sao chép',
-    copiedLabel: 'Đã sao chép!',
-    statusOffline: 'ADE Ngoại tuyến',
-    statusOfflineDesc: 'Bật chuyển tiếp port và Cloudflare Tunnel để truy cập Spec ADE từ xa.',
-    statusLocked: 'Yêu cầu Xác thực Truy cập',
-    statusLockedDesc: 'Workspace ADE này được bảo vệ bởi Access Key. Nhập mã để tiếp tục.',
-    autofillBtn: 'Tự điền mã',
-    unlockBtn: 'Mở khóa & Truy cập ADE',
-    wrongKey: 'Mã Access Key không đúng. Thử lại.',
-    activeDashboard: 'Spec ADE Workspace',
-    startSimulation: 'Bắt đầu Mô phỏng',
-    resetSimulation: 'Đặt lại',
-    simSuccess: '✓ Mô phỏng hoàn tất — Spec ADE đã có thể truy cập từ xa!',
-    benefitTitle1: 'Làm việc ở mọi nơi',
-    benefitDesc1: 'Truy cập toàn bộ workspace Spec ADE — terminal, agents, code editor — từ bất kỳ thiết bị nào có trình duyệt.',
-    benefitTitle2: 'Zero-config Tunnels',
-    benefitDesc2: 'Vượt qua NAT, tường lửa và DNS phức tạp. Cloudflare Tunnels tự động cấp phát URL chỉ với một click.',
-    benefitTitle3: 'Bảo mật Access Key',
-    benefitDesc3: 'Ngăn chặn truy cập trái phép. Chỉ người dùng có mã Access Key được tạo ngẫu nhiên mới vào được workspace.',
-    benefitTitle4: 'Proxy luôn hoạt động',
-    benefitDesc4: 'Chạy ADE trên server từ xa và truy cập từ laptop, tablet, hay thậm chí điện thoại của bạn.'
   }
 }
 

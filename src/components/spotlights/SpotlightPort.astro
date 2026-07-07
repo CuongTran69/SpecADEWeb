@@ -1,0 +1,216 @@
+---
+import type { Lang } from '~/i18n/strings'
+import { t } from '~/i18n/strings'
+
+interface Props {
+  lang: Lang
+}
+
+const { lang } = Astro.props
+const strings = t(lang)
+const isVi = lang === 'vi'
+
+const l = {
+  localLabel: isVi ? 'Dịch vụ local' : 'Local service',
+  proxyLabel: isVi ? 'Đường proxy' : 'Proxy path',
+  browserLabel: isVi ? 'Mở trong trình duyệt' : 'Open in browser',
+  wsNote: isVi ? 'HTTP + WebSocket upgrade' : 'HTTP + WebSocket upgrade',
+
+  b1Title: isVi ? 'Reverse proxy tích hợp' : 'Built-in reverse proxy',
+  b1Desc: isVi
+    ? 'Handler catch-all `/fw/{port}/{*rest}` chuyển tiếp thẳng tới cổng bất kỳ trên máy chạy Spec ADE — không cấu hình thêm.'
+    : 'A catch-all `/fw/{port}/{*rest}` handler forwards straight to any port on the machine running Spec ADE — zero extra config.',
+  b2Title: isVi ? 'HTTP + WebSocket' : 'HTTP + WebSocket',
+  b2Desc: isVi
+    ? 'Hỗ trợ cả request HTTP thường lẫn nâng cấp WebSocket, nên dev server có hot-reload vẫn hoạt động qua proxy.'
+    : 'Handles both plain HTTP and WebSocket upgrades, so hot-reloading dev servers keep working through the proxy.',
+  b3Title: isVi ? 'Hop-by-hop đúng chuẩn' : 'Correct hop-by-hop handling',
+  b3Desc: isVi
+    ? 'Lọc các header hop-by-hop theo RFC 7230 để proxy trong suốt, không làm hỏng kết nối keep-alive.'
+    : 'Filters hop-by-hop headers per RFC 7230 for a transparent proxy that never corrupts keep-alive connections.',
+  b4Title: isVi ? 'Tiện khi tự-host' : 'Handy when self-hosted',
+  b4Desc: isVi
+    ? 'Chạy Spec ADE trên một máy remote rồi xem admin UI database hay dev server của máy đó ngay trong trình duyệt.'
+    : 'Run Spec ADE on a remote box, then reach that box’s database admin UI or dev server right in your browser.',
+}
+---
+
+<section class="spotlight-section spotlight--accent" id="port-forwarding">
+  <div class="container-wide">
+    <header class="section-head reveal">
+      <span class="chip">{strings.spotlight.port.chip}</span>
+      <h2 class="section-title">{strings.spotlight.port.hook}</h2>
+      <p class="section-subtitle">{strings.spotlight.port.body}</p>
+    </header>
+
+    <div class="spotlight-grid">
+      <!-- Left: proxy flow mock -->
+      <div class="spotlight-visual reveal">
+        <div class="fw-mock" aria-hidden="true">
+          <div class="fw-node">
+            <span class="fw-node-label">{l.localLabel}</span>
+            <code class="fw-node-value">localhost:5173</code>
+            <span class="fw-node-sub">Vite dev server</span>
+          </div>
+
+          <div class="fw-arrow">
+            <span class="fw-arrow-line"></span>
+            <span class="fw-arrow-tag">{l.proxyLabel}</span>
+            <span class="fw-arrow-head">→</span>
+          </div>
+
+          <div class="fw-node fw-node--accent">
+            <span class="fw-node-label">Spec ADE</span>
+            <code class="fw-node-value">/fw/5173/</code>
+            <span class="fw-node-sub">{l.wsNote}</span>
+          </div>
+
+          <div class="fw-arrow">
+            <span class="fw-arrow-line"></span>
+            <span class="fw-arrow-tag">{l.browserLabel}</span>
+            <span class="fw-arrow-head">→</span>
+          </div>
+
+          <div class="fw-node">
+            <span class="fw-node-label">Browser</span>
+            <code class="fw-node-value">https://ade-host/fw/5173/</code>
+            <span class="fw-node-sub">200 OK</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: benefits -->
+      <div class="spotlight-copy reveal">
+        <div class="benefit-list">
+          <div class="benefit-item">
+            <h3 class="benefit-item-title">{l.b1Title}</h3>
+            <p class="benefit-item-desc">{l.b1Desc}</p>
+          </div>
+          <div class="benefit-item">
+            <h3 class="benefit-item-title">{l.b2Title}</h3>
+            <p class="benefit-item-desc">{l.b2Desc}</p>
+          </div>
+          <div class="benefit-item">
+            <h3 class="benefit-item-title">{l.b3Title}</h3>
+            <p class="benefit-item-desc">{l.b3Desc}</p>
+          </div>
+          <div class="benefit-item">
+            <h3 class="benefit-item-title">{l.b4Title}</h3>
+            <p class="benefit-item-desc">{l.b4Desc}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .spotlight-section {
+    padding-block: clamp(64px, 8vw, 100px);
+    border-block-end: 1px solid var(--color-border);
+    position: relative;
+    overflow: hidden;
+  }
+  .spotlight--accent { background: var(--color-surface); }
+
+  .section-head {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 36px;
+    max-width: 44rem;
+  }
+
+  .spotlight-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+    align-items: center;
+  }
+  @media (min-width: 1024px) {
+    .spotlight-grid { grid-template-columns: 1.1fr 0.9fr; gap: 56px; }
+  }
+
+  .spotlight-visual { min-width: 0; width: 100%; }
+  .spotlight-copy { display: flex; flex-direction: column; gap: 20px; }
+  .benefit-list { display: flex; flex-direction: column; gap: 16px; }
+
+  .benefit-item {
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    padding: 16px 20px;
+    border-radius: var(--radius-lg);
+    transition: all 150ms var(--ease-out-soft);
+  }
+  .benefit-item:hover { border-color: var(--color-border-strong); transform: translateX(4px); }
+  .benefit-item-title { font-size: 13.5px; font-weight: 700; color: var(--color-text); margin: 0 0 6px 0; letter-spacing: -0.01em; }
+  .benefit-item-desc { font-size: 12.5px; color: var(--color-text-secondary); line-height: 1.5; margin: 0; }
+
+  /* Proxy flow mock */
+  .fw-mock {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .fw-node {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 12px 16px;
+  }
+  .fw-node--accent {
+    border-color: var(--color-accent);
+    background: color-mix(in srgb, var(--color-accent) 6%, var(--color-bg));
+  }
+
+  .fw-node-label {
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-text-muted);
+  }
+  .fw-node-value {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--color-text);
+    word-break: break-all;
+  }
+  .fw-node-sub {
+    font-size: 10.5px;
+    color: var(--color-text-secondary);
+  }
+
+  .fw-arrow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 16px;
+    color: var(--color-text-muted);
+  }
+  .fw-arrow-line {
+    width: 1px;
+    height: 18px;
+    background: var(--color-border-strong);
+    margin-left: 2px;
+  }
+  .fw-arrow-tag {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .fw-arrow-head {
+    font-size: 12px;
+    color: var(--color-accent);
+  }
+</style>

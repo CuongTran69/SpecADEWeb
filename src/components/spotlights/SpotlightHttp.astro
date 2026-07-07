@@ -1,0 +1,335 @@
+---
+import type { Lang } from '~/i18n/strings'
+import { t } from '~/i18n/strings'
+
+interface Props {
+  lang: Lang
+}
+
+const { lang } = Astro.props
+const strings = t(lang)
+const isVi = lang === 'vi'
+
+const l = {
+  collections: isVi ? 'COLLECTIONS' : 'COLLECTIONS',
+  send: isVi ? 'Gửi' : 'Send',
+  status: isVi ? '200 OK · 84ms · 1.2 KB' : '200 OK · 84ms · 1.2 KB',
+  reqAuth: 'POST /auth/login',
+  reqUsers: 'GET /users',
+  reqOrders: 'GET /orders/:id',
+  reqHealth: 'GET /health',
+  envLabel: isVi ? 'Môi trường' : 'Environment',
+  envValue: 'staging',
+  bodyTab: 'Body',
+  headersTab: 'Headers',
+  responseLabel: isVi ? 'Phản hồi' : 'Response',
+
+  // Benefits
+  b1Title: isVi ? 'Tương thích Postman' : 'Postman-compatible',
+  b1Desc: isVi
+    ? 'Import và export Postman Collection v2.1 cùng environment. Cả import từ lệnh curl — dán vào là thành request.'
+    : 'Import and export Postman Collection v2.1 and environments. curl import too — paste a command and it becomes a request.',
+  b2Title: isVi ? 'Collections & environments' : 'Collections & environments',
+  b2Desc: isVi
+    ? 'Nhiều workspace, cây Collections → Folders → Requests, kèm biến environment và biến bí mật lưu tách biệt.'
+    : 'Multiple workspaces, a Collections → Folders → Requests tree, plus environment variables and secret variables stored separately.',
+  b3Title: isVi ? 'Thực thi SSE-streaming' : 'SSE-streaming execution',
+  b3Desc: isVi
+    ? 'Stream status, headers, body và timing theo thời gian thực; huỷ request giữa chừng bất kỳ lúc nào.'
+    : 'Stream status, headers, body, and timing in real time; cancel any in-flight request at will.',
+  b4Title: isVi ? 'Lịch sử theo workspace' : 'Per-workspace history',
+  b4Desc: isVi
+    ? '500 request gần nhất mỗi workspace được lưu lại, biến được resolve ngay tại thời điểm gửi.'
+    : 'The last 500 requests per workspace are kept, with variables resolved at send time.',
+}
+
+const reqRows = [
+  { method: 'POST', path: '/auth/login', tone: 'post', active: true },
+  { method: 'GET', path: '/users', tone: 'get', active: false },
+  { method: 'GET', path: '/orders/:id', tone: 'get', active: false },
+  { method: 'GET', path: '/health', tone: 'get', active: false },
+]
+---
+
+<section class="spotlight-section spotlight--accent" id="http">
+  <div class="container-wide">
+    <header class="section-head reveal">
+      <span class="chip">{strings.spotlight.http.chip}</span>
+      <h2 class="section-title">{strings.spotlight.http.hook}</h2>
+      <p class="section-subtitle">{strings.spotlight.http.body}</p>
+    </header>
+
+    <div class="spotlight-grid">
+      <!-- Left: Visual mockup -->
+      <div class="spotlight-visual reveal">
+        <div class="http-mock" aria-hidden="true">
+          <div class="http-mock-grid">
+            <!-- Sidebar: collections -->
+            <aside class="http-sidebar">
+              <div class="http-sidebar-head">{l.collections}</div>
+              <div class="http-req-list">
+                {reqRows.map((r) => (
+                  <div class={`http-req-item${r.active ? ' http-req-item--active' : ''}`}>
+                    <span class={`http-method http-method--${r.tone}`}>{r.method}</span>
+                    <span class="http-req-path">{r.path}</span>
+                  </div>
+                ))}
+              </div>
+              <div class="http-env">
+                <span class="http-env-label">{l.envLabel}</span>
+                <span class="http-env-value">{l.envValue}</span>
+              </div>
+            </aside>
+
+            <!-- Main: request + response -->
+            <main class="http-main">
+              <div class="http-urlbar">
+                <span class="http-method http-method--post">POST</span>
+                <span class="http-url">https://api.staging/auth/login</span>
+                <button type="button" class="http-send-btn">{l.send}</button>
+              </div>
+
+              <div class="http-tabs">
+                <span class="http-tab http-tab--active">{l.bodyTab}</span>
+                <span class="http-tab">{l.headersTab}</span>
+              </div>
+
+              <pre class="http-body"><code>{'{\n  "email": "dev@viber.vn",\n  "password": "••••••••"\n}'}</code></pre>
+
+              <div class="http-response-head">
+                <span class="http-response-label">{l.responseLabel}</span>
+                <span class="http-status">{l.status}</span>
+              </div>
+              <pre class="http-response"><code>{'{\n  "token": "eyJhbGci...",\n  "expiresIn": 3600\n}'}</code></pre>
+            </main>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: benefits -->
+      <div class="spotlight-copy reveal">
+        <div class="benefit-list">
+          <div class="benefit-item">
+            <h3 class="benefit-item-title">{l.b1Title}</h3>
+            <p class="benefit-item-desc">{l.b1Desc}</p>
+          </div>
+          <div class="benefit-item">
+            <h3 class="benefit-item-title">{l.b2Title}</h3>
+            <p class="benefit-item-desc">{l.b2Desc}</p>
+          </div>
+          <div class="benefit-item">
+            <h3 class="benefit-item-title">{l.b3Title}</h3>
+            <p class="benefit-item-desc">{l.b3Desc}</p>
+          </div>
+          <div class="benefit-item">
+            <h3 class="benefit-item-title">{l.b4Title}</h3>
+            <p class="benefit-item-desc">{l.b4Desc}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .spotlight-section {
+    padding-block: clamp(64px, 8vw, 100px);
+    border-block-end: 1px solid var(--color-border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .spotlight--accent { background: var(--color-surface); }
+
+  .section-head {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 36px;
+    max-width: 44rem;
+  }
+
+  .spotlight-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+    align-items: start;
+  }
+
+  @media (min-width: 1024px) {
+    .spotlight-grid {
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 56px;
+    }
+  }
+
+  .spotlight-visual { min-width: 0; width: 100%; }
+
+  .spotlight-copy { display: flex; flex-direction: column; gap: 20px; }
+  .benefit-list { display: flex; flex-direction: column; gap: 16px; }
+
+  .benefit-item {
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    padding: 16px 20px;
+    border-radius: var(--radius-lg);
+    transition: all 150ms var(--ease-out-soft);
+  }
+  .benefit-item:hover { border-color: var(--color-border-strong); transform: translateX(4px); }
+  .benefit-item-title { font-size: 13.5px; font-weight: 700; color: var(--color-text); margin: 0 0 6px 0; letter-spacing: -0.01em; }
+  .benefit-item-desc { font-size: 12.5px; color: var(--color-text-secondary); line-height: 1.5; margin: 0; }
+
+  /* Mock */
+  .http-mock {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    font-family: var(--font-sans);
+    font-size: 12px;
+    height: 380px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
+  }
+
+  .http-mock-grid {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    height: 100%;
+  }
+
+  .http-sidebar {
+    background: var(--color-raised);
+    border-right: 1px solid var(--color-border);
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    box-sizing: border-box;
+    overflow-y: auto;
+  }
+
+  .http-sidebar-head {
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--color-text-muted);
+    margin-bottom: 8px;
+  }
+
+  .http-req-list { display: flex; flex-direction: column; gap: 4px; }
+
+  .http-req-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 5px 7px;
+    border-radius: var(--radius-sm);
+    border: 1px solid transparent;
+    cursor: default;
+  }
+  .http-req-item--active { background: var(--color-surface); border-color: var(--color-border-strong); }
+
+  .http-method {
+    font-size: 8.5px;
+    font-weight: 700;
+    font-family: var(--font-mono);
+    padding: 1px 4px;
+    border-radius: 3px;
+    flex-shrink: 0;
+    letter-spacing: 0.02em;
+  }
+  .http-method--get { background: rgba(16, 185, 129, 0.12); color: #10b981; }
+  .http-method--post { background: rgba(59, 130, 246, 0.12); color: #3b82f6; }
+
+  .http-req-path {
+    font-size: 10.5px;
+    font-family: var(--font-mono);
+    color: var(--color-text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .http-env {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding-top: 10px;
+    border-top: 1px solid var(--color-border);
+  }
+  .http-env-label { font-size: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-text-muted); }
+  .http-env-value { font-size: 10.5px; font-family: var(--font-mono); color: var(--color-accent); }
+
+  .http-main {
+    display: flex;
+    flex-direction: column;
+    background: var(--color-bg);
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .http-urlbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-raised);
+  }
+
+  .http-url {
+    flex-grow: 1;
+    font-size: 11px;
+    font-family: var(--font-mono);
+    color: var(--color-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .http-send-btn {
+    background: var(--color-accent);
+    color: #080810;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 10.5px;
+    font-weight: 700;
+    padding: 4px 12px;
+    cursor: default;
+    flex-shrink: 0;
+  }
+
+  .http-tabs {
+    display: flex;
+    gap: 14px;
+    padding: 8px 12px 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .http-tab { font-size: 10.5px; font-weight: 600; color: var(--color-text-muted); padding-bottom: 6px; border-bottom: 2px solid transparent; }
+  .http-tab--active { color: var(--color-accent); border-bottom-color: var(--color-accent); }
+
+  .http-body,
+  .http-response {
+    margin: 0;
+    padding: 10px 12px;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    line-height: 1.5;
+    color: var(--color-text-secondary);
+    white-space: pre;
+    overflow-x: auto;
+  }
+
+  .http-response-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 12px;
+    border-top: 1px solid var(--color-border);
+    background: var(--color-raised);
+    margin-top: auto;
+  }
+  .http-response-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-text-muted); }
+  .http-status { font-size: 10px; font-family: var(--font-mono); color: var(--color-success); font-weight: 700; }
+</style>

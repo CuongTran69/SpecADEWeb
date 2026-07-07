@@ -108,12 +108,12 @@ export const CALLOUT_ICON: Record<'note' | 'tip' | 'warning', string> = {
 }
 
 // ---------------------------------------------------------------------
-// Navigation — 4 groups, 13 pages.
+// Navigation — 4 groups, 14 pages.
 // ---------------------------------------------------------------------
 export const DOCS_NAV: NavGroup[] = [
   { title: { vi: 'Bắt đầu', en: 'Get started' }, icon: 'rocket', items: ['introduction', 'quickstart'] },
   { title: { vi: 'Khái niệm cốt lõi', en: 'Core concepts' }, icon: 'layers', items: ['projects-sessions', 'panes-tabs', 'chat', 'terminal', 'file-editor'] },
-  { title: { vi: 'Tính năng', en: 'Features' }, icon: 'zap', items: ['git', 'database', 'send-with-goal', 'spec', 'monitor'] },
+  { title: { vi: 'Tính năng', en: 'Features' }, icon: 'zap', items: ['git', 'database', 'http-client', 'send-with-goal', 'spec', 'monitor'] },
   { title: { vi: 'Tham khảo', en: 'Reference' }, icon: 'book', items: ['settings', 'shortcuts'] },
 ]
 
@@ -136,10 +136,11 @@ export const DOCS_PAGES: Record<string, DocPage> = {
       { t: 'features', items: [
         { icon: 'msg', h: { vi: 'Chat đa-agent', en: 'Multi-agent chat' }, p: { vi: 'Mỗi session chọn Auggie, Claude Code (chế độ PTY) hoặc một ACP agent. I/O truyền qua WebSocket với terminal nhúng thật.', en: 'Each session runs Auggie, Claude Code (PTY mode), or an ACP agent. I/O streams over WebSocket with a real embedded terminal.' } },
         { icon: 'target', h: { vi: 'Goal — vòng lặp tự động', en: 'Goal — autonomous loops' }, p: { vi: 'Gửi kèm tiêu chí thành công; một goal-agent giám sát từng lượt và quyết định tiếp tục hay hoàn tất.', en: 'Send a message with a success criterion; a goal-agent supervises every turn and decides whether to continue or complete.' } },
-        { icon: 'layout', h: { vi: 'Pane & tab linh hoạt', en: 'Flexible panes & tabs' }, p: { vi: 'Cây pane đệ quy, split ngang/dọc, 9 loại tab. Layout được lưu theo từng project.', en: 'A recursive pane tree, horizontal/vertical splits, 9 tab kinds. Layout persists per project.' } },
+        { icon: 'layout', h: { vi: 'Pane & tab linh hoạt', en: 'Flexible panes & tabs' }, p: { vi: 'Cây pane đệ quy, split ngang/dọc, 15 loại tab. Layout được lưu theo từng project.', en: 'A recursive pane tree, horizontal/vertical splits, 15 tab kinds. Layout persists per project.' } },
         { icon: 'git', h: { vi: 'Git tích hợp', en: 'Integrated Git' }, p: { vi: 'Trạng thái realtime, diff/merge editor, và sinh commit message bằng AI từ diff hiện tại.', en: 'Realtime status, a diff/merge editor, and AI-generated commit messages from the current diff.' } },
         { icon: 'db', h: { vi: 'Database workspace', en: 'Database workspace' }, p: { vi: 'Client SQL + NoSQL đa driver: Postgres, MySQL, MariaDB, SQLite, MongoDB, Redis — kèm Safe Mode.', en: 'A multi-driver SQL + NoSQL client: Postgres, MySQL, MariaDB, SQLite, MongoDB, Redis — with Safe Mode.' } },
-        { icon: 'cpu', h: { vi: 'Một binary duy nhất', en: 'Single binary' }, p: { vi: 'Backend Rust phục vụ cả API lẫn SPA đã nhúng. Có bản desktop đóng gói qua Tauri.', en: 'A Rust backend serves both the API and the embedded SPA. A desktop build ships via Tauri.' } },
+        { icon: 'zap', h: { vi: 'HTTP client', en: 'HTTP client' }, p: { vi: 'Client HTTP tương thích Postman: collections, environments, thực thi SSE-streaming, import curl và Postman v2.1.', en: 'A Postman-compatible HTTP client: collections, environments, SSE-streaming execution, and curl / Postman v2.1 import.' } },
+        { icon: 'cpu', h: { vi: 'Một binary duy nhất', en: 'Single binary' }, p: { vi: 'Backend Rust phục vụ cả API lẫn SPA nhúng, mở thẳng trong trình duyệt. Có thêm bản desktop đóng gói qua Tauri.', en: 'A Rust backend serves both the API and the embedded SPA right in your browser. A desktop build also ships via Tauri.' } },
       ] },
       { t: 'callout', kind: 'note', title: { vi: 'Đối tượng người dùng', en: 'Who it is for' },
         x: { vi: 'Spec ADE hướng tới lập trình viên dùng IDE JetBrains và những ai muốn điều phối trợ lý AI ngay trong một workspace giống IDE thay vì nhiều cửa sổ rời rạc.',
@@ -197,14 +198,14 @@ export const DOCS_PAGES: Record<string, DocPage> = {
     title: { vi: 'Pane & Tab', en: 'Panes & Tabs' },
     eyebrow: { vi: 'Khái niệm cốt lõi', en: 'Core concepts' },
     blocks: [
-      { t: 'lede', x: { vi: 'Hệ thống bố cục giống IDE: chia màn hình thành các pane lồng nhau, mỗi pane chứa nhiều tab thuộc 9 loại.', en: 'An IDE-like layout system: split the screen into nested panes, each holding multiple tabs across 9 kinds.' } },
+      { t: 'lede', x: { vi: 'Hệ thống bố cục giống IDE: chia màn hình thành các pane lồng nhau, mỗi pane chứa nhiều tab thuộc 15 loại.', en: 'An IDE-like layout system: split the screen into nested panes, each holding multiple tabs across 15 kinds.' } },
       { t: 'h2', x: { vi: 'Cây pane', en: 'The pane tree' } },
       { t: 'p', x: { vi: 'Pane được tổ chức thành cây đệ quy: nút trục (axis) là các lần split ngang/dọc, nút lá là pane thật có thanh tab riêng. Bạn split tùy ý, kéo để chỉnh kích thước, và pane tự gộp lại khi đóng tab cuối cùng.', en: 'Panes form a recursive tree: axis nodes are horizontal/vertical splits, leaf nodes are real panes with their own tab bar. Split freely, drag to resize, and a pane auto-unsplits when its last tab closes.' } },
       { t: 'features', items: [
         { icon: 'layout', h: { vi: 'Split ngang & dọc', en: 'Horizontal & vertical splits' }, p: { vi: 'Phím tắt: ⌘\\ split phải, ⌘⇧\\ split xuống. Có tay kéo để chỉnh tỉ lệ.', en: 'Shortcuts: ⌘\\ splits right, ⌘⇧\\ splits down. Drag handles adjust the ratio.' } },
         { icon: 'cpu', h: { vi: 'Layout được lưu', en: 'Persisted layout' }, p: { vi: 'Layout lưu theo từng project trong `settings.json`, kèm một `lastLayout` toàn cục và các preset đặt tên.', en: 'Layout persists per project in `settings.json`, plus a global `lastLayout` and named presets.' } },
       ] },
-      { t: 'h2', x: { vi: '9 loại tab', en: 'The 9 tab kinds' } },
+      { t: 'h2', x: { vi: '15 loại tab', en: 'The 15 tab kinds' } },
       { t: 'table', cols: [{ vi: 'Loại', en: 'Kind' }, { vi: 'Nội dung', en: 'Content' }], rows: [
         ['`session`', { vi: 'Phiên chat/terminal với agent', en: 'A chat/terminal session with an agent' }],
         ['`file`', { vi: 'Trình soạn thảo file (CodeMirror 6)', en: 'File editor (CodeMirror 6)' }],
@@ -213,6 +214,10 @@ export const DOCS_PAGES: Record<string, DocPage> = {
         ['`gitlog`', { vi: 'Lịch sử commit Git', en: 'Git commit history' }],
         ['`terminal`', { vi: 'Terminal độc lập', en: 'Standalone terminal' }],
         ['`monitor`', { vi: 'Theo dõi tiến trình & tài nguyên hệ thống', en: 'Process & system-resource monitor' }],
+        ['`task`', { vi: 'Kết quả chạy task của project', en: 'Runner task output' }],
+        ['`search`', { vi: 'Kết quả tìm kiếm ripgrep', en: 'Ripgrep search results' }],
+        ['`skill` · `skill-manager`', { vi: 'Soạn thảo và quản lý skills', en: 'Skill editor and management' }],
+        ['`agent` · `agent-manager`', { vi: 'Soạn thảo và quản lý agents', en: 'Agent editor and management' }],
       ] },
       { t: 'callout', kind: 'tip', title: { vi: 'Tab file', en: 'File tabs' },
         x: { vi: 'Tab file hiển thị chấm “dirty” khi có thay đổi chưa lưu và tự lưu khi bạn chuyển sang tab khác. Mở/sửa file: ⌘K. Lưu: ⌘S.', en: 'File tabs show a “dirty” dot for unsaved changes and auto-save when you switch away. View/edit: ⌘K. Save: ⌘S.' } },
@@ -294,6 +299,8 @@ export const DOCS_PAGES: Record<string, DocPage> = {
         [{ vi: 'Line numbers', en: 'Line numbers' }, { vi: 'Đánh số dòng; bật/tắt trong Settings', en: 'Line numbering; toggle in Settings' }],
         [{ vi: 'Bracket matching', en: 'Bracket matching' }, { vi: 'Tô sáng cặp ngoặc khớp', en: 'Highlights matching bracket pairs' }],
         [{ vi: 'Rainbow brackets', en: 'Rainbow brackets' }, { vi: 'Mỗi cấp độ ngoặc có màu khác', en: 'Different color per nesting level' }],
+        [{ vi: 'Vim mode', en: 'Vim mode' }, { vi: 'Đầy đủ phím tắt Vim trong editor', en: 'Full Vim keybindings in the editor' }],
+        [{ vi: 'Minimap', en: 'Minimap' }, { vi: 'Bản đồ thu nhỏ mã nguồn ở cạnh bên', en: 'Code minimap in the sidebar' }],
         [{ vi: 'Autocomplete', en: 'Autocomplete' }, { vi: 'Gợi ý từ khoá; Activate on typing hoặc Manual', en: 'Keyword suggestions; on-typing or manual' }],
         [{ vi: 'Find & replace', en: 'Find & replace' }, { vi: 'Ctrl+F tìm trong file; Ctrl+H thay thế', en: 'Ctrl+F search; Ctrl+H replace; regex/case-insensitive modes' }],
       ] },
@@ -397,6 +404,31 @@ export const DOCS_PAGES: Record<string, DocPage> = {
         x: { vi: 'Các công cụ dump không đi kèm sẽ được tải về thư mục cache khi dùng lần đầu, và mọi tệp tải về đều được đối chiếu với một SHA-256 cố định trước khi sử dụng.', en: 'Dump tools that are not bundled are downloaded into a cache directory on first use, and every download is verified against a hardcoded SHA-256 hash before it runs.' } },
       { t: 'h2', x: { vi: 'Nhập kết nối có sẵn', en: 'Import existing connections' } },
       { t: 'p', x: { vi: 'Trình wizard nhập cấu hình từ TablePlus, DBeaver, Sequel Ace và Beekeeper. Chỉ đọc metadata kết nối — không bao giờ giải mã mật khẩu đã lưu của các công cụ đó.', en: 'A wizard imports connection config from TablePlus, DBeaver, Sequel Ace, and Beekeeper. It reads connection metadata only — it never decrypts those tools’ stored passwords.' } },
+    ],
+  },
+  'http-client': {
+    title: { vi: 'HTTP client', en: 'HTTP client' },
+    eyebrow: { vi: 'Tính năng', en: 'Features' },
+    blocks: [
+      { t: 'lede', x: { vi: 'Một HTTP client tương thích Postman ngay trong Spec ADE: tổ chức request theo collection, đổi environment, gửi và xem response stream theo thời gian thực — không cần mở công cụ API riêng.', en: 'A Postman-compatible HTTP client inside Spec ADE: organize requests into collections, switch environments, and send and stream responses in real time — no separate API tool needed.' } },
+      { t: 'h2', x: { vi: 'Workspace, collection & request', en: 'Workspaces, collections & requests' } },
+      { t: 'p', x: { vi: 'Tạo nhiều workspace có tên riêng; mỗi workspace giữ cây Collections → Folders → Requests với đầy đủ CRUD. Workspace đang hoạt động được lưu theo từng session.', en: 'Create multiple named workspaces; each holds a Collections → Folders → Requests tree with full CRUD. The active workspace is persisted per session.' } },
+      { t: 'h2', x: { vi: 'Environment & biến bí mật', en: 'Environments & secret variables' } },
+      { t: 'p', x: { vi: 'Khai báo nhiều environment và chọn environment đang dùng. Biến bí mật được lưu tách biệt và không bao giờ được serialize chung với dữ liệu workspace. Biến được resolve ngay tại thời điểm gửi (environment + biến bí mật).', en: 'Declare multiple environments and pick the active one. Secret variables are stored separately and never serialized with workspace data. Variables resolve at send time (environment + secret variables).' } },
+      { t: 'h2', x: { vi: 'Thực thi', en: 'Execution' } },
+      { t: 'ul', items: [
+        { vi: 'Thực thi SSE-streaming: `POST /api/http/execute/events` stream sự kiện status, headers, body và timing.', en: 'SSE-streaming execution: `POST /api/http/execute/events` streams status, headers, body, and timing events.' },
+        { vi: 'Huỷ request đang chạy giữa chừng.', en: 'In-flight request cancellation.' },
+        { vi: 'Lịch sử request: 500 mục gần nhất mỗi workspace, lưu vào `history.json`.', en: 'Request history: the last 500 entries per workspace, persisted to `history.json`.' },
+      ] },
+      { t: 'h2', x: { vi: 'Nhập & xuất', en: 'Import & export' } },
+      { t: 'ul', items: [
+        { vi: 'Nhập/xuất Postman Collection v2.1.', en: 'Postman Collection v2.1 import and export.' },
+        { vi: 'Nhập/xuất Postman Environment.', en: 'Postman Environment import and export.' },
+        { vi: 'Nhập từ curl (phân tích các cờ thành một request).', en: 'curl import (parses flags into a request object).' },
+      ] },
+      { t: 'callout', kind: 'tip', title: { vi: 'Cùng cửa sổ với code', en: 'Same window as your code' },
+        x: { vi: 'HTTP client là một workspace tab riêng, ngang hàng với Database — bạn thử API và đọc code trong cùng một cửa sổ, không phải nhảy sang công cụ khác.', en: 'The HTTP client is its own workspace tab, on par with Database — you test APIs and read code in the same window instead of jumping to another tool.' } },
     ],
   },
   shortcuts: {

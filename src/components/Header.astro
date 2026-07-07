@@ -53,7 +53,6 @@ function isActive(route: string): boolean {
       <a href={pathFor(lang, '/docs')} class:list={['nav-link', { 'nav-link--active': docsMode || isActive('/docs') }]}>{strings.nav.docs}</a>
       <a href={pathFor(lang, '/kits')} class:list={['nav-link', { 'nav-link--active': isActive('/kits') }]}>{strings.nav.kits}</a>
       <a href={pathFor(lang, '/#pricing')} class="nav-link">{strings.nav.pricing}</a>
-      <a href={pathFor(lang, '/install')} class:list={['nav-link', { 'nav-link--active': isActive('/install') }]}>{strings.nav.getStarted}</a>
       <a href={pathFor(lang, '/faq')} class:list={['nav-link', { 'nav-link--active': isActive('/faq') }]}>{strings.nav.faq}</a>
     </nav>
 
@@ -77,16 +76,6 @@ function isActive(route: string): boolean {
         {strings.nav.switchTo}
       </a>
       <ThemeToggle />
-      <a
-        href={pathFor(lang, '/install')}
-        class="btn btn-primary header-cta"
-        data-testid="header-cta"
-      >
-        {strings.nav.getStarted}
-        <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M3 8h10M9 4l4 4-4 4"/>
-        </svg>
-      </a>
       {docsMode && (
         <button
           type="button"
@@ -127,9 +116,7 @@ function isActive(route: string): boolean {
       <a href={pathFor(lang, '/docs')} class:list={[{ 'nav-link--active': docsMode || isActive('/docs') }]} data-testid="mobile-nav-link-docs">{strings.nav.docs}</a>
       <a href={pathFor(lang, '/kits')} class:list={[{ 'nav-link--active': isActive('/kits') }]} data-testid="mobile-nav-link-kits">{strings.nav.kits}</a>
       <a href={pathFor(lang, '/#pricing')} data-testid="mobile-nav-link-pricing">{strings.nav.pricing}</a>
-      <a href={pathFor(lang, '/install')} class:list={[{ 'nav-link--active': isActive('/install') }]} data-testid="mobile-nav-link-install">{strings.nav.getStarted}</a>
       <a href={pathFor(lang, '/faq')} class:list={[{ 'nav-link--active': isActive('/faq') }]} data-testid="mobile-nav-link-faq">{strings.nav.faq}</a>
-      <a href={pathFor(lang, '/install')} data-testid="mobile-nav-link-get-started" class="mobile-cta">{strings.nav.getStarted}</a>
       <a href={otherPath} hreflang={otherLang} class="mobile-lang-link">{strings.nav.switchTo}</a>
     </nav>
   </div>
