@@ -50,6 +50,7 @@ function isActive(route: string): boolean {
       <a href={pathFor(lang, '/features')} class:list={['nav-link', { 'nav-link--active': isActive('/features') }]}>{strings.nav.features}</a>
       <a href={pathFor(lang, '/context-engine')} class:list={['nav-link', { 'nav-link--active': isActive('/context-engine') }]}>{strings.nav.contextEngine}</a>
       <a href={pathFor(lang, '/notepad-ai')} class:list={['nav-link', { 'nav-link--active': isActive('/notepad-ai') }]}>{strings.nav.notepadAi}</a>
+      <a href={pathFor(lang, '/browzy')} class:list={['nav-link', { 'nav-link--active': isActive('/browzy') }]}>{strings.nav.browzy}</a>
       <a href={pathFor(lang, '/docs')} class:list={['nav-link', { 'nav-link--active': docsMode || isActive('/docs') }]}>{strings.nav.docs}</a>
       <a href={pathFor(lang, '/kits')} class:list={['nav-link', { 'nav-link--active': isActive('/kits') }]}>{strings.nav.kits}</a>
       <a href={pathFor(lang, '/#pricing')} class="nav-link">{strings.nav.pricing}</a>
@@ -113,6 +114,7 @@ function isActive(route: string): boolean {
       <a href={pathFor(lang, '/features')} class:list={[{ 'nav-link--active': isActive('/features') }]} data-testid="mobile-nav-link-features">{strings.nav.features}</a>
       <a href={pathFor(lang, '/context-engine')} class:list={[{ 'nav-link--active': isActive('/context-engine') }]} data-testid="mobile-nav-link-context-engine">{strings.nav.contextEngine}</a>
       <a href={pathFor(lang, '/notepad-ai')} class:list={[{ 'nav-link--active': isActive('/notepad-ai') }]} data-testid="mobile-nav-link-notepad-ai">{strings.nav.notepadAi}</a>
+      <a href={pathFor(lang, '/browzy')} class:list={[{ 'nav-link--active': isActive('/browzy') }]} data-testid="mobile-nav-link-browzy">{strings.nav.browzy}</a>
       <a href={pathFor(lang, '/docs')} class:list={[{ 'nav-link--active': docsMode || isActive('/docs') }]} data-testid="mobile-nav-link-docs">{strings.nav.docs}</a>
       <a href={pathFor(lang, '/kits')} class:list={[{ 'nav-link--active': isActive('/kits') }]} data-testid="mobile-nav-link-kits">{strings.nav.kits}</a>
       <a href={pathFor(lang, '/#pricing')} data-testid="mobile-nav-link-pricing">{strings.nav.pricing}</a>

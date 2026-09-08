@@ -1,0 +1,476 @@
+---
+import type { Lang } from '~/i18n/strings'
+import { t } from '~/i18n/strings'
+import { pathFor } from '~/i18n/utils'
+
+interface Props {
+  lang: Lang
+}
+
+const { lang } = Astro.props
+const strings = t(lang)
+const content = strings.browzyPage
+const installHref = pathFor(lang, '/browzy/install')
+---
+
+<section class="bz-hero bz-section">
+  <div class="container-wide">
+    <div class="bz-hero-inner reveal">
+      <span class="chip">{content.hero.badge}</span>
+      <h2 class="bz-hero-heading">{content.hero.heading}</h2>
+      <p class="bz-hero-subtitle">{content.hero.subtitle}</p>
+      <div class="bz-hero-ctas">
+        <a href={installHref} class="btn btn-primary">
+          {content.hero.primaryCta}
+          <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3 8h10M9 4l4 4-4 4"/>
+          </svg>
+        </a>
+        <a href="https://github.com/Nguy-n-Th-Huy/Browzy" rel="noopener noreferrer" target="_blank" class="btn btn-ghost">
+          {content.hero.secondaryCta}
+        </a>
+      </div>
+    </div>
+
+    <figure class="bz-demo reveal">
+      <img
+        src="/browzy/screenshots/panel-in-action.png"
+        alt={content.demo.alt}
+        width="1700"
+        height="964"
+        loading="lazy"
+        decoding="async"
+      />
+      <figcaption>{content.demo.caption}</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="bz-comparison bz-section" id="comparison">
+  <div class="container-wide">
+    <header class="section-head reveal">
+      <h2 class="section-title">{content.comparison.heading}</h2>
+    </header>
+
+    <div class="bz-comparison-table-wrap reveal">
+      <table class="bz-comparison-table">
+        <thead>
+          <tr>
+            <th class="bz-comparison-label-col"></th>
+            <th>{content.comparison.officialLabel}</th>
+            <th>{content.comparison.browzyLabel}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {content.comparison.rows.map((row) => (
+            <tr>
+              <td class="bz-comparison-label">{row.label}</td>
+              <td class="bz-comparison-official">{row.official}</td>
+              <td class="bz-comparison-browzy">{row.browzy}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="bz-halves bz-section" id="two-halves">
+  <div class="container-wide">
+    <header class="section-head reveal">
+      <h2 class="section-title">{content.twoHalves.heading}</h2>
+      <p class="section-subtitle">{content.twoHalves.body}</p>
+    </header>
+
+    <div class="bz-halves-grid reveal">
+      {content.twoHalves.items.map((item) => (
+        <div class="bz-half-card">
+          <h3 class="bz-half-name">{item.name}</h3>
+          <p class="bz-half-desc">{item.desc}</p>
+          <p class="bz-half-where">{item.where}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<section class="bz-features bz-section" id="features">
+  <div class="container-wide">
+    <header class="section-head reveal">
+      <h2 class="section-title">{content.features.heading}</h2>
+    </header>
+    <div class="bz-features-grid">
+      {content.features.items.map((feature) => (
+        <div class="bz-feature-card reveal">
+          <svg class="bz-feature-icon" viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M8 1v14M1 8h14M3.5 3.5l9 9M12.5 3.5l-9 9"/>
+          </svg>
+          <h3 class="bz-feature-title">{feature.title}</h3>
+          <p class="bz-feature-desc">{feature.desc}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<section class="bz-privacy bz-section">
+  <div class="container-wide">
+    <div class="bz-privacy-inner reveal">
+      <h2 class="bz-privacy-heading">{content.privacy.heading}</h2>
+      <p class="bz-privacy-body">{content.privacy.body}</p>
+      <a href={content.privacy.linkHref} rel="noopener noreferrer" target="_blank" class="bz-privacy-link">
+        {content.privacy.linkLabel}
+        <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 8h10M9 4l4 4-4 4"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="bz-github bz-section bz-section--accent">
+  <div class="container-wide">
+    <div class="bz-github-inner reveal">
+      <h2 class="bz-github-heading">{content.github.heading}</h2>
+      <p class="bz-github-body">{content.github.body}</p>
+      <div class="bz-github-ctas">
+        <a href={installHref} class="btn btn-primary">
+          {content.github.installCta}
+        </a>
+        <a href="https://github.com/Nguy-n-Th-Huy/Browzy" rel="noopener noreferrer" target="_blank" class="btn btn-secondary">
+          {content.github.button}
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<p class="bz-disclaimer">{content.disclaimer}</p>
+
+<style>
+  .bz-demo {
+    margin: 2.5rem auto 0;
+    max-width: 68rem;
+  }
+  .bz-demo img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 0.75rem;
+    border: 1px solid color-mix(in oklab, currentColor 12%, transparent);
+  }
+  .bz-demo figcaption {
+    margin-top: 0.75rem;
+    text-align: center;
+    font-size: 0.875rem;
+    opacity: 0.7;
+  }
+
+  .bz-section {
+    padding: clamp(56px, 8vw, 88px) 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .bz-section:last-of-type {
+    border-bottom: none;
+  }
+
+  .bz-section--accent {
+    background: var(--color-surface);
+  }
+
+  .container-wide {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 clamp(16px, 4vw, 32px);
+  }
+
+  /* Hero */
+  .bz-hero-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 52rem;
+  }
+
+  .bz-hero-heading {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    color: var(--color-text);
+    line-height: 1.15;
+    margin: 0;
+  }
+
+  .bz-hero-subtitle {
+    font-size: clamp(1rem, 1.3vw, 1.0625rem);
+    line-height: 1.65;
+    color: var(--color-text-secondary);
+    margin: 0;
+  }
+
+  .bz-hero-ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    margin-top: 8px;
+  }
+
+  /* Section Head */
+  .section-head {
+    margin-bottom: clamp(32px, 5vw, 48px);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  /* Comparison table */
+  .bz-comparison-table-wrap {
+    overflow-x: auto;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+    min-width: 0;
+  }
+
+  .bz-comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--color-raised);
+    min-width: 560px;
+  }
+
+  .bz-comparison-table th {
+    text-align: left;
+    padding: 12px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-muted);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .bz-comparison-table td {
+    padding: 12px 16px;
+    font-size: 14px;
+    border-top: 1px solid var(--color-border);
+    vertical-align: top;
+  }
+
+  .bz-comparison-label {
+    color: var(--color-text);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .bz-comparison-official {
+    color: var(--color-text-muted);
+  }
+
+  .bz-comparison-browzy {
+    color: var(--color-text);
+    font-weight: 500;
+  }
+
+  .bz-comparison-label-col {
+    width: 180px;
+  }
+
+  /* Two halves */
+  .bz-halves-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+  }
+
+  .bz-half-card {
+    padding: 20px;
+    background: var(--color-raised);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+  }
+
+  .bz-half-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--color-text);
+    margin: 0 0 8px;
+  }
+
+  .bz-half-desc {
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: var(--color-text-secondary);
+    margin: 0 0 10px;
+  }
+
+  .bz-half-where {
+    font-size: 12px;
+    font-family: var(--font-mono);
+    color: var(--color-accent);
+    margin: 0;
+  }
+
+  /* Features */
+  .bz-features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+  }
+
+  .bz-feature-card {
+    padding: 20px;
+    background: var(--color-raised);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    transition: all 200ms var(--ease-out-soft);
+  }
+
+  .bz-feature-card:hover {
+    border-color: var(--color-accent);
+    box-shadow: 0 4px 12px color-mix(in oklab, var(--color-accent) 15%, transparent);
+  }
+
+  .bz-feature-icon {
+    width: 24px;
+    height: 24px;
+    color: var(--color-accent);
+    flex-shrink: 0;
+  }
+
+  .bz-feature-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-text);
+    margin: 0;
+  }
+
+  .bz-feature-desc {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--color-text-secondary);
+    margin: 0;
+  }
+
+  /* Privacy */
+  .bz-privacy-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 44rem;
+  }
+
+  .bz-privacy-heading {
+    font-size: clamp(1.5rem, 2.6vw, 1.875rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--color-text);
+    margin: 0;
+  }
+
+  .bz-privacy-body {
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--color-text-secondary);
+    margin: 0;
+  }
+
+  .bz-privacy-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--color-accent);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 14px;
+    width: fit-content;
+  }
+
+  .bz-privacy-link:hover {
+    text-decoration: underline;
+  }
+
+  /* GitHub CTA */
+  .bz-github-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 20px;
+    max-width: 48rem;
+    margin: 0 auto;
+  }
+
+  .bz-github-heading {
+    font-size: clamp(1.75rem, 3vw, 2.25rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--color-text);
+    line-height: 1.2;
+    margin: 0;
+  }
+
+  .bz-github-body {
+    font-size: clamp(1rem, 1.2vw, 1.0625rem);
+    line-height: 1.65;
+    color: var(--color-text-secondary);
+    margin: 0;
+  }
+
+  .bz-github-ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+  }
+
+  /* Disclaimer */
+  .bz-disclaimer {
+    text-align: center;
+    font-size: 12px;
+    color: var(--color-text-muted);
+    padding: 20px clamp(16px, 4vw, 32px) clamp(40px, 6vw, 64px);
+    margin: 0;
+  }
+
+  /* Reveal animation */
+  .reveal {
+    opacity: 0;
+    animation: revealIn 600ms ease-out forwards;
+  }
+
+  @keyframes revealIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .bz-section {
+      padding: clamp(40px, 5vw, 56px) 0;
+    }
+
+    .bz-features-grid,
+    .bz-halves-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 375px) {
+    .bz-hero-ctas,
+    .bz-github-ctas {
+      flex-direction: column;
+      width: 100%;
+    }
+
+    .bz-hero-ctas .btn,
+    .bz-github-ctas .btn {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+</style>

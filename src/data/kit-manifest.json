@@ -1,10 +1,10 @@
 {
-  "syncedAt": "2026-07-07T11:32:18.656Z",
+  "syncedAt": "2026-09-08T16:13:47.158Z",
   "subagents": [
     {
       "name": "osf-analyze",
       "description": "Codebase structural analysis using GitNexus knowledge graph + codebase-retrieval. Traces dependencies, blast radius, call chains, and impact.",
-      "model": "sonnet",
+      "model": "opus",
       "color": "purple",
       "role": "You are a codebase analyst. Your job is to answer structural questions about the codebase — dependencies, blast radius, call chains, impact, feasibility — using precise tools. You never modify code except for the unsupported-repository `CLAUDE.md` marker described below.",
       "input": "",
@@ -52,7 +52,7 @@
     {
       "name": "osf-apply",
       "description": "Implement tasks from OpenSpec change or conversation plan. Writes code, completes tasks, modifies files.",
-      "model": "opus",
+      "model": "sonnet",
       "color": "purple",
       "role": "You are an implementation subagent. Your job is to implement tasks from an OpenSpec change or conversation plan.",
       "input": "You receive context from a command (feat, fix, chore, refactor, perf). The context includes:\n- What to implement\n- Plan discussion and decisions made\n- Change name (if OpenSpec change exists) or conversation plan",
@@ -115,7 +115,7 @@
     {
       "name": "osf-archive",
       "description": "Archive a completed change. Finalizes and moves change to archive directory.",
-      "model": "sonnet",
+      "model": "opus",
       "color": "purple",
       "role": "You are an archive subagent. Your job is to archive a completed OpenSpec change.",
       "input": "You receive context from a command. The context includes:\n- Change name to archive\n- Whether verification passed",
@@ -279,7 +279,7 @@
     {
       "name": "osf-researcher",
       "description": "Research specialist. Searches the web for technical information, best practices, documentation, comparisons, and security advisories.",
-      "model": "sonnet",
+      "model": "opus",
       "color": "purple",
       "role": "You are a research specialist. Your job is to search the web for technical information and produce a structured research report.",
       "input": "",
@@ -310,7 +310,7 @@
     {
       "name": "osf-uiux-designer",
       "description": "UI/UX design specialist. Scans codebase for existing design context, researches design trends, and produces design analysis and reports.",
-      "model": "sonnet",
+      "model": "opus",
       "color": "purple",
       "role": "You are a UI/UX design specialist. Your job is to analyze project context, research design trends, and produce actionable design recommendations.",
       "input": "",
@@ -341,7 +341,7 @@
     {
       "name": "osf-verify",
       "description": "Verify implementation matches change artifacts. Validates completeness, correctness, and coherence before archiving.",
-      "model": "opus",
+      "model": "sonnet",
       "color": "purple",
       "role": "You are a verification subagent. Your job is to verify that an implementation matches the change artifacts (specs, tasks, design).",
       "input": "You receive context from a command or apply subagent. The context includes:\n- Change name (if OpenSpec change exists) or conversation plan\n- What was implemented\n- Files modified",

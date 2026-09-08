@@ -10,6 +10,7 @@ export const en = {
     features: 'Features',
     contextEngine: 'Context Engine',
     notepadAi: 'NotepadAI',
+    browzy: 'Browzy',
     architecture: 'Architecture',
     pricing: 'Pricing',
     faq: 'FAQ',
@@ -538,6 +539,183 @@ export const en = {
     subtitle: 'Minimal OpenSpec workflow — fewer commands, more automation.',
     backToHome: '← Back to home',
   },
+  browzyPage: {
+    title: 'Browzy',
+    subtitle: 'A clean-room, source-published alternative to Claude in Chrome — no domain blocklist, any Chromium browser.',
+    backToHome: '← Back to home',
+    hero: {
+      badge: 'Independent project — not affiliated with Anthropic',
+      heading: 'Claude in Chrome gives you 58 blocked domains. Browzy gives you the whole web.',
+      subtitle: 'Browzy is a clean-room reimplementation of the official Claude in Chrome extension, with its full source published: no domain blocklist, any Chromium browser, and a 26-tool browser automation registry driven by your own Anthropic-compatible API key.',
+      primaryCta: 'Install Browzy',
+      secondaryCta: 'View on GitHub',
+    },
+    disclaimer: 'Independent project. Not affiliated with, endorsed by, or sponsored by Anthropic.',
+    demo: {
+      alt: 'Browzy reading a news article in the side panel and answering questions about it',
+      caption: 'Browzy reading the page you already have open and answering about it — in the side panel, beside the tab, with nothing copy-pasted.',
+    },
+    comparison: {
+      heading: "What's different",
+      officialLabel: 'Claude in Chrome',
+      browzyLabel: 'Browzy',
+      rows: [
+        { label: 'Domain blocklist', official: '58 blocked domains across 11 categories', browzy: 'No blocklist — navigate anywhere' },
+        { label: 'Browser support', official: 'Chrome and Edge only', browzy: 'Any Chromium browser (Chrome, Edge, Brave, and more)' },
+        { label: 'Source code', official: 'Closed source', browzy: 'Source published — see the repository LICENSE' },
+        { label: 'Account required', official: 'Claude account/subscription', browzy: 'None — bring your own Anthropic-compatible API key' },
+      ],
+    },
+    twoHalves: {
+      heading: 'Two halves that have to agree',
+      body: "Browzy is made of two pieces that must both be installed and must match each other. The extension can't do anything on its own — it talks to the companion through Chrome's native messaging, which refuses to connect unless the companion is already registered on disk.",
+      items: [
+        { name: 'Browser extension', desc: 'The interface and browser control surface.', where: 'Runs inside Chrome, Edge, or Brave' },
+        { name: 'Companion (native host)', desc: "The agent's brain — runs the Claude Agent SDK.", where: 'A Node process on your machine' },
+      ],
+    },
+    features: {
+      heading: 'What it does',
+      items: [
+        { title: 'Built-in side panel', desc: 'Chat with the agent directly in the browser. No Claude account, no terminal — just your own Anthropic-compatible Base URL, API key, and model.' },
+        { title: 'No domain blocklist', desc: 'Navigate to any site; the official extension blocks 58 domains across 11 categories.' },
+        { title: 'Any Chromium browser', desc: 'Chrome, Edge, or Brave — not locked to Chrome and Edge.' },
+        { title: 'Source you can read', desc: 'The full source is public. Read it, audit it, or run it from your own clone — check the repository LICENSE for the terms that apply to you.' },
+        { title: 'Local by design', desc: 'No project server. Page content and your messages go straight from your machine to the AI endpoint you configure.' },
+      ],
+    },
+    privacy: {
+      heading: 'Your data',
+      body: "Browzy has no server. Nothing you do in the panel is seen by us — read the privacy policy for exactly what data leaves your machine and when.",
+      linkLabel: 'Read the privacy policy',
+      linkHref: 'https://github.com/Nguy-n-Th-Huy/Browzy/blob/main/docs/privacy-policy.md',
+    },
+    github: {
+      heading: 'Get Browzy',
+      body: 'Clone the repository and follow the installation guide — the extension and the companion both come from the same checkout.',
+      installCta: 'Installation guide',
+      button: 'View Repository',
+    },
+  },
+  browzyInstallPage: {
+    title: 'Install Browzy',
+    subtitle: 'Written for someone who has never used a terminal. Every command, and what you should see after each one.',
+    backToHome: '← Back to home',
+    intro: {
+      heading: 'Two halves, and they have to match',
+      body: "Browzy is two pieces: a browser extension and a companion (native host) process. The extension can't do anything on its own — it talks to the companion through Chrome's native messaging, and Chrome refuses to connect unless the companion is already registered on disk. That's why there's always a step outside the browser; \"Load unpacked\" alone is never enough.",
+      table: {
+        halfLabel: 'Half',
+        whatLabel: 'What it is',
+        whereLabel: 'Where it runs',
+        rows: [
+          { half: 'Extension', what: 'The interface and browser control', where: 'Inside Chrome, Edge, or Brave' },
+          { half: 'Companion (native host)', what: "The agent's brain — runs the Claude Agent SDK", where: 'A Node process on your machine' },
+        ],
+      },
+    },
+    prerequisites: {
+      heading: 'Before you start',
+      items: [
+        { label: 'Node.js', desc: 'The LTS release. The companion runs on Node — without it, nothing installs.', href: 'https://nodejs.org' },
+        { label: 'Git', desc: 'To get the source code.', href: 'https://git-scm.com' },
+        { label: 'A Chromium browser', desc: 'Chrome, Edge, or Brave.', href: 'https://www.google.com/chrome/' },
+        { label: 'An API key', desc: 'From an Anthropic-compatible provider — for example the official Anthropic Console. Browzy ships with no key of its own and no server in between.', href: 'https://console.anthropic.com' },
+      ],
+    },
+    steps: {
+      heading: 'Installation',
+      items: [
+        {
+          title: '1. Get the source code',
+          body: 'Open a terminal (Git Bash on Windows, Terminal on macOS/Linux) and run:',
+          codeBlocks: [
+            { label: '', code: 'git clone https://github.com/Nguy-n-Th-Huy/Browzy.git\ncd Browzy' },
+          ],
+          result: "You should see a new Browzy folder appear, and your terminal prompt now shows you're inside it.",
+          screenshot: { file: '', alt: '', caption: '' },
+        },
+        {
+          title: '2. Install the companion',
+          body: 'Pick the line for your platform. This single command installs dependencies, derives the extension id from the manifest, and registers the native host for every browser it finds. On Windows, PowerShell blocks every unsigned .ps1 file by default — if you see "running scripts is disabled on this system", run powershell -ExecutionPolicy Bypass -File .\install.ps1 instead: it applies to that one run and changes nothing on your machine.',
+          codeBlocks: [
+            { label: 'macOS / Linux / Git Bash', code: './install.sh' },
+            { label: 'Windows PowerShell', code: '.\\install.ps1' },
+          ],
+          result: 'The script prints "Done! Next steps" followed by a reminder to restart your browser. Running it again later is harmless — with nothing changed it prints "Already up to date" and writes nothing.',
+          screenshot: { file: '', alt: '', caption: '' },
+        },
+        {
+          title: '3. Load the extension',
+          body: 'Open chrome://extensions (or edge://extensions, brave://extensions), turn on Developer mode in the top-right corner, click Load unpacked, and select the extension/ folder inside the repo you just cloned.',
+          codeBlocks: [],
+          result: 'The Browzy card appears with id ihljfjgoakmoemkdondoaadegpmibimh — the same id on every machine and every reload, because the extension ships a fixed manifest key. There is no id to copy anywhere.',
+          screenshot: { file: 'load-unpacked.png', alt: "The Browzy card in chrome://extensions, enabled, showing its extension id", caption: 'The Browzy entry in chrome://extensions — enabled, with the fixed id ihljfjgoakmoemkdondoaadegpmibimh that every machine gets.' },
+        },
+        {
+          title: '4. Restart your browser',
+          body: 'Close all windows and reopen the browser completely. Browsers read native-messaging host configuration on startup, so this step is not optional.',
+          codeBlocks: [],
+          result: 'The browser restarts; there is nothing else to check yet.',
+          screenshot: { file: '', alt: '', caption: '' },
+        },
+        {
+          title: '5. Add your API key',
+          body: "Open the Browzy panel (click its toolbar icon) and open Settings — its gear icon, or right-click the extension icon and choose Options. Enter your Base URL, your API key, and at least one Model ID, then click Test connection.",
+          codeBlocks: [],
+          result: "Test connection makes one small, billed request to your endpoint. Once it passes, the composer accepts messages — that's the panel actually working.",
+          screenshot: { file: 'panel-settings.png', alt: 'The Browzy settings screen with Base URL, API key and model fields', caption: 'Settings: your own Base URL and API key, and the model to use. The key goes into your operating system credential store, not the page.' },
+        },
+      ],
+    },
+    failures: {
+      heading: 'If something goes wrong',
+      items: [
+        { title: 'Windows: "running scripts is disabled on this system"', body: "This is Windows' execution policy, not a Browzy error: PowerShell refuses every unsigned .ps1 by default, including one sitting on your own disk. Run powershell -ExecutionPolicy Bypass -File .\install.ps1 for a one-off, or use Git Bash and ./install.sh. To stop hitting it, set it once for your own account (no admin rights needed): Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned." },
+        { title: "The panel says the companion isn't installed", body: "The extension can't find the native host. Rerun ./install.sh (or .\\install.ps1), then reload the extension at chrome://extensions." },
+        { title: 'The panel sits at "Connecting" forever', body: "The companion is registered but won't start. Run the doctor command below — the most common cause is a registration pointing at a path that no longer exists, usually because the repo folder was moved or renamed after installing. Rerunning the installer fixes it." },
+        { title: 'You moved or renamed the repo folder', body: "The registration stores an absolute path to this exact folder. Moving or renaming it breaks that path — rerun the installer from the folder's new location." },
+      ],
+    },
+    doctor: {
+      heading: 'Diagnose with browzy doctor',
+      body: 'A read-only check — it changes nothing. Run it from inside the cloned repo:',
+      code: 'node host/bin/browzy.js doctor',
+      aliasNote: 'If you installed the companion globally via npm (see the FAQ below), the shorter browzy doctor works the same way.',
+      output: {
+        heading: 'How to read it',
+        items: [
+          'Default extension id — the id doctor expects the companion to answer for.',
+          'native-host.js present: yes/NO — whether the companion file this checkout points at actually exists.',
+          'One block per browser it checked, each showing the manifest path, the host path it points at (exists or MISSING), and the allowed_origins it was registered with.',
+        ],
+      },
+      screenshot: { file: '', alt: '', caption: '' },
+    },
+    faq: {
+      heading: 'Frequently asked',
+      items: [
+        {
+          q: 'I already installed the npm package — why do I still need to clone?',
+          a: "The @huydepzai2810/browzy-host package on npm contains only the companion, not the extension. Load unpacked needs a real extension/ folder on disk, so today, if you have to clone anyway to get the extension, ./install.sh already installs the companion too — npm i -g adds nothing. The npm route only matters once Browzy ships on the Chrome Web Store, where the extension comes from the store and only the companion is missing.",
+          linkLabel: '',
+          linkHref: '',
+        },
+        {
+          q: 'Where does my data go?',
+          a: "Nowhere through Browzy's own infrastructure — there isn't any. Page content and your messages go straight from your machine to the AI endpoint you configure.",
+          linkLabel: 'Read the privacy policy',
+          linkHref: 'https://github.com/Nguy-n-Th-Huy/Browzy/blob/main/docs/privacy-policy.md',
+        },
+      ],
+    },
+    cta: {
+      heading: 'Ready to try it?',
+      body: 'Head back to the Browzy overview, or go straight to the repository.',
+      productCta: 'Browzy overview',
+      githubCta: 'View Repository',
+    },
+  },
   multiAgent: {
     chip: 'Orchestration',
     title: 'Connect any agent. Run them in parallel.',
@@ -605,6 +783,7 @@ export const vi: typeof en = {
     features: 'Tính năng',
     contextEngine: 'Context Engine',
     notepadAi: 'NotepadAI',
+    browzy: 'Browzy',
     architecture: 'Kiến trúc',
     pricing: 'Bảng giá',
     faq: 'FAQ',
@@ -1132,6 +1311,183 @@ export const vi: typeof en = {
     title: 'OpenSpec Friendly Kit',
     subtitle: 'Quy trình OpenSpec tối giản — ít lệnh, nhiều tự động hóa.',
     backToHome: '← Về trang chủ',
+  },
+  browzyPage: {
+    title: 'Browzy',
+    subtitle: 'Bản tái hiện clean-room của Claude in Chrome, mã nguồn công khai — không danh sách chặn domain, chạy trên mọi trình duyệt Chromium.',
+    backToHome: '← Về trang chủ',
+    hero: {
+      badge: 'Dự án độc lập — không thuộc Anthropic',
+      heading: 'Claude in Chrome chính thức giới hạn bạn ở 58 domain bị chặn. Browzy cho bạn cả internet.',
+      subtitle: 'Browzy là bản tái hiện clean-room của tiện ích Claude in Chrome chính thức, toàn bộ mã nguồn công khai: không danh sách chặn domain, chạy trên mọi trình duyệt nhân Chromium, cùng bộ 26 công cụ điều khiển trình duyệt chạy bằng API key Anthropic-compatible của chính bạn.',
+      primaryCta: 'Cài đặt Browzy',
+      secondaryCta: 'Xem trên GitHub',
+    },
+    disclaimer: 'Dự án độc lập. Không liên kết, không được Anthropic xác nhận hay tài trợ.',
+    demo: {
+      alt: 'Browzy đọc một bài báo trong side panel và trả lời câu hỏi về bài đó',
+      caption: 'Browzy đọc đúng trang bạn đang mở và trả lời về nó — ngay trong side panel, cạnh tab, không phải copy-paste gì cả.',
+    },
+    comparison: {
+      heading: 'Khác biệt ở đâu',
+      officialLabel: 'Claude in Chrome',
+      browzyLabel: 'Browzy',
+      rows: [
+        { label: 'Danh sách chặn domain', official: '58 domain bị chặn trên 11 nhóm', browzy: 'Không chặn — điều hướng tới bất kỳ đâu' },
+        { label: 'Trình duyệt hỗ trợ', official: 'Chỉ Chrome và Edge', browzy: 'Mọi trình duyệt nhân Chromium (Chrome, Edge, Brave, v.v.)' },
+        { label: 'Mã nguồn', official: 'Đóng nguồn', browzy: 'Mã nguồn công khai — xem LICENSE trong kho mã' },
+        { label: 'Tài khoản cần có', official: 'Tài khoản/gói Claude', browzy: 'Không cần — dùng API key Anthropic-compatible của riêng bạn' },
+      ],
+    },
+    twoHalves: {
+      heading: 'Hai nửa phải khớp nhau',
+      body: 'Browzy gồm hai phần, cả hai đều phải được cài và phải khớp nhau. Extension không tự làm được gì — nó nói chuyện với companion qua cơ chế native messaging của Chrome, và Chrome từ chối kết nối nếu companion chưa được đăng ký sẵn trên đĩa.',
+      items: [
+        { name: 'Browser extension', desc: 'Giao diện và phần điều khiển trình duyệt.', where: 'Chạy trong Chrome, Edge hoặc Brave' },
+        { name: 'Companion (native host)', desc: 'Bộ não agent — chạy Claude Agent SDK.', where: 'Tiến trình Node trên máy bạn' },
+      ],
+    },
+    features: {
+      heading: 'Browzy làm được gì',
+      items: [
+        { title: 'Panel tích hợp sẵn', desc: 'Trò chuyện với agent ngay trong trình duyệt. Không cần tài khoản Claude, không cần terminal — chỉ cần Base URL, API key và model Anthropic-compatible của riêng bạn.' },
+        { title: 'Không danh sách chặn domain', desc: 'Điều hướng tới bất kỳ trang nào; bản chính thức chặn 58 domain trên 11 nhóm.' },
+        { title: 'Mọi trình duyệt Chromium', desc: 'Chrome, Edge hoặc Brave — không giới hạn ở Chrome và Edge.' },
+        { title: 'Mã nguồn đọc được', desc: 'Toàn bộ mã nguồn là công khai. Bạn đọc được, kiểm chứng được, hoặc tự chạy từ bản clone — xem LICENSE trong kho mã để biết điều khoản áp dụng cho bạn.' },
+        { title: 'Local by design', desc: 'Không có máy chủ dự án. Nội dung trang và tin nhắn của bạn đi thẳng từ máy bạn tới điểm cuối AI do bạn cấu hình.' },
+      ],
+    },
+    privacy: {
+      heading: 'Dữ liệu của bạn',
+      body: 'Browzy không có máy chủ. Không có gì bạn làm trong panel bị chúng tôi nhìn thấy — đọc chính sách quyền riêng tư để biết chính xác dữ liệu nào rời khỏi máy bạn và khi nào.',
+      linkLabel: 'Đọc chính sách quyền riêng tư',
+      linkHref: 'https://github.com/Nguy-n-Th-Huy/Browzy/blob/main/docs/privacy-policy.md',
+    },
+    github: {
+      heading: 'Lấy Browzy',
+      body: 'Clone repository và làm theo hướng dẫn cài đặt — extension và companion đều lấy từ cùng một bản clone.',
+      installCta: 'Hướng dẫn cài đặt',
+      button: 'Xem Repository',
+    },
+  },
+  browzyInstallPage: {
+    title: 'Cài đặt Browzy',
+    subtitle: 'Viết cho người chưa từng dùng terminal. Từng lệnh một, và những gì bạn sẽ thấy sau mỗi bước.',
+    backToHome: '← Về trang chủ',
+    intro: {
+      heading: 'Hai nửa, và chúng phải khớp nhau',
+      body: 'Browzy gồm hai phần: một browser extension và một tiến trình companion (native host). Extension không tự làm được gì — nó nói chuyện với companion qua cơ chế native messaging của Chrome, và Chrome đòi companion phải được đăng ký sẵn trên đĩa trước khi kết nối. Đó là lý do luôn có một bước cài ngoài trình duyệt — chỉ "Load unpacked" không bao giờ là đủ.',
+      table: {
+        halfLabel: 'Nửa',
+        whatLabel: 'Là gì',
+        whereLabel: 'Chạy ở đâu',
+        rows: [
+          { half: 'Extension', what: 'Giao diện và phần điều khiển trình duyệt', where: 'Trong Chrome, Edge hoặc Brave' },
+          { half: 'Companion (native host)', what: 'Bộ não agent — chạy Claude Agent SDK', where: 'Tiến trình Node trên máy bạn' },
+        ],
+      },
+    },
+    prerequisites: {
+      heading: 'Chuẩn bị trước',
+      items: [
+        { label: 'Node.js', desc: 'Bản LTS. Companion chạy trên Node — không có Node thì không cài được.', href: 'https://nodejs.org' },
+        { label: 'Git', desc: 'Để lấy mã nguồn.', href: 'https://git-scm.com' },
+        { label: 'Một trình duyệt nhân Chromium', desc: 'Chrome, Edge hoặc Brave.', href: 'https://www.google.com/chrome/' },
+        { label: 'API key', desc: 'Của một nhà cung cấp tương thích Anthropic — ví dụ Anthropic Console chính thức. Browzy không kèm sẵn key nào và không có máy chủ trung gian.', href: 'https://console.anthropic.com' },
+      ],
+    },
+    steps: {
+      heading: 'Cài đặt',
+      items: [
+        {
+          title: '1. Lấy mã nguồn',
+          body: 'Mở terminal (Git Bash trên Windows, Terminal trên macOS/Linux) và chạy:',
+          codeBlocks: [
+            { label: '', code: 'git clone https://github.com/Nguy-n-Th-Huy/Browzy.git\ncd Browzy' },
+          ],
+          result: 'Bạn sẽ thấy một thư mục Browzy mới xuất hiện, và dấu nhắc terminal giờ cho thấy bạn đang ở trong đó.',
+          screenshot: { file: '', alt: '', caption: '' },
+        },
+        {
+          title: '2. Cài companion',
+          body: 'Chọn một dòng theo hệ điều hành. Lệnh này tự làm ba việc: cài dependency, suy ra extension ID từ khoá công khai trong manifest, rồi ghi đăng ký native host cho từng trình duyệt tìm thấy. Trên Windows, PowerShell mặc định chặn mọi file .ps1 chưa ký — nếu thấy báo "running scripts is disabled on this system", hãy chạy powershell -ExecutionPolicy Bypass -File .\install.ps1 thay thế: lệnh đó chỉ áp dụng cho đúng lần chạy này và không đổi gì trên máy bạn.',
+          codeBlocks: [
+            { label: 'macOS / Linux / Git Bash', code: './install.sh' },
+            { label: 'Windows PowerShell', code: '.\\install.ps1' },
+          ],
+          result: 'Script in ra "Done! Next steps" kèm lời nhắc khởi động lại trình duyệt. Chạy lại sau này vô hại — không có gì thay đổi thì nó in "Already up to date" và không ghi gì.',
+          screenshot: { file: '', alt: '', caption: '' },
+        },
+        {
+          title: '3. Nạp extension',
+          body: 'Mở chrome://extensions (hoặc edge://extensions, brave://extensions), bật Developer mode ở góc trên bên phải, bấm Load unpacked, rồi chọn thư mục extension/ bên trong repo vừa clone.',
+          codeBlocks: [],
+          result: 'Thẻ Browzy xuất hiện với id ihljfjgoakmoemkdondoaadegpmibimh — cùng một id trên mọi máy và mọi lần nạp lại, vì extension mang sẵn một khoá manifest cố định. Không có id nào cần copy cả.',
+          screenshot: { file: 'load-unpacked.png', alt: 'Thẻ Browzy trong chrome://extensions, đang bật, hiển thị extension id', caption: 'Mục Browzy trong chrome://extensions — đang bật, với id cố định ihljfjgoakmoemkdondoaadegpmibimh mà mọi máy đều nhận.' },
+        },
+        {
+          title: '4. Khởi động lại trình duyệt',
+          body: 'Đóng tất cả cửa sổ rồi mở lại trình duyệt hoàn toàn. Trình duyệt đọc cấu hình native-messaging host khi khởi động, nên bước này không thể bỏ qua.',
+          codeBlocks: [],
+          result: 'Trình duyệt khởi động lại; chưa có gì khác cần kiểm tra.',
+          screenshot: { file: '', alt: '', caption: '' },
+        },
+        {
+          title: '5. Nhập API key',
+          body: 'Mở panel Browzy (bấm biểu tượng trên thanh công cụ) rồi mở Settings — biểu tượng bánh răng, hoặc chuột phải vào icon extension và chọn Options. Nhập Base URL, API key, và ít nhất một Model ID, rồi bấm Test connection.',
+          codeBlocks: [],
+          result: 'Test connection gửi một request nhỏ, có tính phí, tới điểm cuối của bạn. Khi nó qua, khung soạn tin chấp nhận tin nhắn — đó là lúc panel thực sự hoạt động.',
+          screenshot: { file: 'panel-settings.png', alt: 'Màn hình cài đặt Browzy với ô Base URL, API key và mô hình', caption: 'Cài đặt: Base URL và API key của riêng bạn, cùng mô hình muốn dùng. Khoá được lưu vào kho bảo mật của hệ điều hành, không nằm trong trang.' },
+        },
+      ],
+    },
+    failures: {
+      heading: 'Khi có trục trặc',
+      items: [
+        { title: 'Windows báo "running scripts is disabled on this system"', body: 'Đây là chính sách thực thi của Windows, không phải lỗi Browzy: PowerShell mặc định từ chối mọi file .ps1 chưa ký, kể cả file nằm sẵn trên máy bạn. Chạy powershell -ExecutionPolicy Bypass -File .\install.ps1 cho một lần, hoặc mở Git Bash rồi chạy ./install.sh. Muốn khỏi vướng về sau, đặt một lần cho tài khoản của bạn (không cần quyền admin): Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned.' },
+        { title: 'Panel hiện "Chưa cài companion"', body: 'Extension không tìm thấy native host. Chạy lại ./install.sh (hoặc .\\install.ps1), rồi tải lại extension ở chrome://extensions.' },
+        { title: 'Panel đứng ở "Đang kết nối" mãi', body: 'Companion đã đăng ký nhưng không khởi động được. Chạy lệnh doctor bên dưới — nguyên nhân hay gặp nhất là đăng ký trỏ vào một đường dẫn không còn tồn tại, do thư mục repo bị di chuyển hoặc đổi tên sau khi cài. Chạy lại installer là xong.' },
+        { title: 'Bạn đã di chuyển hoặc đổi tên thư mục repo', body: 'Đăng ký ghi đường dẫn tuyệt đối tới đúng thư mục này. Di chuyển hay đổi tên là đăng ký hỏng — chạy lại installer ở vị trí mới.' },
+      ],
+    },
+    doctor: {
+      heading: 'Kiểm tra bằng browzy doctor',
+      body: 'Lệnh này chỉ đọc, không sửa gì. Chạy nó từ bên trong repo vừa clone:',
+      code: 'node host/bin/browzy.js doctor',
+      aliasNote: 'Nếu bạn đã cài companion toàn cục qua npm (xem FAQ bên dưới), lệnh ngắn hơn browzy doctor hoạt động y hệt.',
+      output: {
+        heading: 'Đọc kết quả thế nào',
+        items: [
+          'Default extension id — id mà doctor kỳ vọng companion trả lời.',
+          'native-host.js present: yes/NO — file companion mà bản clone này trỏ tới có còn tồn tại không.',
+          'Một khối cho mỗi trình duyệt được kiểm tra, cho biết đường dẫn manifest, đường dẫn companion nó trỏ tới (exists hay MISSING), và allowed_origins đã đăng ký.',
+        ],
+      },
+      screenshot: { file: '', alt: '', caption: '' },
+    },
+    faq: {
+      heading: 'Câu hỏi hay gặp',
+      items: [
+        {
+          q: 'Đã cài gói npm rồi, sao vẫn phải clone?',
+          a: 'Gói @huydepzai2810/browzy-host trên npm chỉ chứa companion, không chứa extension. Load unpacked cần một thư mục extension/ có thật trên đĩa. Nên hôm nay, nếu đằng nào cũng phải clone để lấy extension, thì ./install.sh đã cài luôn companion và npm i -g là bước thừa. Gói npm chỉ thật sự cần khi Browzy đã lên Chrome Web Store — lúc đó extension đến từ store và chỉ companion là còn thiếu.',
+          linkLabel: '',
+          linkHref: '',
+        },
+        {
+          q: 'Dữ liệu của tôi đi đâu?',
+          a: 'Không đi qua hạ tầng nào của Browzy — vì không có hạ tầng nào cả. Nội dung trang và tin nhắn của bạn đi thẳng từ máy bạn tới điểm cuối AI do bạn cấu hình.',
+          linkLabel: 'Đọc chính sách quyền riêng tư',
+          linkHref: 'https://github.com/Nguy-n-Th-Huy/Browzy/blob/main/docs/privacy-policy.md',
+        },
+      ],
+    },
+    cta: {
+      heading: 'Sẵn sàng thử chưa?',
+      body: 'Quay lại trang giới thiệu Browzy, hoặc vào thẳng repository.',
+      productCta: 'Giới thiệu Browzy',
+      githubCta: 'Xem Repository',
+    },
   },
   multiAgent: {
     chip: 'Tích hợp Đa tác nhân',
