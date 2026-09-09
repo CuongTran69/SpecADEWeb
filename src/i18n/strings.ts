@@ -637,10 +637,10 @@ export const en = {
         },
         {
           title: '2. Install the companion',
-          body: 'Pick the line for your platform. This single command installs dependencies, derives the extension id from the manifest, and registers the native host for every browser it finds. On Windows, PowerShell blocks every unsigned .ps1 file by default — if you see "running scripts is disabled on this system", run powershell -ExecutionPolicy Bypass -File .\install.ps1 instead: it applies to that one run and changes nothing on your machine.',
+          body: 'Pick the line for your platform. This single command installs dependencies, derives the extension id from the manifest, and registers the native host for every browser it finds. The Windows line carries an -ExecutionPolicy Bypass prefix on purpose: PowerShell refuses every unsigned .ps1 by default, including one sitting on your own disk, so the plain .\\install.ps1 fails on a clean machine. The prefix applies to that single run and changes nothing on your system.',
           codeBlocks: [
             { label: 'macOS / Linux / Git Bash', code: './install.sh' },
-            { label: 'Windows PowerShell', code: '.\\install.ps1' },
+            { label: 'Windows PowerShell', code: 'powershell -ExecutionPolicy Bypass -File .\\install.ps1' },
           ],
           result: 'The script prints "Done! Next steps" followed by a reminder to restart your browser. Running it again later is harmless — with nothing changed it prints "Already up to date" and writes nothing.',
           screenshot: { file: '', alt: '', caption: '' },
@@ -671,8 +671,8 @@ export const en = {
     failures: {
       heading: 'If something goes wrong',
       items: [
-        { title: 'Windows: "running scripts is disabled on this system"', body: "This is Windows' execution policy, not a Browzy error: PowerShell refuses every unsigned .ps1 by default, including one sitting on your own disk. Run powershell -ExecutionPolicy Bypass -File .\install.ps1 for a one-off, or use Git Bash and ./install.sh. To stop hitting it, set it once for your own account (no admin rights needed): Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned." },
-        { title: "The panel says the companion isn't installed", body: "The extension can't find the native host. Rerun ./install.sh (or .\\install.ps1), then reload the extension at chrome://extensions." },
+        { title: 'Windows: "running scripts is disabled on this system"', body: "This is Windows' execution policy, not a Browzy error: PowerShell refuses every unsigned .ps1 by default, including one sitting on your own disk. You hit this by running .\\install.ps1 directly instead of the line above, which carries the -ExecutionPolicy Bypass prefix that avoids it. Use that line, or Git Bash and ./install.sh. To stop hitting it for good, set it once for your own account (no admin rights needed): Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned." },
+        { title: "The panel says the companion isn't installed", body: "The extension can't find the native host. Rerun the install command for your platform, then reload the extension at chrome://extensions." },
         { title: 'The panel sits at "Connecting" forever', body: "The companion is registered but won't start. Run the doctor command below — the most common cause is a registration pointing at a path that no longer exists, usually because the repo folder was moved or renamed after installing. Rerunning the installer fixes it." },
         { title: 'You moved or renamed the repo folder', body: "The registration stores an absolute path to this exact folder. Moving or renaming it breaks that path — rerun the installer from the folder's new location." },
       ],
@@ -1410,10 +1410,10 @@ export const vi: typeof en = {
         },
         {
           title: '2. Cài companion',
-          body: 'Chọn một dòng theo hệ điều hành. Lệnh này tự làm ba việc: cài dependency, suy ra extension ID từ khoá công khai trong manifest, rồi ghi đăng ký native host cho từng trình duyệt tìm thấy. Trên Windows, PowerShell mặc định chặn mọi file .ps1 chưa ký — nếu thấy báo "running scripts is disabled on this system", hãy chạy powershell -ExecutionPolicy Bypass -File .\install.ps1 thay thế: lệnh đó chỉ áp dụng cho đúng lần chạy này và không đổi gì trên máy bạn.',
+          body: 'Chọn một dòng theo hệ điều hành. Lệnh này tự làm ba việc: cài dependency, suy ra extension ID từ khoá công khai trong manifest, rồi ghi đăng ký native host cho từng trình duyệt tìm thấy. Dòng Windows có tiền tố -ExecutionPolicy Bypass là có chủ đích: PowerShell mặc định từ chối mọi file .ps1 chưa ký, kể cả file nằm sẵn trên máy bạn, nên gõ thẳng .\\install.ps1 sẽ lỗi trên máy mới cài. Tiền tố đó chỉ áp dụng cho đúng lần chạy này và không đổi gì trên hệ thống.',
           codeBlocks: [
             { label: 'macOS / Linux / Git Bash', code: './install.sh' },
-            { label: 'Windows PowerShell', code: '.\\install.ps1' },
+            { label: 'Windows PowerShell', code: 'powershell -ExecutionPolicy Bypass -File .\\install.ps1' },
           ],
           result: 'Script in ra "Done! Next steps" kèm lời nhắc khởi động lại trình duyệt. Chạy lại sau này vô hại — không có gì thay đổi thì nó in "Already up to date" và không ghi gì.',
           screenshot: { file: '', alt: '', caption: '' },
@@ -1444,8 +1444,8 @@ export const vi: typeof en = {
     failures: {
       heading: 'Khi có trục trặc',
       items: [
-        { title: 'Windows báo "running scripts is disabled on this system"', body: 'Đây là chính sách thực thi của Windows, không phải lỗi Browzy: PowerShell mặc định từ chối mọi file .ps1 chưa ký, kể cả file nằm sẵn trên máy bạn. Chạy powershell -ExecutionPolicy Bypass -File .\install.ps1 cho một lần, hoặc mở Git Bash rồi chạy ./install.sh. Muốn khỏi vướng về sau, đặt một lần cho tài khoản của bạn (không cần quyền admin): Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned.' },
-        { title: 'Panel hiện "Chưa cài companion"', body: 'Extension không tìm thấy native host. Chạy lại ./install.sh (hoặc .\\install.ps1), rồi tải lại extension ở chrome://extensions.' },
+        { title: 'Windows báo "running scripts is disabled on this system"', body: 'Đây là chính sách thực thi của Windows, không phải lỗi Browzy: PowerShell mặc định từ chối mọi file .ps1 chưa ký, kể cả file nằm sẵn trên máy bạn. Bạn gặp lỗi này khi gõ thẳng .\\install.ps1 thay vì dòng lệnh ở trên — dòng đó đã có sẵn tiền tố -ExecutionPolicy Bypass để tránh. Dùng đúng dòng đó, hoặc mở Git Bash rồi chạy ./install.sh. Muốn khỏi vướng về sau, đặt một lần cho tài khoản của bạn (không cần quyền admin): Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned.' },
+        { title: 'Panel hiện "Chưa cài companion"', body: 'Extension không tìm thấy native host. Chạy lại lệnh cài đặt theo hệ điều hành của bạn, rồi tải lại extension ở chrome://extensions.' },
         { title: 'Panel đứng ở "Đang kết nối" mãi', body: 'Companion đã đăng ký nhưng không khởi động được. Chạy lệnh doctor bên dưới — nguyên nhân hay gặp nhất là đăng ký trỏ vào một đường dẫn không còn tồn tại, do thư mục repo bị di chuyển hoặc đổi tên sau khi cài. Chạy lại installer là xong.' },
         { title: 'Bạn đã di chuyển hoặc đổi tên thư mục repo', body: 'Đăng ký ghi đường dẫn tuyệt đối tới đúng thư mục này. Di chuyển hay đổi tên là đăng ký hỏng — chạy lại installer ở vị trí mới.' },
       ],
